@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODAL_009 - 網路錯誤提示 | SalesAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom animations */
+        @keyframes wifi-pulse {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+        
+        .wifi-1 { animation: wifi-pulse 2s ease-in-out infinite 0s; }
+        .wifi-2 { animation: wifi-pulse 2s ease-in-out infinite 0.3s; }
+        .wifi-3 { animation: wifi-pulse 2s ease-in-out infinite 0.6s; }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .animate-shake {
+            animation: shake 0.5s ease-in-out;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE',
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'gray-dark': '#1A1A1A',
+                        'gray-medium': '#666666',
+                        'gray-light': '#999999',
+                        'gray-bg': '#F8F9FA',
+                        'gray-border': '#E5E5E5'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-bg">
+    <!-- Demo Container -->
+    <div class="min-h-screen flex flex-col items-center justify-center p-4">
+        <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-6">
+            <h1 class="text-2xl font-bold text-gray-dark mb-2">MODAL_009</h1>
+            <h2 class="text-lg text-gray-medium mb-6">網路錯誤提示</h2>
+            
+            <div class="space-y-4">
+                <button onclick="networkError.show('offline')" 
+                        class="w-full px-6 py-3 bg-error text-white rounded-lg hover:bg-error/90 transition-colors">
+                    顯示離線錯誤
+                </button>
+                
+                <button onclick="networkError.show('timeout')" 
+                        class="w-full px-6 py-3 bg-warning text-white rounded-lg hover:bg-warning/90 transition-colors">
+                    顯示超時錯誤
+                </button>
+                
+                <button onclick="networkError.show('server')" 
+                        class="w-full px-6 py-3 bg-gray-dark text-white rounded-lg hover:bg-gray-dark/90 transition-colors">
+                    顯示伺服器錯誤
+                </button>
+                
+                <button onclick="networkError.show('slow')" 
+                        class="w-full px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+                    顯示網路緩慢
+                </button>
+            </div>
+            
+            <div class="mt-6 p-4 bg-gray-bg rounded-lg">
+                <h3 class="font-bold text-gray-dark mb-2">組件說明：</h3>
+                <ul class="text-sm text-gray-medium space-y-1">
+                    <li>• 多種網路錯誤類型提示</li>
+                    <li>• 自動重試機制</li>
+                    <li>• 視覺化錯誤狀態</li>
+                    <li>• 提供解決方案建議</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Network Error Modal -->
+    <div id="networkErrorModal" class="fixed inset-0 z-50 hidden">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"></div>
+        
+        <!-- Modal Content -->
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-sm w-full shadow-xl transform transition-all duration-300 scale-95 opacity-0">
+                <!-- Error Icon -->
+                <div class="pt-8 pb-4 px-6">
+                    <div id="errorIcon" class="mx-auto w-24 h-24 relative">
+                        <!-- Default WiFi Off Icon -->
+                        <div class="w-full h-full bg-error/10 rounded-full flex items-center justify-center">
+                            <svg class="w-12 h-12 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Content -->
+                <div class="px-6 pb-4">
+                    <h3 id="errorTitle" class="text-xl font-bold text-gray-dark text-center mb-2">網路連線失敗</h3>
+                    <p id="errorMessage" class="text-gray-medium text-sm text-center leading-relaxed mb-4">
+                        請檢查您的網路連線
+                    </p>
+                    
+                    <!-- Error Details -->
+                    <div id="errorDetails" class="bg-gray-bg rounded-lg p-4 mb-4">
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-start space-x-2">
+                                <span class="text-gray-medium">錯誤代碼：</span>
+                                <span id="errorCode" class="text-gray-dark font-medium">ERR_NETWORK</span>
+                            </div>
+                            <div class="flex items-start space-x-2">
+                                <span class="text-gray-medium">發生時間：</span>
+                                <span id="errorTime" class="text-gray-dark font-medium">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Solutions -->
+                    <div id="solutions" class="space-y-2 mb-4">
+                        <p class="text-xs font-medium text-gray-dark mb-2">建議解決方案：</p>
+                        <div class="space-y-1" id="solutionsList">
+                            <!-- Solutions will be inserted here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Retry Counter -->
+                    <div id="retryInfo" class="hidden text-center mb-4">
+                        <p class="text-sm text-gray-medium">
+                            <span id="retryCountdown">5</span> 秒後自動重試...
+                        </p>
+                        <div class="w-full bg-gray-200 rounded-full h-1 mt-2">
+                            <div id="retryProgress" class="bg-primary h-1 rounded-full transition-all duration-1000" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actions -->
+                <div class="px-6 pb-6 space-y-2">
+                    <button id="retryButton" onclick="networkError.retry()" 
+                            class="w-full px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium">
+                        立即重試
+                    </button>
+                    <button onclick="networkError.hide()" 
+                            class="w-full px-4 py-3 text-gray-medium hover:bg-gray-bg rounded-lg transition-colors">
+                        關閉
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class NetworkErrorModal {
+            constructor() {
+                this.modal = document.getElementById('networkErrorModal');
+                this.retryTimer = null;
+                this.retryCount = 0;
+                this.maxRetries = 3;
+                this.errorTypes = {
+                    offline: {
+                        title: '您已離線',
+                        message: '無法連接到網路，請檢查您的網路設定',
+                        code: 'ERR_OFFLINE',
+                        icon: 'wifi-off',
+                        solutions: [
+                            '檢查 Wi-Fi 或行動數據是否開啟',
+                            '確認飛航模式已關閉',
+                            '嘗試重新連接網路'
+                        ]
+                    },
+                    timeout: {
+                        title: '請求超時',
+                        message: '伺服器回應時間過長，請稍後再試',
+                        code: 'ERR_TIMEOUT',
+                        icon: 'clock',
+                        solutions: [
+                            '檢查網路連線品質',
+                            '稍後再試',
+                            '聯繫客服支援'
+                        ]
+                    },
+                    server: {
+                        title: '伺服器錯誤',
+                        message: '伺服器暫時無法處理您的請求',
+                        code: 'ERR_SERVER_500',
+                        icon: 'server',
+                        solutions: [
+                            '稍後再試',
+                            '檢查系統狀態頁面',
+                            '聯繫技術支援'
+                        ]
+                    },
+                    slow: {
+                        title: '網路緩慢',
+                        message: '您的網路連線速度較慢，可能影響使用體驗',
+                        code: 'WARN_SLOW',
+                        icon: 'slow',
+                        solutions: [
+                            '切換到更穩定的網路',
+                            '關閉其他佔用頻寬的應用',
+                            '嘗試在離峰時段使用'
+                        ]
+                    }
+                };
+                this.init();
+            }
+            
+            init() {
+                // Click backdrop to close
+                this.modal.querySelector('.bg-black\\/50').addEventListener('click', () => this.hide());
+                
+                // ESC key to close
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && !this.modal.classList.contains('hidden')) {
+                        this.hide();
+                    }
+                });
+                
+                // Monitor online/offline status
+                window.addEventListener('online', () => this.handleOnline());
+                window.addEventListener('offline', () => this.handleOffline());
+            }
+            
+            show(type = 'offline') {
+                const error = this.errorTypes[type] || this.errorTypes.offline;
+                
+                // Update content
+                document.getElementById('errorTitle').textContent = error.title;
+                document.getElementById('errorMessage').textContent = error.message;
+                document.getElementById('errorCode').textContent = error.code;
+                document.getElementById('errorTime').textContent = new Date().toLocaleTimeString('zh-TW');
+                
+                // Update icon
+                this.updateIcon(error.icon);
+                
+                // Update solutions
+                const solutionsList = document.getElementById('solutionsList');
+                solutionsList.innerHTML = error.solutions.map(solution => `
+                    <div class="flex items-start space-x-2">
+                        <span class="text-primary mt-1">•</span>
+                        <span class="text-xs text-gray-medium">${solution}</span>
+                    </div>
+                `).join('');
+                
+                // Show modal
+                this.modal.classList.remove('hidden');
+                requestAnimationFrame(() => {
+                    const content = this.modal.querySelector('.bg-white');
+                    content.classList.remove('scale-95', 'opacity-0');
+                    content.classList.add('scale-100', 'opacity-100', 'animate-shake');
+                    
+                    setTimeout(() => {
+                        content.classList.remove('animate-shake');
+                    }, 500);
+                });
+                
+                // Start auto-retry for certain error types
+                if (type === 'timeout' || type === 'server') {
+                    this.startAutoRetry();
+                }
+            }
+            
+            hide() {
+                this.stopAutoRetry();
+                const content = this.modal.querySelector('.bg-white');
+                content.classList.remove('scale-100', 'opacity-100');
+                content.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    this.modal.classList.add('hidden');
+                }, 300);
+            }
+            
+            updateIcon(type) {
+                const iconContainer = document.getElementById('errorIcon');
+                let iconHTML = '';
+                
+                switch(type) {
+                    case 'clock':
+                        iconHTML = `
+                            <div class="w-full h-full bg-warning/10 rounded-full flex items-center justify-center">
+                                <svg class="w-12 h-12 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                        `;
+                        break;
+                    case 'server':
+                        iconHTML = `
+                            <div class="w-full h-full bg-error/10 rounded-full flex items-center justify-center">
+                                <svg class="w-12 h-12 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
+                                </svg>
+                            </div>
+                        `;
+                        break;
+                    case 'slow':
+                        iconHTML = `
+                            <div class="w-full h-full bg-warning/10 rounded-full flex items-center justify-center relative">
+                                <svg class="w-12 h-12 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path>
+                                </svg>
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="flex space-x-0.5">
+                                        <div class="w-1 h-3 bg-warning/60 rounded wifi-1"></div>
+                                        <div class="w-1 h-4 bg-warning/60 rounded wifi-2"></div>
+                                        <div class="w-1 h-5 bg-warning/60 rounded wifi-3"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        break;
+                    default:
+                        iconHTML = `
+                            <div class="w-full h-full bg-error/10 rounded-full flex items-center justify-center">
+                                <svg class="w-12 h-12 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.414m-1.414-1.414L3 3m8.293 8.293l1.414 1.414"></path>
+                                </svg>
+                            </div>
+                        `;
+                }
+                
+                iconContainer.innerHTML = iconHTML;
+            }
+            
+            startAutoRetry() {
+                if (this.retryCount >= this.maxRetries) {
+                    return;
+                }
+                
+                const retryInfo = document.getElementById('retryInfo');
+                const countdown = document.getElementById('retryCountdown');
+                const progress = document.getElementById('retryProgress');
+                
+                retryInfo.classList.remove('hidden');
+                let seconds = 5;
+                
+                this.retryTimer = setInterval(() => {
+                    seconds--;
+                    countdown.textContent = seconds;
+                    progress.style.width = `${(seconds / 5) * 100}%`;
+                    
+                    if (seconds <= 0) {
+                        this.retry();
+                    }
+                }, 1000);
+            }
+            
+            stopAutoRetry() {
+                if (this.retryTimer) {
+                    clearInterval(this.retryTimer);
+                    this.retryTimer = null;
+                }
+                document.getElementById('retryInfo').classList.add('hidden');
+            }
+            
+            retry() {
+                this.stopAutoRetry();
+                this.retryCount++;
+                
+                // Simulate retry
+                const retryButton = document.getElementById('retryButton');
+                retryButton.disabled = true;
+                retryButton.textContent = '重試中...';
+                
+                setTimeout(() => {
+                    retryButton.disabled = false;
+                    retryButton.textContent = '立即重試';
+                    
+                    // Simulate success or failure
+                    if (Math.random() > 0.5) {
+                        this.hide();
+                        alert('連線成功！');
+                    } else {
+                        if (this.retryCount < this.maxRetries) {
+                            this.startAutoRetry();
+                        } else {
+                            alert(`已重試 ${this.maxRetries} 次，請稍後再試`);
+                        }
+                    }
+                }, 2000);
+            }
+            
+            handleOnline() {
+                if (!this.modal.classList.contains('hidden')) {
+                    this.hide();
+                    alert('網路已恢復連線！');
+                }
+            }
+            
+            handleOffline() {
+                this.show('offline');
+            }
+        }
+        
+        // Initialize
+        const networkError = new NetworkErrorModal();
+    </script>
+</body>
+</html>

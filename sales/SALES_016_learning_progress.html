@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalesAI - 學習進度</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#2E5BFF',
+                        'secondary': '#00C6AE',
+                        'success': '#00D563',
+                        'warning': '#FFB800',
+                        'error': '#FF4757',
+                        'text-primary': '#1A1A1A',
+                        'text-secondary': '#666666',
+                        'text-tertiary': '#999999'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 font-sans">
+    <header class="bg-white shadow-sm px-4 py-3 sticky top-0 z-10">
+        <div class="flex items-center justify-between">
+            <button onclick="history.back()" class="text-text-secondary">
+                <i class="fas fa-arrow-left text-lg"></i>
+            </button>
+            <h1 class="text-lg font-semibold text-text-primary">學習進度</h1>
+            <div class="flex items-center space-x-4">
+                <div class="relative cursor-pointer" onclick="location.href='../common/COMMON_008_notification_center.html'">
+                    <i class="fas fa-bell text-text-secondary text-lg"></i>
+                    <span class="absolute -top-2 -right-2 bg-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
+                </div>
+                <button onclick="location.href='../common/COMMON_001_settings.html'" class="text-text-secondary">
+                    <i class="fas fa-cog text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="px-4 py-6 pb-24">
+        <!-- Overall Progress -->
+        <section class="mb-6">
+            <div class="bg-gradient-to-br from-primary to-secondary rounded-xl p-6 text-white">
+                <div class="text-center mb-4">
+                    <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <span class="text-2xl font-bold">75%</span>
+                    </div>
+                    <h2 class="text-xl font-bold mb-2">學習完成度</h2>
+                    <p class="text-white/80">本月目標: 80%</p>
+                </div>
+                <div class="w-full bg-white/20 rounded-full h-3">
+                    <div class="bg-white h-3 rounded-full" style="width: 75%"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Learning Stats -->
+        <section class="mb-6">
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-white rounded-lg p-4 text-center">
+                    <div class="w-12 h-12 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <i class="fas fa-trophy text-success text-xl"></i>
+                    </div>
+                    <p class="text-sm text-text-tertiary">案例學習</p>
+                    <p class="text-2xl font-bold text-text-primary">23</p>
+                    <p class="text-xs text-success">+5 本週</p>
+                </div>
+                <div class="bg-white rounded-lg p-4 text-center">
+                    <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <i class="fas fa-chart-line text-primary text-xl"></i>
+                    </div>
+                    <p class="text-sm text-text-tertiary">技能提升</p>
+                    <p class="text-2xl font-bold text-text-primary">8.2</p>
+                    <p class="text-xs text-primary">+0.3 本週</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skill Progress -->
+        <section class="mb-6">
+            <h3 class="font-semibold text-text-primary mb-4">技能進度</h3>
+            <div class="space-y-4">
+                <div class="bg-white rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-text-primary">SPIN 問句技巧</span>
+                        <span class="text-success font-bold">85%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+                        <div class="bg-success h-2 rounded-full" style="width: 85%"></div>
+                    </div>
+                    <p class="text-xs text-text-tertiary">已完成 12/15 個練習</p>
+                </div>
+                
+                <div class="bg-white rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-text-primary">異議處理</span>
+                        <span class="text-warning font-bold">65%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+                        <div class="bg-warning h-2 rounded-full" style="width: 65%"></div>
+                    </div>
+                    <p class="text-xs text-text-tertiary">已完成 8/12 個案例</p>
+                </div>
+                
+                <div class="bg-white rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-medium text-text-primary">成交技巧</span>
+                        <span class="text-primary font-bold">70%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2 mb-2">
+                        <div class="bg-primary h-2 rounded-full" style="width: 70%"></div>
+                    </div>
+                    <p class="text-xs text-text-tertiary">已完成 7/10 個模組</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Progress Chart -->
+        <section class="mb-6">
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h3 class="font-semibold text-text-primary mb-4">學習趨勢</h3>
+                <div class="relative h-48">
+                    <canvas id="progressChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Achievements -->
+        <section class="mb-6">
+            <h3 class="font-semibold text-text-primary mb-4">學習成就</h3>
+            <div class="grid grid-cols-3 gap-3">
+                <div class="bg-white rounded-lg p-3 text-center">
+                    <div class="w-10 h-10 bg-warning/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <i class="fas fa-medal text-warning"></i>
+                    </div>
+                    <p class="text-xs font-medium">連續學習</p>
+                    <p class="text-sm font-bold text-warning">7天</p>
+                </div>
+                <div class="bg-white rounded-lg p-3 text-center">
+                    <div class="w-10 h-10 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <i class="fas fa-star text-success"></i>
+                    </div>
+                    <p class="text-xs font-medium">案例收藏</p>
+                    <p class="text-sm font-bold text-success">15個</p>
+                </div>
+                <div class="bg-white rounded-lg p-3 text-center">
+                    <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <i class="fas fa-graduation-cap text-primary"></i>
+                    </div>
+                    <p class="text-xs font-medium">課程完成</p>
+                    <p class="text-sm font-bold text-primary">8個</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recommended Learning -->
+        <section>
+            <h3 class="font-semibold text-text-primary mb-4">推薦學習</h3>
+            <div class="space-y-3">
+                <div class="bg-white rounded-lg p-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-error/10 rounded-full flex items-center justify-center">
+                            <i class="fas fa-exclamation text-error"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-text-primary">異議處理進階技巧</h4>
+                            <p class="text-sm text-text-secondary">基於你的弱項分析推薦</p>
+                        </div>
+                        <button class="text-primary text-sm font-medium">學習</button>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg p-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-secondary/10 rounded-full flex items-center justify-center">
+                            <i class="fas fa-lightbulb text-secondary"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-text-primary">高端客戶開發策略</h4>
+                            <p class="text-sm text-text-secondary">提升客戶層級的必修課</p>
+                        </div>
+                        <button class="text-primary text-sm font-medium">學習</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Initialize progress chart
+        const ctx = document.getElementById('progressChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['1週前', '6天前', '5天前', '4天前', '3天前', '2天前', '昨天', '今天'],
+                datasets: [{
+                    label: '學習進度',
+                    data: [60, 62, 65, 68, 70, 72, 74, 75],
+                    borderColor: '#2E5BFF',
+                    backgroundColor: 'rgba(46, 91, 255, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: {
+                            color: '#f0f0f0'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        function showSettings() {
+            alert('學習設定:\n1. 學習提醒\n2. 目標設定\n3. 進度同步');
+        }
+    </script>
+</body>
+</html>

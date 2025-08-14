@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODAL_004 - 日期選擇器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE',
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'text-primary': '#1A1A1A',
+                        'text-secondary': '#666666',
+                        'text-tertiary': '#999999'
+                    },
+                    boxShadow: {
+                        'level-4': '0px 8px 24px rgba(0,0,0,0.15)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .modal-backdrop {
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-enter {
+            animation: modalEnter 0.3s ease-out;
+        }
+        
+        .modal-exit {
+            animation: modalExit 0.2s ease-in;
+        }
+        
+        @keyframes modalEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        @keyframes modalExit {
+            from {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+        }
+        
+        /* 日期格子樣式 */
+        .date-cell {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .date-cell:hover {
+            background-color: #F3F4F6;
+        }
+        
+        .date-cell.selected {
+            background-color: #2E5BFF;
+            color: white;
+        }
+        
+        .date-cell.today {
+            background-color: #2E5BFF;
+            background-opacity: 0.1;
+            color: #2E5BFF;
+            font-weight: 600;
+        }
+        
+        .date-cell.selected.today {
+            background-color: #2E5BFF;
+            color: white;
+        }
+        
+        .date-cell.other-month {
+            color: #D1D5DB;
+        }
+        
+        .date-cell.disabled {
+            color: #D1D5DB;
+            cursor: not-allowed;
+        }
+        
+        .date-cell.disabled:hover {
+            background-color: transparent;
+        }
+        
+        /* 防止背景滾動 */
+        .no-scroll {
+            overflow: hidden;
+        }
+        
+        /* 月份/年份選擇器 */
+        .month-year-selector {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
+    <!-- 示例觸發按鈕 -->
+    <div class="max-w-sm mx-auto space-y-4">
+        <h1 class="text-2xl font-bold text-text-primary text-center mb-8">MODAL_004 - 日期選擇器</h1>
+        
+        <div class="space-y-4">
+            <div class="space-y-2">
+                <label class="text-sm font-medium text-text-primary">開始日期</label>
+                <button id="startDateBtn" class="w-full border border-gray-300 rounded-lg py-3 px-4 text-left hover:border-primary transition-colors">
+                    <span class="text-text-tertiary" id="startDateText">選擇開始日期</span>
+                </button>
+            </div>
+            
+            <div class="space-y-2">
+                <label class="text-sm font-medium text-text-primary">結束日期</label>
+                <button id="endDateBtn" class="w-full border border-gray-300 rounded-lg py-3 px-4 text-left hover:border-primary transition-colors">
+                    <span class="text-text-tertiary" id="endDateText">選擇結束日期</span>
+                </button>
+            </div>
+            
+            <div class="space-y-2">
+                <label class="text-sm font-medium text-text-primary">生日</label>
+                <button id="birthdayBtn" class="w-full border border-gray-300 rounded-lg py-3 px-4 text-left hover:border-primary transition-colors">
+                    <span class="text-text-tertiary" id="birthdayText">選擇生日</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="mt-8 p-4 bg-white rounded-lg shadow">
+            <h3 class="font-semibold text-text-primary mb-2">組件說明：</h3>
+            <ul class="text-sm text-text-secondary space-y-1">
+                <li>• 原生JavaScript日期選擇器</li>
+                <li>• 支援最小/最大日期限制</li>
+                <li>• 支援快速月份/年份切換</li>
+                <li>• 今日日期特殊標記</li>
+                <li>• 支援鍵盤導航</li>
+                <li>• 移動端友好的觸控體驗</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 日期選擇器模態框 -->
+    <div id="datePickerModal" class="fixed inset-0 z-50 hidden">
+        <!-- 背景遮罩 -->
+        <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300"></div>
+        
+        <!-- 模態框內容 -->
+        <div class="fixed inset-0 flex items-center justify-center p-4">
+            <div class="modal-enter bg-white rounded-xl shadow-level-4 w-full max-w-sm mx-auto">
+                <!-- 模態框頭部 -->
+                <div class="p-4 border-b border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <h3 id="pickerTitle" class="text-lg font-semibold text-text-primary">
+                            選擇日期
+                        </h3>
+                        <button id="closeDatePicker" class="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors">
+                            <svg class="w-5 h-5 text-text-tertiary" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- 月份/年份導航 -->
+                    <div class="mt-4 flex items-center justify-between">
+                        <button id="prevMonth" class="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors">
+                            <svg class="w-5 h-5 text-text-secondary" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                        
+                        <button id="monthYearButton" class="month-year-selector px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">
+                            <span id="currentMonthYear" class="font-medium text-text-primary">2024年8月</span>
+                        </button>
+                        
+                        <button id="nextMonth" class="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors">
+                            <svg class="w-5 h-5 text-text-secondary" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 日曆內容 -->
+                <div class="p-4">
+                    <!-- 星期標題 -->
+                    <div class="grid grid-cols-7 gap-1 mb-2">
+                        <div class="text-center text-sm font-medium text-text-tertiary py-2">日</div>
+                        <div class="text-center text-sm font-medium text-text-tertiary py-2">一</div>
+                        <div class="text-center text-sm font-medium text-text-tertiary py-2">二</div>
+                        <div class="text-center text-sm font-medium text-text-tertiary py-2">三</div>
+                        <div class="text-center text-sm font-medium text-text-tertiary py-2">四</div>
+                        <div class="text-center text-sm font-medium text-text-tertiary py-2">五</div>
+                        <div class="text-center text-sm font-medium text-text-tertiary py-2">六</div>
+                    </div>
+                    
+                    <!-- 日期格子 -->
+                    <div id="calendarGrid" class="grid grid-cols-7 gap-1">
+                        <!-- 動態生成日期 -->
+                    </div>
+                </div>
+                
+                <!-- 快速選擇 -->
+                <div class="px-4 pb-2">
+                    <div class="flex gap-2 overflow-x-auto">
+                        <button class="quick-select-btn whitespace-nowrap px-3 py-1 text-sm bg-gray-100 text-text-secondary rounded-lg hover:bg-gray-200 transition-colors" data-days="0">
+                            今天
+                        </button>
+                        <button class="quick-select-btn whitespace-nowrap px-3 py-1 text-sm bg-gray-100 text-text-secondary rounded-lg hover:bg-gray-200 transition-colors" data-days="1">
+                            明天
+                        </button>
+                        <button class="quick-select-btn whitespace-nowrap px-3 py-1 text-sm bg-gray-100 text-text-secondary rounded-lg hover:bg-gray-200 transition-colors" data-days="7">
+                            下週
+                        </button>
+                        <button class="quick-select-btn whitespace-nowrap px-3 py-1 text-sm bg-gray-100 text-text-secondary rounded-lg hover:bg-gray-200 transition-colors" data-days="30">
+                            下個月
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 模態框按鈕 -->
+                <div class="p-4 pt-2 flex gap-3">
+                    <button id="cancelDateBtn" class="flex-1 bg-gray-100 text-text-secondary py-3 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors">
+                        取消
+                    </button>
+                    <button id="confirmDateBtn" class="flex-1 bg-primary text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                        確認
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 日期選擇器類
+        class DatePicker {
+            constructor() {
+                this.modal = document.getElementById('datePickerModal');
+                this.pickerTitle = document.getElementById('pickerTitle');
+                this.currentMonthYear = document.getElementById('currentMonthYear');
+                this.calendarGrid = document.getElementById('calendarGrid');
+                this.cancelBtn = document.getElementById('cancelDateBtn');
+                this.confirmBtn = document.getElementById('confirmDateBtn');
+                this.closeBtn = document.getElementById('closeDatePicker');
+                this.prevMonthBtn = document.getElementById('prevMonth');
+                this.nextMonthBtn = document.getElementById('nextMonth');
+                this.backdrop = this.modal.querySelector('.modal-backdrop');
+                this.modalContent = this.modal.querySelector('.modal-enter');
+                
+                this.currentDate = new Date();
+                this.selectedDate = null;
+                this.minDate = null;
+                this.maxDate = null;
+                this.onConfirm = null;
+                this.onCancel = null;
+                
+                this.monthNames = [
+                    '1月', '2月', '3月', '4月', '5月', '6月',
+                    '7月', '8月', '9月', '10月', '11月', '12月'
+                ];
+                
+                this.init();
+            }
+            
+            init() {
+                // ESC鍵關閉
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && !this.modal.classList.contains('hidden')) {
+                        this.hide();
+                    }
+                });
+                
+                // 背景點擊關閉
+                this.backdrop.addEventListener('click', () => {
+                    this.hide();
+                });
+                
+                // 關閉按鈕
+                this.closeBtn.addEventListener('click', () => {
+                    this.hide();
+                });
+                
+                // 取消按鈕
+                this.cancelBtn.addEventListener('click', () => {
+                    this.hide();
+                    if (this.onCancel) this.onCancel();
+                });
+                
+                // 確認按鈕
+                this.confirmBtn.addEventListener('click', () => {
+                    if (this.selectedDate) {
+                        this.hide();
+                        if (this.onConfirm) this.onConfirm(this.selectedDate);
+                    }
+                });
+                
+                // 月份導航
+                this.prevMonthBtn.addEventListener('click', () => {
+                    this.currentDate.setMonth(this.currentDate.getMonth() - 1);
+                    this.renderCalendar();
+                });
+                
+                this.nextMonthBtn.addEventListener('click', () => {
+                    this.currentDate.setMonth(this.currentDate.getMonth() + 1);
+                    this.renderCalendar();
+                });
+                
+                // 快速選擇按鈕
+                document.querySelectorAll('.quick-select-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const days = parseInt(btn.dataset.days);
+                        const quickDate = new Date();
+                        quickDate.setDate(quickDate.getDate() + days);
+                        
+                        if (this.isDateValid(quickDate)) {
+                            this.selectDate(quickDate);
+                        }
+                    });
+                });
+            }
+            
+            show(options = {}) {
+                const {
+                    title = '選擇日期',
+                    selectedDate = null,
+                    minDate = null,
+                    maxDate = null,
+                    onConfirm = null,
+                    onCancel = null
+                } = options;
+                
+                // 設置選項
+                this.pickerTitle.textContent = title;
+                this.selectedDate = selectedDate ? new Date(selectedDate) : null;
+                this.minDate = minDate ? new Date(minDate) : null;
+                this.maxDate = maxDate ? new Date(maxDate) : null;
+                this.onConfirm = onConfirm;
+                this.onCancel = onCancel;
+                
+                // 設置當前顯示月份
+                if (this.selectedDate) {
+                    this.currentDate = new Date(this.selectedDate);
+                } else {
+                    this.currentDate = new Date();
+                }
+                
+                // 渲染日曆
+                this.renderCalendar();
+                
+                // 防止背景滾動
+                document.body.classList.add('no-scroll');
+                
+                // 顯示模態框
+                this.modal.classList.remove('hidden');
+                this.modalContent.classList.remove('modal-exit');
+                this.modalContent.classList.add('modal-enter');
+            }
+            
+            hide() {
+                this.modalContent.classList.remove('modal-enter');
+                this.modalContent.classList.add('modal-exit');
+                
+                setTimeout(() => {
+                    this.modal.classList.add('hidden');
+                    document.body.classList.remove('no-scroll');
+                }, 200);
+            }
+            
+            renderCalendar() {
+                // 更新月份年份顯示
+                this.currentMonthYear.textContent = 
+                    `${this.currentDate.getFullYear()}年${this.monthNames[this.currentDate.getMonth()]}`;
+                
+                // 清空日曆格子
+                this.calendarGrid.innerHTML = '';
+                
+                // 獲取當月第一天和最後一天
+                const firstDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), 1);
+                const lastDay = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 0);
+                
+                // 獲取當月第一天是星期幾 (0-6，0是星期日)
+                const firstDayOfWeek = firstDay.getDay();
+                
+                // 添加上個月的日期
+                for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+                    const prevDate = new Date(firstDay);
+                    prevDate.setDate(prevDate.getDate() - (i + 1));
+                    this.createDateCell(prevDate, true);
+                }
+                
+                // 添加當月的日期
+                for (let date = 1; date <= lastDay.getDate(); date++) {
+                    const currentDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), date);
+                    this.createDateCell(currentDate, false);
+                }
+                
+                // 添加下個月的日期（補齊6週）
+                const totalCells = this.calendarGrid.children.length;
+                const remainingCells = 42 - totalCells; // 6週 × 7天
+                for (let i = 1; i <= remainingCells; i++) {
+                    const nextDate = new Date(lastDay);
+                    nextDate.setDate(nextDate.getDate() + i);
+                    this.createDateCell(nextDate, true);
+                }
+            }
+            
+            createDateCell(date, isOtherMonth) {
+                const cell = document.createElement('div');
+                cell.className = 'date-cell';
+                cell.textContent = date.getDate();
+                
+                // 添加樣式類
+                if (isOtherMonth) {
+                    cell.classList.add('other-month');
+                }
+                
+                // 檢查是否是今天
+                const today = new Date();
+                if (this.isSameDate(date, today)) {
+                    cell.classList.add('today');
+                }
+                
+                // 檢查是否被選中
+                if (this.selectedDate && this.isSameDate(date, this.selectedDate)) {
+                    cell.classList.add('selected');
+                }
+                
+                // 檢查是否可選
+                if (!this.isDateValid(date)) {
+                    cell.classList.add('disabled');
+                } else {
+                    cell.addEventListener('click', () => {
+                        this.selectDate(date);
+                    });
+                }
+                
+                this.calendarGrid.appendChild(cell);
+            }
+            
+            selectDate(date) {
+                // 移除之前的選中狀態
+                document.querySelectorAll('.date-cell.selected').forEach(cell => {
+                    cell.classList.remove('selected');
+                });
+                
+                // 設置新的選中日期
+                this.selectedDate = new Date(date);
+                
+                // 添加選中樣式到對應的格子
+                document.querySelectorAll('.date-cell').forEach(cell => {
+                    if (parseInt(cell.textContent) === date.getDate()) {
+                        const cellDate = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth(), parseInt(cell.textContent));
+                        if (this.isSameDate(cellDate, date)) {
+                            cell.classList.add('selected');
+                        }
+                    }
+                });
+            }
+            
+            isDateValid(date) {
+                if (this.minDate && date < this.minDate) {
+                    return false;
+                }
+                if (this.maxDate && date > this.maxDate) {
+                    return false;
+                }
+                return true;
+            }
+            
+            isSameDate(date1, date2) {
+                return date1.getFullYear() === date2.getFullYear() &&
+                       date1.getMonth() === date2.getMonth() &&
+                       date1.getDate() === date2.getDate();
+            }
+            
+            formatDate(date) {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+        }
+        
+        // 初始化日期選擇器
+        const datePicker = new DatePicker();
+        
+        // 示例用法
+        document.getElementById('startDateBtn').addEventListener('click', () => {
+            datePicker.show({
+                title: '選擇開始日期',
+                minDate: new Date(), // 不能選擇過去的日期
+                onConfirm: (date) => {
+                    document.getElementById('startDateText').textContent = datePicker.formatDate(date);
+                    document.getElementById('startDateText').classList.remove('text-text-tertiary');
+                    document.getElementById('startDateText').classList.add('text-text-primary');
+                }
+            });
+        });
+        
+        document.getElementById('endDateBtn').addEventListener('click', () => {
+            const oneWeekLater = new Date();
+            oneWeekLater.setDate(oneWeekLater.getDate() + 7);
+            
+            datePicker.show({
+                title: '選擇結束日期',
+                minDate: new Date(),
+                selectedDate: oneWeekLater,
+                onConfirm: (date) => {
+                    document.getElementById('endDateText').textContent = datePicker.formatDate(date);
+                    document.getElementById('endDateText').classList.remove('text-text-tertiary');
+                    document.getElementById('endDateText').classList.add('text-text-primary');
+                }
+            });
+        });
+        
+        document.getElementById('birthdayBtn').addEventListener('click', () => {
+            const maxDate = new Date();
+            maxDate.setFullYear(maxDate.getFullYear() - 18); // 最少18歲
+            
+            const minDate = new Date();
+            minDate.setFullYear(minDate.getFullYear() - 80); // 最多80歲
+            
+            datePicker.show({
+                title: '選擇生日',
+                minDate: minDate,
+                maxDate: maxDate,
+                onConfirm: (date) => {
+                    document.getElementById('birthdayText').textContent = datePicker.formatDate(date);
+                    document.getElementById('birthdayText').classList.remove('text-text-tertiary');
+                    document.getElementById('birthdayText').classList.add('text-text-primary');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

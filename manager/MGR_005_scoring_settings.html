@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>評分機制設定 - SalesAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE',
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'gray-dark': '#1A1A1A',
+                        'gray-medium': '#666666',
+                        'gray-light': '#999999',
+                        'gray-bg': '#F8F9FA',
+                        'gray-border': '#E5E5E5'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-bg h-full">
+    <div class="min-h-full pb-20">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-border">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center">
+                        <button onclick="history.back()" class="p-2 text-gray-medium hover:text-gray-dark transition-colors mr-2">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <h1 class="text-xl font-bold text-gray-dark">評分設定</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <!-- Notification Icon -->
+                        <div class="relative">
+                            <button onclick="location.href='../common/COMMON_008_notification_center.html'" class="p-2 text-gray-medium hover:text-gray-dark transition-colors">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-4-4V6a5 5 0 00-10 0v7l-4 4h5m4 0a2 2 0 01-4 0"></path>
+                                </svg>
+                            </button>
+                            <span class="absolute -top-1 -right-1 bg-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                        </div>
+                        <!-- Settings Icon -->
+                        <button onclick="location.href='../common/COMMON_001_settings.html'" class="p-2 text-gray-medium hover:text-gray-dark transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <!-- Current Template -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border mb-6">
+                <h2 class="text-lg font-bold text-gray-dark mb-4">當前使用模板</h2>
+                <div class="bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/20 rounded-lg p-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="font-semibold text-gray-dark flex items-center">
+                                <svg class="w-5 h-5 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                保險業銷售模板
+                            </h3>
+                            <p class="text-sm text-gray-medium mt-1">最後更新: 2024/08/14</p>
+                            <p class="text-sm text-gray-medium">基於SPIN銷售法與七大需求分析的專業評分模板</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors">
+                                切換模板
+                            </button>
+                            <a href="MGR_006_template_editor.html" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+                                編輯
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Template Info -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border mb-6">
+                <h2 class="text-lg font-bold text-gray-dark mb-4 flex items-center">
+                    <svg class="w-5 h-5 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    模板說明
+                </h2>
+                <p class="text-gray-medium leading-relaxed">
+                    此評分系統整合了國際認可的SPIN銷售方法論與保險業特有的七大客戶需求分析框架，提供全方位的銷售能力評估。系統分為三大維度，每個維度滿分100分，透過多元化的題型設計，能夠客觀且精準地評估銷售人員的專業表現。
+                </p>
+            </div>
+
+            <!-- Dimension Tabs -->
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-border mb-6">
+                <div class="flex gap-2">
+                    <button class="dimension-tab flex-1 px-4 py-3 bg-primary text-white rounded-lg font-medium transition-colors relative" onclick="switchDimension(1)" data-dimension="1">
+                        <span class="block">流程遵守度</span>
+                        <span class="absolute top-1 right-1 bg-white/20 text-white px-2 py-0.5 rounded text-xs">100分</span>
+                    </button>
+                    <button class="dimension-tab flex-1 px-4 py-3 bg-gray-100 text-gray-dark rounded-lg font-medium hover:bg-gray-200 transition-colors relative" onclick="switchDimension(2)" data-dimension="2">
+                        <span class="block">銷售技巧</span>
+                        <span class="absolute top-1 right-1 bg-gray-500/20 text-gray-600 px-2 py-0.5 rounded text-xs">100分</span>
+                    </button>
+                    <button class="dimension-tab flex-1 px-4 py-3 bg-gray-100 text-gray-dark rounded-lg font-medium hover:bg-gray-200 transition-colors relative" onclick="switchDimension(3)" data-dimension="3">
+                        <span class="block">溝通能力</span>
+                        <span class="absolute top-1 right-1 bg-gray-500/20 text-gray-600 px-2 py-0.5 rounded text-xs">100分</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dimension Content -->
+            <div class="dimension-content-wrapper">
+                <!-- 維度一：流程遵守度 -->
+                <div class="dimension-content active" id="dimension-1">
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border mb-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-success/10 rounded-full flex items-center justify-center mr-3">
+                                    <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h2 class="text-xl font-bold text-gray-dark">流程遵守度 (Process Adherence)</h2>
+                                    <p class="text-sm text-gray-medium">評估銷售人員是否遵循標準銷售流程，包含開場、需求診斷、方案呈現、成交等各個環節的執行情況</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-6 p-4 bg-gray-50 rounded-lg mb-6">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-primary">5</div>
+                                <div class="text-sm text-gray-medium">評估題目</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-primary">100</div>
+                                <div class="text-sm text-gray-medium">總分</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-lg font-bold text-primary">SPIN+七大</div>
+                                <div class="text-sm text-gray-medium">理論基礎</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <!-- 題目1.1 -->
+                        <div class="question-card bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                            <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-100">
+                                <div class="flex items-center gap-3">
+                                    <span class="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium">題目 1.1</span>
+                                    <h3 class="text-lg font-bold text-gray-dark">銷售流程完整性</h3>
+                                </div>
+                                <div class="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg">
+                                    <span class="text-sm text-gray-medium">配分：</span>
+                                    <span class="text-lg font-bold text-primary">30分</span>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+                                <div>
+                                    <div class="text-xs text-gray-500 uppercase tracking-wide mb-1">題型</div>
+                                    <div class="text-sm font-medium text-gray-dark">多重選擇</div>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-gray-500 uppercase tracking-wide mb-1">理論依據</div>
+                                    <div class="text-sm font-medium text-gray-dark">SPIN完整流程</div>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-gray-500 uppercase tracking-wide mb-1">設計邏輯</div>
+                                    <div class="text-sm font-medium text-gray-dark">SPIN銷售法強調循序漸進的問題引導</div>
+                                </div>
+                            </div>
+                            
+                            <div class="scoring-section">
+                                <h4 class="text-base font-bold text-gray-dark mb-4 flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                    評分項目
+                                </h4>
+                                <div class="space-y-3">
+                                    <div class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-5 h-5 border border-gray-300 rounded"></div>
+                                            <span class="text-sm text-gray-dark">開場建立關係與暖場（SPIN-開場階段）</span>
+                                        </div>
+                                        <span class="bg-primary/10 text-primary px-2 py-1 rounded text-sm font-medium">5分</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-5 h-5 border border-gray-300 rounded"></div>
+                                            <span class="text-sm text-gray-dark">情境問題探詢（Situation Questions）</span>
+                                        </div>
+                                        <span class="bg-primary/10 text-primary px-2 py-1 rounded text-sm font-medium">5分</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-5 h-5 border border-gray-300 rounded"></div>
+                                            <span class="text-sm text-gray-dark">問題診斷與痛點發掘（Problem Questions）</span>
+                                        </div>
+                                        <span class="bg-primary/10 text-primary px-2 py-1 rounded text-sm font-medium">5分</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-5 h-5 border border-gray-300 rounded"></div>
+                                            <span class="text-sm text-gray-dark">影響擴大與需求確認（Implication Questions）</span>
+                                        </div>
+                                        <span class="bg-primary/10 text-primary px-2 py-1 rounded text-sm font-medium">5分</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-5 h-5 border border-gray-300 rounded"></div>
+                                            <span class="text-sm text-gray-dark">解決方案價值呈現（Need-payoff Questions）</span>
+                                        </div>
+                                        <span class="bg-primary/10 text-primary px-2 py-1 rounded text-sm font-medium">5分</span>
+                                    </div>
+                                    <div class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-lg">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-5 h-5 border border-gray-300 rounded"></div>
+                                            <span class="text-sm text-gray-dark">成交詢問與後續規劃（SPIN-成交階段）</span>
+                                        </div>
+                                        <span class="bg-primary/10 text-primary px-2 py-1 rounded text-sm font-medium">5分</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4 p-4 bg-primary/5 border border-primary/20 rounded-lg">
+                                    <h5 class="text-sm font-bold text-primary mb-2">AI判斷標準</h5>
+                                    <ul class="space-y-1 text-sm text-gray-600">
+                                        <li class="flex items-start gap-2">
+                                            <div class="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                                            <span>開場：出現問候語、自我介紹、暖場話題</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <div class="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                                            <span>情境問題：包含"目前"、"現在"、"多久"等詞彙的問句≥2個</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <div class="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                                            <span>問題診斷：包含"困難"、"問題"、"困擾"等詞彙的問句≥2個</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <div class="w-1.5 h-1.5 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                                            <span>影響擴大：包含"如果...會"、"影響"、"導致"等詞彙的問句≥1個</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 題目1.2 -->
+                        <div class="question-card bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                            <div class="flex items-center justify-between mb-4 pb-4 border-b border-gray-100">
+                                <div class="flex items-center gap-3">
+                                    <span class="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium">題目 1.2</span>
+                                    <h3 class="text-lg font-bold text-gray-dark">需求診斷流程</h3>
+                                </div>
+                                <div class="flex items-center gap-2 bg-gray-100 px-3 py-2 rounded-lg">
+                                    <span class="text-sm text-gray-medium">配分：</span>
+                                    <span class="text-lg font-bold text-primary">25分</span>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6 p-4 bg-gray-50 rounded-lg">
+                                <div>
+                                    <div class="text-xs text-gray-500 uppercase tracking-wide mb-1">題型</div>
+                                    <div class="text-sm font-medium text-gray-dark">範圍題（0-5分×5項）</div>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-gray-500 uppercase tracking-wide mb-1">理論依據</div>
+                                    <div class="text-sm font-medium text-gray-dark">七大需求分析</div>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-gray-500 uppercase tracking-wide mb-1">設計邏輯</div>
+                                    <div class="text-sm font-medium text-gray-dark">七大需求是判斷客戶是否為合格潛在客戶的關鍵指標</div>
+                                </div>
+                            </div>
+                            
+                            <button class="toggle-details w-full flex items-center justify-between p-3 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors" onclick="toggleQuestionDetails(this)">
+                                <span class="font-medium text-gray-dark">查看詳細評分標準</span>
+                                <svg class="w-5 h-5 text-gray-500 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </button>
+                            
+                            <div class="question-details hidden mt-4 p-4 bg-gray-50 rounded-lg">
+                                <h4 class="font-bold text-gray-dark mb-3">評分項目（每項0-5分）</h4>
+                                <div class="space-y-4">
+                                    <div class="bg-white p-4 rounded-lg border">
+                                        <h5 class="font-medium text-gray-dark mb-2">1. 購買急迫性評估</h5>
+                                        <div class="space-y-2 text-sm">
+                                            <div class="flex justify-between"><span>立即需求+具體時間點+觸發事件</span><span class="font-bold text-primary">5分</span></div>
+                                            <div class="flex justify-between"><span>有具體事件驅動如"小孩出生"、"房貸"</span><span class="font-bold text-primary">4分</span></div>
+                                            <div class="flex justify-between"><span>明確時間如"這個月"、"下季度"</span><span class="font-bold text-primary">3分</span></div>
+                                            <div class="flex justify-between"><span>提到"最近考慮"、"打算"</span><span class="font-bold text-primary">2分</span></div>
+                                            <div class="flex justify-between"><span>提到"以後"、"有空再說"</span><span class="font-bold text-primary">1分</span></div>
+                                            <div class="flex justify-between"><span>無任何時間相關討論</span><span class="font-bold text-primary">0分</span></div>
+                                        </div>
+                                    </div>
+                                    <div class="bg-white p-4 rounded-lg border">
+                                        <h5 class="font-medium text-gray-dark mb-2">2. 期待現況落差診斷</h5>
+                                        <div class="space-y-2 text-sm">
+                                            <div class="flex justify-between"><span>完整分析+量化+影響說明</span><span class="font-bold text-primary">5分</span></div>
+                                            <div class="flex justify-between"><span>量化缺口金額或比例</span><span class="font-bold text-primary">4分</span></div>
+                                            <div class="flex justify-between"><span>明確3個以上保障缺口</span><span class="font-bold text-primary">3分</span></div>
+                                            <div class="flex justify-between"><span>指出1-2個具體不足</span><span class="font-bold text-primary">2分</span></div>
+                                            <div class="flex justify-between"><span>籠統提到"保障不夠"</span><span class="font-bold text-primary">1分</span></div>
+                                            <div class="flex justify-between"><span>未討論保障需求</span><span class="font-bold text-primary">0分</span></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="mt-4 text-sm text-gray-500 italic">* 另外3項（背景財務狀況、決策者識別、未來期望擔心）評分標準類似</p>
+                            </div>
+                        </div>
+                        
+                        <!-- 簡化顯示其餘題目 -->
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="p-4 bg-gray-50 rounded-lg text-center">
+                                    <div class="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium inline-block mb-2">題目 1.3</div>
+                                    <h4 class="font-medium text-gray-dark text-sm">時間節奏掌控</h4>
+                                    <p class="text-xs text-gray-medium mt-1">配分：20分</p>
+                                </div>
+                                <div class="p-4 bg-gray-50 rounded-lg text-center">
+                                    <div class="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium inline-block mb-2">題目 1.4</div>
+                                    <h4 class="font-medium text-gray-dark text-sm">合規與文件管理</h4>
+                                    <p class="text-xs text-gray-medium mt-1">配分：15分</p>
+                                </div>
+                                <div class="p-4 bg-gray-50 rounded-lg text-center">
+                                    <div class="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium inline-block mb-2">題目 1.5</div>
+                                    <h4 class="font-medium text-gray-dark text-sm">SPIN問句運用檢核</h4>
+                                    <p class="text-xs text-gray-medium mt-1">配分：10分</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 維度二：銷售技巧 -->
+                <div class="dimension-content" id="dimension-2" style="display: none;">
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border mb-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                                    <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h2 class="text-xl font-bold text-gray-dark">銷售技巧 (Sales Skills)</h2>
+                                    <p class="text-sm text-gray-medium">評估銷售人員的專業銷售技巧，包含需求分析、方案設計、異議處理、成交促進等核心能力</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-6 p-4 bg-gray-50 rounded-lg mb-6">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-primary">6</div>
+                                <div class="text-sm text-gray-medium">評估題目</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-primary">100</div>
+                                <div class="text-sm text-gray-medium">總分</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-lg font-bold text-primary">SPIN+七大</div>
+                                <div class="text-sm text-gray-medium">理論基礎</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-border text-center">
+                            <div class="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium inline-block mb-2">題目 2.1</div>
+                            <h4 class="font-medium text-gray-dark text-sm mb-1">需求診斷深度</h4>
+                            <p class="text-xs text-gray-medium mb-2">評估每個SPIN階段的執行品質</p>
+                            <p class="text-xs text-primary font-medium">配分：25分</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-border text-center">
+                            <div class="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium inline-block mb-2">題目 2.2</div>
+                            <h4 class="font-medium text-gray-dark text-sm mb-1">七大需求掌握度</h4>
+                            <p class="text-xs text-gray-medium mb-2">評估銷售員對七大需求的掌握精準度</p>
+                            <p class="text-xs text-primary font-medium">配分：25分</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-border text-center">
+                            <div class="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium inline-block mb-2">題目 2.3</div>
+                            <h4 class="font-medium text-gray-dark text-sm mb-1">解決方案設計</h4>
+                            <p class="text-xs text-gray-medium mb-2">好的解決方案必須精準回應客戶需求</p>
+                            <p class="text-xs text-primary font-medium">配分：20分</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-border text-center">
+                            <div class="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium inline-block mb-2">題目 2.4</div>
+                            <h4 class="font-medium text-gray-dark text-sm mb-1">異議處理技巧</h4>
+                            <p class="text-xs text-gray-medium mb-2">有效應對客戶疑慮和反對意見</p>
+                            <p class="text-xs text-primary font-medium">配分：15分</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-border text-center">
+                            <div class="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium inline-block mb-2">題目 2.5</div>
+                            <h4 class="font-medium text-gray-dark text-sm mb-1">成交技巧運用</h4>
+                            <p class="text-xs text-gray-medium mb-2">適時適當的成交促進技巧</p>
+                            <p class="text-xs text-primary font-medium">配分：10分</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-border text-center">
+                            <div class="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium inline-block mb-2">題目 2.6</div>
+                            <h4 class="font-medium text-gray-dark text-sm mb-1">跟進服務承諾</h4>
+                            <p class="text-xs text-gray-medium mb-2">後續服務和跟進計劃的明確度</p>
+                            <p class="text-xs text-primary font-medium">配分：5分</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 維度三：溝通能力 -->
+                <div class="dimension-content" id="dimension-3" style="display: none;">
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border mb-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-warning/10 rounded-full flex items-center justify-center mr-3">
+                                    <svg class="w-5 h-5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h2 class="text-xl font-bold text-gray-dark">溝通能力 (Communication)</h2>
+                                    <p class="text-sm text-gray-medium">評估銷售人員的溝通表達能力，包含提問技巧、傾聽能力、同理心展現、說服力等軟實力</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-6 p-4 bg-gray-50 rounded-lg mb-6">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-primary">6</div>
+                                <div class="text-sm text-gray-medium">評估題目</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-primary">100</div>
+                                <div class="text-sm text-gray-medium">總分</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-lg font-bold text-primary">SPIN+七大</div>
+                                <div class="text-sm text-gray-medium">理論基礎</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-border text-center">
+                            <div class="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium inline-block mb-2">題目 3.1</div>
+                            <h4 class="font-medium text-gray-dark text-sm mb-1">SPIN問句質量分析</h4>
+                            <p class="text-xs text-gray-medium mb-2">透過AI語意分析自動識別問句類型和品質</p>
+                            <p class="text-xs text-primary font-medium">配分：25分</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-border text-center">
+                            <div class="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium inline-block mb-2">題目 3.2</div>
+                            <h4 class="font-medium text-gray-dark text-sm mb-1">語言精準度</h4>
+                            <p class="text-xs text-gray-medium mb-2">表達清晰準確度評估</p>
+                            <p class="text-xs text-primary font-medium">配分：20分</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-border text-center">
+                            <div class="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium inline-block mb-2">題目 3.3</div>
+                            <h4 class="font-medium text-gray-dark text-sm mb-1">情感共鳴能力</h4>
+                            <p class="text-xs text-gray-medium mb-2">與客戶建立情感連結</p>
+                            <p class="text-xs text-primary font-medium">配分：20分</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-border text-center">
+                            <div class="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium inline-block mb-2">題目 3.4</div>
+                            <h4 class="font-medium text-gray-dark text-sm mb-1">傾聽技巧</h4>
+                            <p class="text-xs text-gray-medium mb-2">主動聆聽與回應能力</p>
+                            <p class="text-xs text-primary font-medium">配分：15分</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-border text-center">
+                            <div class="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium inline-block mb-2">題目 3.5</div>
+                            <h4 class="font-medium text-gray-dark text-sm mb-1">說服力表現</h4>
+                            <p class="text-xs text-gray-medium mb-2">邏輯性與感染力的綜合表現</p>
+                            <p class="text-xs text-primary font-medium">配分：12分</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-border text-center">
+                            <div class="bg-primary text-white px-3 py-1 rounded-full text-sm font-medium inline-block mb-2">題目 3.6</div>
+                            <h4 class="font-medium text-gray-dark text-sm mb-1">專業形象塑造</h4>
+                            <p class="text-xs text-gray-medium mb-2">專業度與可信度的展現</p>
+                            <p class="text-xs text-primary font-medium">配分：8分</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Parameters -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border mt-6">
+                <h3 class="text-lg font-bold text-gray-dark mb-4">AI 參數設定</h3>
+                
+                <!-- Sensitivity Settings -->
+                <div class="mb-6">
+                    <h4 class="font-medium text-gray-dark mb-3">語意識別敏感度</h4>
+                    <div class="flex items-center space-x-6">
+                        <label class="flex items-center">
+                            <input type="radio" name="sensitivity" value="loose" class="w-4 h-4 text-primary">
+                            <span class="ml-2 text-sm text-gray-dark">寬鬆</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="sensitivity" value="standard" checked class="w-4 h-4 text-primary">
+                            <span class="ml-2 text-sm text-gray-dark">標準</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="sensitivity" value="strict" class="w-4 h-4 text-primary">
+                            <span class="ml-2 text-sm text-gray-dark">嚴格</span>
+                        </label>
+                    </div>
+                    <p class="text-xs text-gray-medium mt-2">允許同義詞和相近表達的識別程度</p>
+                </div>
+
+                <!-- Time Tolerance -->
+                <div class="mb-6">
+                    <h4 class="font-medium text-gray-dark mb-3">時間容忍度</h4>
+                    <div class="flex items-center space-x-4">
+                        <span class="text-sm text-gray-medium">SPIN階段時間偏差:</span>
+                        <input type="range" min="5" max="20" value="10" class="flex-1" id="timeTolerance">
+                        <span class="text-sm text-gray-dark font-medium">±<span id="toleranceValue">10</span>%</span>
+                    </div>
+                </div>
+
+                <!-- Depth Standards -->
+                <div class="mb-6">
+                    <h4 class="font-medium text-gray-dark mb-3">深度判斷標準</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-medium mb-1">最少回應字數</label>
+                            <input type="number" value="15" class="w-full px-3 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-medium mb-1">細節要求程度</label>
+                            <select class="w-full px-3 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                                <option>標準</option>
+                                <option>高</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Industry Vocabulary -->
+                <div class="mb-6">
+                    <h4 class="font-medium text-gray-dark mb-3">行業特殊詞彙</h4>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <div class="flex flex-wrap gap-2 mb-3">
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded text-sm">保單</span>
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded text-sm">要保人</span>
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded text-sm">被保險人</span>
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded text-sm">受益人</span>
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded text-sm">保額</span>
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded text-sm">保費</span>
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded text-sm">躉繳</span>
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded text-sm">期繳</span>
+                            <span class="px-2 py-1 bg-primary/10 text-primary rounded text-sm">增額壽險</span>
+                        </div>
+                        <button class="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors">
+                            管理詞彙庫
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Scoring Rules -->
+                <div class="mb-6">
+                    <h4 class="font-medium text-gray-dark mb-3">評分規則客製化</h4>
+                    
+                    <!-- Bonus Points -->
+                    <div class="mb-4">
+                        <h5 class="font-medium text-gray-dark mb-2">加分項目</h5>
+                        <div class="space-y-2">
+                            <label class="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
+                                <div class="flex items-center">
+                                    <input type="checkbox" checked class="w-4 h-4 text-success">
+                                    <span class="ml-2 text-sm text-gray-dark">客戶主動詢問</span>
+                                </div>
+                                <span class="text-sm font-medium text-success">+5分</span>
+                            </label>
+                            <label class="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-lg">
+                                <div class="flex items-center">
+                                    <input type="checkbox" checked class="w-4 h-4 text-success">
+                                    <span class="ml-2 text-sm text-gray-dark">轉介紹意願</span>
+                                </div>
+                                <span class="text-sm font-medium text-success">+3分</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Penalty Points -->
+                    <div>
+                        <h5 class="font-medium text-gray-dark mb-2">扣分項目</h5>
+                        <div class="space-y-2">
+                            <label class="flex items-center justify-between p-3 bg-red-50 border border-red-200 rounded-lg">
+                                <div class="flex items-center">
+                                    <input type="checkbox" checked class="w-4 h-4 text-error">
+                                    <span class="ml-2 text-sm text-gray-dark">不當承諾</span>
+                                </div>
+                                <span class="text-sm font-medium text-error">-10分</span>
+                            </label>
+                            <label class="flex items-center justify-between p-3 bg-red-50 border border-red-200 rounded-lg">
+                                <div class="flex items-center">
+                                    <input type="checkbox" checked class="w-4 h-4 text-error">
+                                    <span class="ml-2 text-sm text-gray-dark">誤導說明</span>
+                                </div>
+                                <span class="text-sm font-medium text-error">-15分</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center mt-8">
+                <button class="px-8 py-3 bg-secondary text-white rounded-xl font-semibold hover:bg-secondary/90 transition-colors">
+                    AI參數調整
+                </button>
+                <button class="px-8 py-3 bg-primary text-white rounded-xl font-semibold hover:bg-primary/90 transition-colors">
+                    創建新模板
+                </button>
+            </div>
+        </main>
+
+        <!-- Bottom Tab Bar -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-border">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex justify-around py-2">
+                    <!-- Dashboard -->
+                    <a href="MGR_001_dashboard.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        <span class="text-xs mt-1">儀表板</span>
+                    </a>
+                    <!-- Team -->
+                    <a href="MGR_002_team_list.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <span class="text-xs mt-1">團隊</span>
+                    </a>
+                    <!-- Scoring Settings -->
+                    <a href="MGR_005_scoring_settings.html" class="flex flex-col items-center py-2 px-3 text-primary">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                        </svg>
+                        <span class="text-xs mt-1 font-medium">評分設定</span>
+                    </a>
+                    <!-- Ask AI -->
+                    <a href="MGR_012_ask_ai.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                        <span class="text-xs mt-1">Ask AI</span>
+                    </a>
+                    <!-- Notifications -->
+                    <a href="#" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors relative">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-4-4V6a5 5 0 00-10 0v7l-4 4h5m4 0a2 2 0 01-4 0"></path>
+                        </svg>
+                        <span class="text-xs mt-1">通知</span>
+                        <span class="absolute -top-1 -right-1 bg-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        // Time tolerance slider
+        const toleranceSlider = document.getElementById('timeTolerance');
+        const toleranceValue = document.getElementById('toleranceValue');
+        
+        if (toleranceSlider && toleranceValue) {
+            toleranceSlider.addEventListener('input', function() {
+                toleranceValue.textContent = this.value;
+            });
+        }
+        
+        // Dimension switching functionality
+        let currentDimension = 1;
+        
+        function switchDimension(dim) {
+            currentDimension = dim;
+            
+            // Update tab styles
+            const tabs = document.querySelectorAll('.dimension-tab');
+            tabs.forEach((tab, index) => {
+                const dimension = parseInt(tab.dataset.dimension);
+                if (dimension === dim) {
+                    tab.classList.remove('bg-gray-100', 'text-gray-dark', 'hover:bg-gray-200');
+                    tab.classList.add('bg-primary', 'text-white');
+                    // Update badge color
+                    const badge = tab.querySelector('span.absolute');
+                    if (badge) {
+                        badge.classList.remove('bg-gray-500/20', 'text-gray-600');
+                        badge.classList.add('bg-white/20', 'text-white');
+                    }
+                } else {
+                    tab.classList.remove('bg-primary', 'text-white');
+                    tab.classList.add('bg-gray-100', 'text-gray-dark', 'hover:bg-gray-200');
+                    // Update badge color
+                    const badge = tab.querySelector('span.absolute');
+                    if (badge) {
+                        badge.classList.remove('bg-white/20', 'text-white');
+                        badge.classList.add('bg-gray-500/20', 'text-gray-600');
+                    }
+                }
+            });
+            
+            // Update content display
+            const contents = document.querySelectorAll('.dimension-content');
+            contents.forEach((content, index) => {
+                const contentId = content.id;
+                if (contentId === `dimension-${dim}`) {
+                    content.style.display = 'block';
+                    content.classList.add('active');
+                } else {
+                    content.style.display = 'none';
+                    content.classList.remove('active');
+                }
+            });
+        }
+        
+        // Toggle question details
+        function toggleQuestionDetails(button) {
+            const details = button.nextElementSibling;
+            const arrow = button.querySelector('svg');
+            
+            if (details.classList.contains('hidden')) {
+                details.classList.remove('hidden');
+                arrow.style.transform = 'rotate(180deg)';
+                button.querySelector('span').textContent = '隱藏詳細評分標準';
+            } else {
+                details.classList.add('hidden');
+                arrow.style.transform = 'rotate(0deg)';
+                button.querySelector('span').textContent = '查看詳細評分標準';
+            }
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            switchDimension(1); // Start with dimension 1
+        });
+    </script>
+</body>
+</html>

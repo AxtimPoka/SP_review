@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>通知設定 - SalesAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE', 
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'gray-dark': '#1A1A1A',
+                        'gray-medium': '#666666',
+                        'gray-light': '#999999',
+                        'background-gray': '#F8F9FA',
+                        'border-gray': '#E5E5E5'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        .toggle-switch {
+            appearance: none;
+            width: 52px;
+            height: 28px;
+            background: #E5E5E5;
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-switch:checked {
+            background: #2E5BFF;
+        }
+        
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .toggle-switch:checked::before {
+            transform: translateX(24px);
+        }
+        
+        .time-picker {
+            appearance: none;
+            background: transparent;
+            border: 1px solid #E5E5E5;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 14px;
+            color: #666666;
+            cursor: pointer;
+        }
+        
+        .time-picker:focus {
+            outline: none;
+            border-color: #2E5BFF;
+            box-shadow: 0 0 0 3px rgba(46, 91, 255, 0.1);
+        }
+        
+        .notification-item {
+            transition: all 0.2s ease;
+        }
+        
+        .notification-item:hover {
+            background-color: #F8F9FA;
+        }
+        
+        .icon-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .custom-schedule {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .custom-schedule.active {
+            max-height: 200px;
+        }
+    </style>
+</head>
+<body class="bg-background-gray min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center">
+                <button onclick="goBack()" class="mr-4 p-2 -ml-2 rounded-lg hover:bg-gray-100 transition-colors">
+                    <svg class="w-6 h-6 text-gray-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <h1 class="text-xl font-semibold text-gray-dark">通知設定</h1>
+            </div>
+            <button onclick="saveSettings()" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                儲存
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-md mx-auto px-4 pb-safe">
+        <!-- Master Switch -->
+        <div class="bg-white rounded-xl p-6 mb-4 mt-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="icon-container bg-blue-100 mr-4">
+                        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19H6.5A2.5 2.5 0 014 16.5v-9A2.5 2.5 0 016.5 5h11A2.5 2.5 0 0120 7.5v3.5"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-dark">推播通知</h3>
+                        <p class="text-sm text-gray-medium">開啟或關閉所有推播通知</p>
+                    </div>
+                </div>
+                <input type="checkbox" id="masterToggle" class="toggle-switch" checked onchange="toggleMasterNotification()">
+            </div>
+        </div>
+
+        <!-- Notification Categories -->
+        <div id="notificationSettings" class="space-y-4">
+            <!-- Analysis Notifications -->
+            <div class="bg-white rounded-xl overflow-hidden">
+                <div class="px-4 py-3 border-b border-border-gray">
+                    <h3 class="text-sm font-medium text-gray-medium">分析與報告</h3>
+                </div>
+                
+                <div class="divide-y divide-border-gray">
+                    <div class="notification-item px-4 py-4 flex items-center justify-between">
+                        <div class="flex items-center flex-1">
+                            <div class="icon-container bg-green-100 mr-3">
+                                <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-base font-medium text-gray-dark">錄音分析完成</h4>
+                                <p class="text-sm text-gray-light">當 AI 完成錄音分析時通知我</p>
+                            </div>
+                        </div>
+                        <input type="checkbox" class="toggle-switch notification-toggle" data-category="analysis_complete" checked>
+                    </div>
+
+                    <div class="notification-item px-4 py-4 flex items-center justify-between">
+                        <div class="flex items-center flex-1">
+                            <div class="icon-container bg-purple-100 mr-3">
+                                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-base font-medium text-gray-dark">績效報告</h4>
+                                <p class="text-sm text-gray-light">週報、月報等績效報告發佈通知</p>
+                            </div>
+                        </div>
+                        <input type="checkbox" class="toggle-switch notification-toggle" data-category="performance_report" checked>
+                    </div>
+
+                    <div class="notification-item px-4 py-4 flex items-center justify-between">
+                        <div class="flex items-center flex-1">
+                            <div class="icon-container bg-yellow-100 mr-3">
+                                <svg class="w-5 h-5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-base font-medium text-gray-dark">改善建議</h4>
+                                <p class="text-sm text-gray-light">AI 提供的改善建議和學習機會</p>
+                            </div>
+                        </div>
+                        <input type="checkbox" class="toggle-switch notification-toggle" data-category="improvement_tips">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team & Collaboration -->
+            <div class="bg-white rounded-xl overflow-hidden">
+                <div class="px-4 py-3 border-b border-border-gray">
+                    <h3 class="text-sm font-medium text-gray-medium">團隊協作</h3>
+                </div>
+                
+                <div class="divide-y divide-border-gray">
+                    <div class="notification-item px-4 py-4 flex items-center justify-between">
+                        <div class="flex items-center flex-1">
+                            <div class="icon-container bg-blue-100 mr-3">
+                                <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-base font-medium text-gray-dark">新成功案例</h4>
+                                <p class="text-sm text-gray-light">團隊成員分享新的成功案例</p>
+                            </div>
+                        </div>
+                        <input type="checkbox" class="toggle-switch notification-toggle" data-category="success_case" checked>
+                    </div>
+
+                    <div class="notification-item px-4 py-4 flex items-center justify-between">
+                        <div class="flex items-center flex-1">
+                            <div class="icon-container bg-orange-100 mr-3">
+                                <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-base font-medium text-gray-dark">主管訊息</h4>
+                                <p class="text-sm text-gray-light">來自主管的重要訊息和通知</p>
+                            </div>
+                        </div>
+                        <input type="checkbox" class="toggle-switch notification-toggle" data-category="manager_message" checked>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Updates -->
+            <div class="bg-white rounded-xl overflow-hidden">
+                <div class="px-4 py-3 border-b border-border-gray">
+                    <h3 class="text-sm font-medium text-gray-medium">系統更新</h3>
+                </div>
+                
+                <div class="divide-y divide-border-gray">
+                    <div class="notification-item px-4 py-4 flex items-center justify-between">
+                        <div class="flex items-center flex-1">
+                            <div class="icon-container bg-gray-100 mr-3">
+                                <svg class="w-5 h-5 text-gray-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-base font-medium text-gray-dark">功能更新</h4>
+                                <p class="text-sm text-gray-light">新功能發佈和系統更新通知</p>
+                            </div>
+                        </div>
+                        <input type="checkbox" class="toggle-switch notification-toggle" data-category="feature_update">
+                    </div>
+
+                    <div class="notification-item px-4 py-4 flex items-center justify-between">
+                        <div class="flex items-center flex-1">
+                            <div class="icon-container bg-red-100 mr-3">
+                                <svg class="w-5 h-5 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-base font-medium text-gray-dark">系統維護</h4>
+                                <p class="text-sm text-gray-light">計劃性維護和服務中斷通知</p>
+                            </div>
+                        </div>
+                        <input type="checkbox" class="toggle-switch notification-toggle" data-category="system_maintenance" checked>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Do Not Disturb -->
+            <div class="bg-white rounded-xl overflow-hidden">
+                <div class="px-4 py-3 border-b border-border-gray">
+                    <h3 class="text-sm font-medium text-gray-medium">勿擾模式</h3>
+                </div>
+                
+                <div class="p-4">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex-1">
+                            <h4 class="text-base font-medium text-gray-dark">啟用勿擾模式</h4>
+                            <p class="text-sm text-gray-light">在設定時間內暫停所有通知</p>
+                        </div>
+                        <input type="checkbox" id="dndToggle" class="toggle-switch" onchange="toggleDndMode()">
+                    </div>
+
+                    <div id="dndSettings" class="custom-schedule space-y-4">
+                        <div class="border-t border-border-gray pt-4">
+                            <label class="block text-sm font-medium text-gray-dark mb-3">時間設定</label>
+                            
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <input type="radio" id="dnd_work" name="dnd_schedule" value="work" class="mr-3">
+                                    <label for="dnd_work" class="text-sm text-gray-medium">工作時間 (09:00 - 18:00)</label>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <input type="radio" id="dnd_sleep" name="dnd_schedule" value="sleep" class="mr-3" checked>
+                                    <label for="dnd_sleep" class="text-sm text-gray-medium">睡眠時間 (22:00 - 08:00)</label>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <input type="radio" id="dnd_custom" name="dnd_schedule" value="custom" class="mr-3">
+                                    <label for="dnd_custom" class="text-sm text-gray-medium">自訂時間</label>
+                                </div>
+                                
+                                <div id="customTimeRange" class="ml-6 hidden">
+                                    <div class="flex items-center space-x-3">
+                                        <div>
+                                            <label class="block text-xs text-gray-light mb-1">開始時間</label>
+                                            <input type="time" class="time-picker" value="22:00">
+                                        </div>
+                                        <span class="text-gray-light">至</span>
+                                        <div>
+                                            <label class="block text-xs text-gray-light mb-1">結束時間</label>
+                                            <input type="time" class="time-picker" value="08:00">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification Preview -->
+            <div class="bg-white rounded-xl p-6 mb-8">
+                <h3 class="text-lg font-semibold text-gray-dark mb-4">通知預覽</h3>
+                <div class="bg-gray-50 rounded-lg p-4 border-l-4 border-primary">
+                    <div class="flex items-start">
+                        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+                            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-sm font-semibold text-gray-dark">錄音分析完成</h4>
+                            <p class="text-sm text-gray-medium mt-1">您的錄音「王先生_壽險諮詢」分析已完成，整體評分 8.2 分。</p>
+                            <p class="text-xs text-gray-light mt-2">2 分鐘前</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <button onclick="testNotification()" class="w-full mt-4 px-4 py-2 border border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-white transition-colors">
+                    發送測試通知
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function goBack() {
+            // 智能返回邏輯：根據用戶角色返回對應的首頁
+            const userRole = localStorage.getItem('userRole');
+            
+            if (userRole === 'manager') {
+                window.location.href = '../manager/MGR_001_dashboard.html';
+            } else if (userRole === 'sales') {
+                window.location.href = '../sales/SALES_001_home.html';
+            } else {
+                // 預設使用瀏覽器歷史記錄返回
+                window.history.back();
+            }
+        }
+
+        function toggleMasterNotification() {
+            const masterToggle = document.getElementById('masterToggle');
+            const notificationSettings = document.getElementById('notificationSettings');
+            const allToggles = document.querySelectorAll('.notification-toggle');
+            
+            if (masterToggle.checked) {
+                notificationSettings.classList.remove('opacity-50', 'pointer-events-none');
+            } else {
+                notificationSettings.classList.add('opacity-50', 'pointer-events-none');
+                // 關閉所有子項目通知
+                allToggles.forEach(toggle => {
+                    toggle.checked = false;
+                });
+            }
+        }
+
+        function toggleDndMode() {
+            const dndToggle = document.getElementById('dndToggle');
+            const dndSettings = document.getElementById('dndSettings');
+            
+            if (dndToggle.checked) {
+                dndSettings.classList.add('active');
+            } else {
+                dndSettings.classList.remove('active');
+            }
+        }
+
+        function saveSettings() {
+            // 收集所有設定
+            const settings = {
+                masterEnabled: document.getElementById('masterToggle').checked,
+                dndEnabled: document.getElementById('dndToggle').checked,
+                notifications: {}
+            };
+
+            // 收集各類通知設定
+            document.querySelectorAll('.notification-toggle').forEach(toggle => {
+                settings.notifications[toggle.dataset.category] = toggle.checked;
+            });
+
+            // 收集勿擾模式設定
+            if (settings.dndEnabled) {
+                const selectedSchedule = document.querySelector('input[name="dnd_schedule"]:checked');
+                settings.dndSchedule = selectedSchedule ? selectedSchedule.value : 'sleep';
+            }
+
+            // 模擬儲存
+            showToast('通知設定已儲存', 'success');
+            
+            // 存到 localStorage 供其他頁面使用
+            localStorage.setItem('notificationSettings', JSON.stringify(settings));
+        }
+
+        function testNotification() {
+            // 檢查瀏覽器是否支援通知
+            if (!('Notification' in window)) {
+                showToast('此瀏覽器不支援通知功能', 'error');
+                return;
+            }
+
+            // 請求通知權限
+            if (Notification.permission === 'granted') {
+                sendTestNotification();
+            } else if (Notification.permission !== 'denied') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        sendTestNotification();
+                    } else {
+                        showToast('請允許通知權限以接收推播', 'warning');
+                    }
+                });
+            } else {
+                showToast('通知權限已被拒絕，請在瀏覽器設定中開啟', 'warning');
+            }
+        }
+
+        function sendTestNotification() {
+            const notification = new Notification('SalesAI 測試通知', {
+                body: '這是一個測試通知，您已成功設定推播通知功能。',
+                icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjQiIGhlaWdodD0iNjQiIHZpZXdCb3g9IjAgMCA2NCA2NCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiByeD0iMTIiIGZpbGw9IiMyRTVCRkYiLz4KPHN2ZyB4PSIxNiIgeT0iMTYiIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjIiPgo8cGF0aCBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGQ9Ik05IDEybDIgMiA0LTRtNiAyYTkgOSAwIDExLTE4IDAgOSA5IDAgMDE4IDB6Ii8+Cjwvc3ZnPgo8L3N2Zz4K',
+                tag: 'test-notification',
+                requireInteraction: false
+            });
+
+            notification.onclick = function() {
+                window.focus();
+                notification.close();
+            };
+
+            // 自動關閉通知
+            setTimeout(() => {
+                notification.close();
+            }, 5000);
+
+            showToast('測試通知已發送', 'success');
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-20 left-1/2 transform -translate-x-1/2 px-4 py-3 rounded-lg text-white z-50 transition-all duration-300 ${
+                type === 'success' ? 'bg-success' : 
+                type === 'error' ? 'bg-error' : 
+                type === 'warning' ? 'bg-warning' : 'bg-primary'
+            }`;
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        // 載入已儲存的設定
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('notificationSettings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                
+                // 設定主開關
+                document.getElementById('masterToggle').checked = settings.masterEnabled !== false;
+                
+                // 設定勿擾模式
+                if (settings.dndEnabled) {
+                    document.getElementById('dndToggle').checked = true;
+                    toggleDndMode();
+                    
+                    // 設定勿擾時間
+                    if (settings.dndSchedule) {
+                        const scheduleRadio = document.querySelector(`input[name="dnd_schedule"][value="${settings.dndSchedule}"]`);
+                        if (scheduleRadio) {
+                            scheduleRadio.checked = true;
+                        }
+                    }
+                }
+                
+                // 設定各類通知
+                if (settings.notifications) {
+                    Object.keys(settings.notifications).forEach(category => {
+                        const toggle = document.querySelector(`[data-category="${category}"]`);
+                        if (toggle) {
+                            toggle.checked = settings.notifications[category];
+                        }
+                    });
+                }
+                
+                // 更新主開關狀態
+                toggleMasterNotification();
+            }
+        }
+
+        // 頁面載入時初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSettings();
+            
+            // 監聽自訂時間選項
+            document.getElementById('dnd_custom').addEventListener('change', function() {
+                const customTimeRange = document.getElementById('customTimeRange');
+                if (this.checked) {
+                    customTimeRange.classList.remove('hidden');
+                } else {
+                    customTimeRange.classList.add('hidden');
+                }
+            });
+            
+            // 監聽其他勿擾模式選項
+            document.querySelectorAll('input[name="dnd_schedule"]:not(#dnd_custom)').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    document.getElementById('customTimeRange').classList.add('hidden');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

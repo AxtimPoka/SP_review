@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalesAI - 角色選擇</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE',
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'dark-gray': '#1A1A1A',
+                        'medium-gray': '#666666',
+                        'light-gray': '#999999',
+                        'bg-gray': '#F8F9FA',
+                        'border-gray': '#E5E5E5'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'Roboto', 'sans-serif']
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.4s ease-out',
+                        'pulse-hover': 'pulseHover 0.3s ease-in-out',
+                        'scale-in': 'scaleIn 0.4s ease-out',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+        
+        @keyframes pulseHover {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        @keyframes scaleIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .role-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+        }
+        
+        .role-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(46, 91, 255, 0.15);
+        }
+        
+        .role-card:active {
+            transform: translateY(-4px) scale(1.01);
+        }
+        
+        .role-card.selected {
+            border-color: #2E5BFF;
+            box-shadow: 0 0 0 3px rgba(46, 91, 255, 0.1);
+        }
+        
+        .feature-item {
+            transition: all 0.2s ease;
+        }
+        
+        .feature-item:hover {
+            transform: translateX(4px);
+        }
+        
+        .btn-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(46, 91, 255, 0.25);
+        }
+        
+        .btn-active:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-bg-gray min-h-screen font-sans">
+    <!-- Loading overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-white bg-opacity-90 flex items-center justify-center z-50 hidden">
+        <div class="flex flex-col items-center space-y-4">
+            <div class="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            <p class="text-medium-gray text-sm">正在進入系統...</p>
+        </div>
+    </div>
+
+    <!-- Main container -->
+    <div class="min-h-screen flex items-center justify-center px-4 py-8">
+        <div class="w-full max-w-md mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-8 animate-fade-in">
+                <div class="w-16 h-16 bg-primary rounded-2xl mx-auto mb-4 flex items-center justify-center">
+                    <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M16 4C16.55 4 17 4.45 17 5V9C17 9.55 16.55 10 16 10C15.45 10 15 9.55 15 9V6.41L9 12.41V15C9 15.55 8.55 16 8 16C7.45 16 7 15.55 7 15V11C7 10.45 7.45 10 8 10C8.55 10 9 10.45 9 11V10.59L15 4.59V5C15 4.45 15.45 4 16 4ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z"/>
+                    </svg>
+                </div>
+                <h1 class="text-2xl font-bold text-dark-gray mb-2">選擇您的角色</h1>
+                <p class="text-medium-gray text-sm leading-6">
+                    您擁有多重權限，請選擇要使用的身份
+                </p>
+            </div>
+
+            <!-- User info -->
+            <div class="bg-white rounded-xl p-4 mb-6 shadow-sm animate-slide-up">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center">
+                        <span class="text-white font-semibold text-sm" id="userInitial">王</span>
+                    </div>
+                    <div>
+                        <p class="font-semibold text-dark-gray" id="userName">王小明</p>
+                        <p class="text-sm text-medium-gray" id="userEmail">wang@company.com</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role selection cards -->
+            <div class="space-y-4 mb-6">
+                <!-- Manager Role -->
+                <div id="managerRole" class="role-card bg-white rounded-xl p-6 border-2 border-border-gray cursor-pointer animate-scale-in" 
+                     style="animation-delay: 0.1s">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-primary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-primary" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 5.9C13.16 5.9 14.1 6.84 14.1 8S13.16 10.1 12 10.1 9.9 9.16 9.9 8 10.84 5.9 12 5.9M12 14.9C14.97 14.9 18.1 16.36 18.1 17.1V18.1H5.9V17.1C5.9 16.36 9.03 14.9 12 14.9M12 4C10.06 4 8.5 5.56 8.5 7.5S10.06 11 12 11 15.5 9.44 15.5 7.5 13.94 4 12 4M12 13C9.33 13 4 14.34 4 17V20H20V17C20 14.34 14.67 13 12 13Z"/>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-lg font-bold text-dark-gray">銷售主管</h3>
+                                <div class="w-5 h-5 border-2 border-border-gray rounded-full transition-all duration-200" id="managerRadio">
+                                    <div class="w-full h-full rounded-full bg-primary scale-0 transition-transform duration-200" id="managerRadioInner"></div>
+                                </div>
+                            </div>
+                            <p class="text-sm text-medium-gray mb-4">
+                                管理團隊績效、設定評分機制、查看完整數據分析
+                            </p>
+                            <div class="space-y-2">
+                                <div class="feature-item flex items-center text-xs text-medium-gray">
+                                    <svg class="w-3 h-3 mr-2 text-success" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59Z"/>
+                                    </svg>
+                                    團隊績效儀表板
+                                </div>
+                                <div class="feature-item flex items-center text-xs text-medium-gray">
+                                    <svg class="w-3 h-3 mr-2 text-success" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59Z"/>
+                                    </svg>
+                                    評分機制設定
+                                </div>
+                                <div class="feature-item flex items-center text-xs text-medium-gray">
+                                    <svg class="w-3 h-3 mr-2 text-success" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59Z"/>
+                                    </svg>
+                                    團隊成員管理
+                                </div>
+                                <div class="feature-item flex items-center text-xs text-medium-gray">
+                                    <svg class="w-3 h-3 mr-2 text-success" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59Z"/>
+                                    </svg>
+                                    AI 智能查詢
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sales Role -->
+                <div id="salesRole" class="role-card bg-white rounded-xl p-6 border-2 border-border-gray cursor-pointer animate-scale-in" 
+                     style="animation-delay: 0.2s">
+                    <div class="flex items-start space-x-4">
+                        <div class="w-12 h-12 bg-secondary bg-opacity-10 rounded-xl flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-secondary" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 5.5C14.8 5.5 14.6 5.4 14.5 5.1L13.5 3.5C13.1 2.8 12.2 2.5 11.5 3L6 5.6C5.7 5.8 5.5 6.1 5.5 6.5V9.5C5.5 10.1 6 10.5 6.5 10.5S7.5 10.1 7.5 9.5V7.8L9.5 7V15H7.5V11.5C7.5 10.9 7.1 10.5 6.5 10.5S5.5 10.9 5.5 11.5V16.5C5.5 17.3 6.2 18 7 18H17C17.8 18 18.5 17.3 18.5 16.5V9H21Z"/>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-lg font-bold text-dark-gray">銷售人員</h3>
+                                <div class="w-5 h-5 border-2 border-border-gray rounded-full transition-all duration-200" id="salesRadio">
+                                    <div class="w-full h-full rounded-full bg-secondary scale-0 transition-transform duration-200" id="salesRadioInner"></div>
+                                </div>
+                            </div>
+                            <p class="text-sm text-medium-gray mb-4">
+                                錄音分析、客戶管理、學習成功案例、提升銷售技巧
+                            </p>
+                            <div class="space-y-2">
+                                <div class="feature-item flex items-center text-xs text-medium-gray">
+                                    <svg class="w-3 h-3 mr-2 text-success" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59Z"/>
+                                    </svg>
+                                    錄音與 AI 分析
+                                </div>
+                                <div class="feature-item flex items-center text-xs text-medium-gray">
+                                    <svg class="w-3 h-3 mr-2 text-success" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59Z"/>
+                                    </svg>
+                                    客戶與 CASE 管理
+                                </div>
+                                <div class="feature-item flex items-center text-xs text-medium-gray">
+                                    <svg class="w-3 h-3 mr-2 text-success" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59Z"/>
+                                    </svg>
+                                    成功案例學習
+                                </div>
+                                <div class="feature-item flex items-center text-xs text-medium-gray">
+                                    <svg class="w-3 h-3 mr-2 text-success" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M9 16.17L4.83 12L3.41 13.41L9 19L21 7L19.59 5.59Z"/>
+                                    </svg>
+                                    個人績效追蹤
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Continue button -->
+            <button
+                id="continueButton"
+                class="btn-hover btn-active w-full bg-primary text-white py-3 px-4 rounded-lg text-base font-medium hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                disabled
+            >
+                <span id="continueButtonText">選擇角色後繼續</span>
+                <div id="continueButtonSpinner" class="hidden inline-flex items-center">
+                    <svg class="w-4 h-4 mr-2 animate-spin" fill="currentColor" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12C4 16.418 7.582 20 12 20V18C8.686 18 6 15.314 6 12H4Z"></path>
+                    </svg>
+                    正在進入...
+                </div>
+            </button>
+
+            <!-- Additional options -->
+            <div class="mt-6 text-center space-y-3">
+                <p class="text-xs text-light-gray">
+                    您可以稍後在設定中切換角色
+                </p>
+                <a href="login.html" class="block text-medium-gray text-sm hover:text-primary transition-colors duration-200">
+                    重新登入
+                </a>
+            </div>
+
+            <!-- Role info tooltip -->
+            <div id="roleTooltip" class="fixed bg-dark-gray text-white text-xs rounded-lg py-2 px-3 pointer-events-none opacity-0 transition-opacity duration-200 z-50" style="transform: translate(-50%, -100%); margin-top: -8px;">
+                <div class="absolute top-full left-1/2 transform -translate-x-1/2">
+                    <div class="w-2 h-2 bg-dark-gray transform rotate-45"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        class RoleSelectionPage {
+            constructor() {
+                this.managerRole = document.getElementById('managerRole');
+                this.salesRole = document.getElementById('salesRole');
+                this.continueButton = document.getElementById('continueButton');
+                this.loadingOverlay = document.getElementById('loadingOverlay');
+                this.selectedRole = null;
+
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.loadUserInfo();
+                this.checkPreviousSelection();
+            }
+
+            bindEvents() {
+                // Role selection
+                this.managerRole.addEventListener('click', () => this.selectRole('manager'));
+                this.salesRole.addEventListener('click', () => this.selectRole('sales'));
+                
+                // Continue button
+                this.continueButton.addEventListener('click', () => this.handleContinue());
+
+                // Touch device enhancements
+                if ('ontouchstart' in window) {
+                    this.addTouchEnhancements();
+                }
+
+                // Keyboard navigation
+                document.addEventListener('keydown', (e) => this.handleKeyNavigation(e));
+            }
+
+            addTouchEnhancements() {
+                const roleCards = [this.managerRole, this.salesRole];
+                roleCards.forEach(card => {
+                    card.addEventListener('touchstart', () => {
+                        card.style.transform = 'scale(0.98)';
+                    });
+                    card.addEventListener('touchend', () => {
+                        setTimeout(() => {
+                            if (!card.classList.contains('selected')) {
+                                card.style.transform = '';
+                            }
+                        }, 100);
+                    });
+                });
+
+                // Button touch feedback
+                this.continueButton.addEventListener('touchstart', () => {
+                    if (!this.continueButton.disabled) {
+                        this.continueButton.style.transform = 'scale(0.98)';
+                    }
+                });
+                this.continueButton.addEventListener('touchend', () => {
+                    setTimeout(() => {
+                        this.continueButton.style.transform = '';
+                    }, 100);
+                });
+            }
+
+            handleKeyNavigation(e) {
+                switch(e.key) {
+                    case '1':
+                        this.selectRole('manager');
+                        break;
+                    case '2':
+                        this.selectRole('sales');
+                        break;
+                    case 'Enter':
+                        if (this.selectedRole && !this.continueButton.disabled) {
+                            this.handleContinue();
+                        }
+                        break;
+                    case 'Escape':
+                        window.history.back();
+                        break;
+                }
+            }
+
+            selectRole(role) {
+                // Clear previous selection
+                this.managerRole.classList.remove('selected');
+                this.salesRole.classList.remove('selected');
+                document.getElementById('managerRadio').style.borderColor = '#E5E5E5';
+                document.getElementById('salesRadio').style.borderColor = '#E5E5E5';
+                document.getElementById('managerRadioInner').style.transform = 'scale(0)';
+                document.getElementById('salesRadioInner').style.transform = 'scale(0)';
+
+                // Apply new selection
+                this.selectedRole = role;
+                
+                if (role === 'manager') {
+                    this.managerRole.classList.add('selected');
+                    document.getElementById('managerRadio').style.borderColor = '#2E5BFF';
+                    document.getElementById('managerRadioInner').style.transform = 'scale(0.6)';
+                    this.updateContinueButton('進入主管儀表板', '#2E5BFF');
+                } else {
+                    this.salesRole.classList.add('selected');
+                    document.getElementById('salesRadio').style.borderColor = '#00C6AE';
+                    document.getElementById('salesRadioInner').style.transform = 'scale(0.6)';
+                    this.updateContinueButton('進入銷售人員介面', '#00C6AE');
+                }
+
+                this.continueButton.disabled = false;
+                
+                // Add selection animation
+                this.addSelectionFeedback(role);
+                
+                // Save selection for later use
+                this.saveRoleSelection(role);
+            }
+
+            updateContinueButton(text, color) {
+                const buttonText = document.getElementById('continueButtonText');
+                buttonText.textContent = text;
+                
+                // Temporarily change button color to match selection
+                this.continueButton.style.backgroundColor = color;
+                setTimeout(() => {
+                    this.continueButton.style.backgroundColor = '';
+                }, 2000);
+            }
+
+            addSelectionFeedback(role) {
+                const selectedCard = role === 'manager' ? this.managerRole : this.salesRole;
+                
+                // Add pulse animation
+                selectedCard.classList.add('animate-pulse-hover');
+                setTimeout(() => {
+                    selectedCard.classList.remove('animate-pulse-hover');
+                }, 300);
+
+                // Haptic feedback for mobile devices
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(50);
+                }
+            }
+
+            async handleContinue() {
+                if (!this.selectedRole) return;
+
+                this.setLoadingState(true);
+                
+                try {
+                    // Simulate role switching delay
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    
+                    // Save role preference
+                    this.saveRolePreference(this.selectedRole);
+                    
+                    // Navigate based on role
+                    this.navigateToRoleDashboard(this.selectedRole);
+                    
+                } catch (error) {
+                    console.error('Error switching role:', error);
+                    alert('切換角色時發生錯誤，請稍後再試');
+                } finally {
+                    this.setLoadingState(false);
+                }
+            }
+
+            navigateToRoleDashboard(role) {
+                if (role === 'manager') {
+                    // Navigate to manager dashboard
+                    window.location.href = 'manager/MGR_001_dashboard.html';
+                } else {
+                    // Navigate to sales home page  
+                    window.location.href = 'sales/SALES_001_home.html';
+                }
+            }
+
+            setLoadingState(loading) {
+                const buttonText = document.getElementById('continueButtonText');
+                const buttonSpinner = document.getElementById('continueButtonSpinner');
+                
+                if (loading) {
+                    buttonText.classList.add('hidden');
+                    buttonSpinner.classList.remove('hidden');
+                    this.continueButton.disabled = true;
+                    this.loadingOverlay.classList.remove('hidden');
+                    
+                    // Disable role selection during loading
+                    this.managerRole.style.pointerEvents = 'none';
+                    this.salesRole.style.pointerEvents = 'none';
+                } else {
+                    buttonText.classList.remove('hidden');
+                    buttonSpinner.classList.add('hidden');
+                    this.continueButton.disabled = !this.selectedRole;
+                    this.loadingOverlay.classList.add('hidden');
+                    
+                    // Re-enable role selection
+                    this.managerRole.style.pointerEvents = '';
+                    this.salesRole.style.pointerEvents = '';
+                }
+            }
+
+            loadUserInfo() {
+                // In a real application, this would load from authentication context
+                const userInfo = {
+                    name: '王小明',
+                    email: 'wang@company.com',
+                    initial: '王'
+                };
+
+                document.getElementById('userName').textContent = userInfo.name;
+                document.getElementById('userEmail').textContent = userInfo.email;
+                document.getElementById('userInitial').textContent = userInfo.initial;
+            }
+
+            saveRoleSelection(role) {
+                // Save current selection to session storage for immediate use
+                if (typeof(Storage) !== "undefined") {
+                    sessionStorage.setItem('salesai_current_role_selection', role);
+                }
+            }
+
+            saveRolePreference(role) {
+                // Save role preference to local storage for future sessions
+                if (typeof(Storage) !== "undefined") {
+                    localStorage.setItem('salesai_preferred_role', role);
+                    localStorage.setItem('salesai_last_role_switch', Date.now().toString());
+                }
+            }
+
+            checkPreviousSelection() {
+                // Check if there's a previously saved preference
+                if (typeof(Storage) !== "undefined") {
+                    const savedRole = sessionStorage.getItem('salesai_current_role_selection') ||
+                                    localStorage.getItem('salesai_preferred_role');
+                    
+                    if (savedRole && (savedRole === 'manager' || savedRole === 'sales')) {
+                        // Auto-select the previous role after a short delay
+                        setTimeout(() => {
+                            this.selectRole(savedRole);
+                        }, 500);
+                    }
+                }
+            }
+        }
+
+        // Initialize the role selection page when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new RoleSelectionPage();
+        });
+
+        // Add accessibility enhancements
+        document.addEventListener('focus', (e) => {
+            if (e.target.classList.contains('role-card')) {
+                e.target.style.outline = '3px solid rgba(46, 91, 255, 0.3)';
+            }
+        });
+
+        document.addEventListener('blur', (e) => {
+            if (e.target.classList.contains('role-card')) {
+                e.target.style.outline = 'none';
+            }
+        });
+
+        // Preload dashboard assets based on hover
+        let preloadTimer;
+        document.getElementById('managerRole').addEventListener('mouseenter', () => {
+            clearTimeout(preloadTimer);
+            preloadTimer = setTimeout(() => {
+                // Preload manager dashboard resources
+                console.log('Preloading manager dashboard assets...');
+            }, 500);
+        });
+
+        document.getElementById('salesRole').addEventListener('mouseenter', () => {
+            clearTimeout(preloadTimer);
+            preloadTimer = setTimeout(() => {
+                // Preload sales dashboard resources
+                console.log('Preloading sales dashboard assets...');
+            }, 500);
+        });
+    </script>
+</body>
+</html>

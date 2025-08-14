@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>評分模板編輯 - SalesAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE',
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'gray-dark': '#1A1A1A',
+                        'gray-medium': '#666666',
+                        'gray-light': '#999999',
+                        'gray-bg': '#F8F9FA',
+                        'gray-border': '#E5E5E5'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-bg h-full">
+    <div class="min-h-full pb-20">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-border">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center">
+                        <button onclick="history.back()" class="p-2 text-gray-medium hover:text-gray-dark transition-colors mr-2">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <h1 class="text-xl font-bold text-gray-dark">評分模板編輯</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <!-- Notification Icon -->
+                        <div class="relative">
+                            <button onclick="location.href='../common/COMMON_008_notification_center.html'" class="p-2 text-gray-medium hover:text-gray-dark transition-colors">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-4-4V6a5 5 0 00-10 0v7l-4 4h5m4 0a2 2 0 01-4 0"></path>
+                                </svg>
+                            </button>
+                            <span class="absolute -top-1 -right-1 bg-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                        </div>
+                        <!-- Settings Icon -->
+                        <button onclick="location.href='../common/COMMON_001_settings.html'" class="p-2 text-gray-medium hover:text-gray-dark transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </button>
+                        <button id="saveTemplate" class="flex items-center px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                            儲存
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <!-- Template Info -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border mb-6">
+                <h2 class="text-lg font-bold text-gray-dark mb-4">模板資訊</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="templateName" class="block text-sm font-medium text-gray-dark mb-2">模板名稱</label>
+                        <input type="text" id="templateName" value="通用銷售模板" class="w-full px-4 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors">
+                    </div>
+                    <div>
+                        <label for="templateDesc" class="block text-sm font-medium text-gray-dark mb-2">模板描述</label>
+                        <input type="text" id="templateDesc" value="適用於保險銷售的標準評分模板" class="w-full px-4 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dimension Weights -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border mb-6">
+                <h2 class="text-lg font-bold text-gray-dark mb-4">維度權重設定</h2>
+                <p class="text-sm text-gray-medium mb-4">三個維度權重總和必須為100%</p>
+                
+                <div class="space-y-4">
+                    <!-- Process Adherence Weight -->
+                    <div class="flex items-center justify-between p-4 bg-success/5 border border-success/20 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-success/10 rounded-full flex items-center justify-center mr-3">
+                                <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <span class="font-medium text-gray-dark">流程遵守度</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <input type="range" min="10" max="60" value="33" class="w-24" id="processWeight">
+                            <span class="text-lg font-bold text-success w-12 text-center" id="processValue">33%</span>
+                        </div>
+                    </div>
+
+                    <!-- Sales Skills Weight -->
+                    <div class="flex items-center justify-between p-4 bg-primary/5 border border-primary/20 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center mr-3">
+                                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                                </svg>
+                            </div>
+                            <span class="font-medium text-gray-dark">銷售技巧</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <input type="range" min="10" max="60" value="33" class="w-24" id="skillsWeight">
+                            <span class="text-lg font-bold text-primary w-12 text-center" id="skillsValue">33%</span>
+                        </div>
+                    </div>
+
+                    <!-- Communication Weight -->
+                    <div class="flex items-center justify-between p-4 bg-warning/5 border border-warning/20 rounded-lg">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-warning/10 rounded-full flex items-center justify-center mr-3">
+                                <svg class="w-4 h-4 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path>
+                                </svg>
+                            </div>
+                            <span class="font-medium text-gray-dark">溝通能力</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <input type="range" min="10" max="60" value="34" class="w-24" id="commWeight">
+                            <span class="text-lg font-bold text-warning w-12 text-center" id="commValue">34%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm text-gray-medium">權重總和:</span>
+                        <span class="font-bold text-lg" id="totalWeight">100%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scoring Criteria -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-bold text-gray-dark">評分標準配置</h2>
+                    <button class="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors">
+                        + 新增標準
+                    </button>
+                </div>
+                
+                <!-- Process Adherence Criteria -->
+                <div class="mb-6">
+                    <h3 class="font-semibold text-gray-dark mb-3 flex items-center">
+                        <div class="w-6 h-6 bg-success/10 rounded-full flex items-center justify-center mr-2">
+                            <div class="w-3 h-3 bg-success rounded-full"></div>
+                        </div>
+                        流程遵守度評分標準
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <div class="p-4 border border-gray-border rounded-lg">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-medium text-gray-dark">SPIN流程完整性</h4>
+                                <span class="text-sm text-gray-medium">30分</span>
+                            </div>
+                            <p class="text-sm text-gray-medium mb-3">評估Situation, Problem, Implication, Need各階段完整度</p>
+                            <div class="grid grid-cols-2 gap-2 text-xs">
+                                <div class="p-2 bg-green-50 rounded">開場暖場 (5分)</div>
+                                <div class="p-2 bg-green-50 rounded">情境探詢 (5分)</div>
+                                <div class="p-2 bg-green-50 rounded">問題診斷 (5分)</div>
+                                <div class="p-2 bg-green-50 rounded">影響擴大 (5分)</div>
+                                <div class="p-2 bg-green-50 rounded">方案呈現 (5分)</div>
+                                <div class="p-2 bg-green-50 rounded">成交詢問 (5分)</div>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border border-gray-border rounded-lg">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-medium text-gray-dark">需求診斷深度</h4>
+                                <span class="text-sm text-gray-medium">25分</span>
+                            </div>
+                            <p class="text-sm text-gray-medium mb-3">七大需求維度探詢完整度評估</p>
+                            <div class="text-xs text-gray-medium">• 購買急迫性 (5分) • 期待落差 (5分) • 財務狀況 (3分) • 決策者識別 (4分) • 預算競爭 (3分) • 未來擔心 (3分) • 方案偏好 (2分)</div>
+                        </div>
+
+                        <div class="p-4 border border-gray-border rounded-lg">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-medium text-gray-dark">時間節奏掌控</h4>
+                                <span class="text-sm text-gray-medium">20分</span>
+                            </div>
+                            <p class="text-sm text-gray-medium">各階段時間分配合理性</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sales Skills Criteria -->
+                <div class="mb-6">
+                    <h3 class="font-semibold text-gray-dark mb-3 flex items-center">
+                        <div class="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center mr-2">
+                            <div class="w-3 h-3 bg-primary rounded-full"></div>
+                        </div>
+                        銷售技巧評分標準
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <div class="p-4 border border-gray-border rounded-lg">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-medium text-gray-dark">七大需求掌握度</h4>
+                                <span class="text-sm text-gray-medium">35分</span>
+                            </div>
+                            <p class="text-sm text-gray-medium">深入程度和準確性評估</p>
+                        </div>
+
+                        <div class="p-4 border border-gray-border rounded-lg">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-medium text-gray-dark">解決方案設計</h4>
+                                <span class="text-sm text-gray-medium">25分</span>
+                            </div>
+                            <p class="text-sm text-gray-medium">針對性和可行性評估</p>
+                        </div>
+
+                        <div class="p-4 border border-gray-border rounded-lg">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-medium text-gray-dark">異議處理能力</h4>
+                                <span class="text-sm text-gray-medium">15分</span>
+                            </div>
+                            <p class="text-sm text-gray-medium">應對技巧和效果評估</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Communication Criteria -->
+                <div>
+                    <h3 class="font-semibold text-gray-dark mb-3 flex items-center">
+                        <div class="w-6 h-6 bg-warning/10 rounded-full flex items-center justify-center mr-2">
+                            <div class="w-3 h-3 bg-warning rounded-full"></div>
+                        </div>
+                        溝通能力評分標準
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <div class="p-4 border border-gray-border rounded-lg">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-medium text-gray-dark">SPIN問句質量</h4>
+                                <span class="text-sm text-gray-medium">40分</span>
+                            </div>
+                            <p class="text-sm text-gray-medium">問句設計精準度和引導效果</p>
+                        </div>
+
+                        <div class="p-4 border border-gray-border rounded-lg">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-medium text-gray-dark">語言表達精準度</h4>
+                                <span class="text-sm text-gray-medium">20分</span>
+                            </div>
+                            <p class="text-sm text-gray-medium">用詞準確度和專業性</p>
+                        </div>
+
+                        <div class="p-4 border border-gray-border rounded-lg">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-medium text-gray-dark">情感共鳴建立</h4>
+                                <span class="text-sm text-gray-medium">14分</span>
+                            </div>
+                            <p class="text-sm text-gray-medium">與客戶情感連結建立程度</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Question Types -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                <h2 class="text-lg font-bold text-gray-dark mb-4">題型管理</h2>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Single Choice -->
+                    <div class="p-4 border border-primary/20 rounded-lg bg-primary/5">
+                        <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center mb-2">
+                            <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-medium text-gray-dark mb-1">單選題</h3>
+                        <p class="text-xs text-gray-medium">單一選項評分</p>
+                    </div>
+
+                    <!-- Multiple Choice -->
+                    <div class="p-4 border border-secondary/20 rounded-lg bg-secondary/5">
+                        <div class="w-8 h-8 bg-secondary/10 rounded-full flex items-center justify-center mb-2">
+                            <svg class="w-4 h-4 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-medium text-gray-dark mb-1">多選題</h3>
+                        <p class="text-xs text-gray-medium">多重選項評分</p>
+                    </div>
+
+                    <!-- Range Scoring -->
+                    <div class="p-4 border border-warning/20 rounded-lg bg-warning/5">
+                        <div class="w-8 h-8 bg-warning/10 rounded-full flex items-center justify-center mb-2">
+                            <svg class="w-4 h-4 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-medium text-gray-dark mb-1">範圍題</h3>
+                        <p class="text-xs text-gray-medium">數值範圍評分</p>
+                    </div>
+
+                    <!-- Mixed Type -->
+                    <div class="p-4 border border-success/20 rounded-lg bg-success/5">
+                        <div class="w-8 h-8 bg-success/10 rounded-full flex items-center justify-center mb-2">
+                            <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="font-medium text-gray-dark mb-1">混合題</h3>
+                        <p class="text-xs text-gray-medium">綜合題型評分</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Weight adjustment functionality
+        const processWeight = document.getElementById('processWeight');
+        const skillsWeight = document.getElementById('skillsWeight');
+        const commWeight = document.getElementById('commWeight');
+        const processValue = document.getElementById('processValue');
+        const skillsValue = document.getElementById('skillsValue');
+        const commValue = document.getElementById('commValue');
+        const totalWeight = document.getElementById('totalWeight');
+
+        function updateWeights() {
+            const process = parseInt(processWeight.value);
+            const skills = parseInt(skillsWeight.value);
+            const comm = parseInt(commWeight.value);
+            const total = process + skills + comm;
+            
+            processValue.textContent = process + '%';
+            skillsValue.textContent = skills + '%';
+            commValue.textContent = comm + '%';
+            totalWeight.textContent = total + '%';
+            
+            // Color coding for total
+            if (total === 100) {
+                totalWeight.className = 'font-bold text-lg text-success';
+            } else {
+                totalWeight.className = 'font-bold text-lg text-error';
+            }
+        }
+
+        processWeight.addEventListener('input', updateWeights);
+        skillsWeight.addEventListener('input', updateWeights);
+        commWeight.addEventListener('input', updateWeights);
+
+        // Save template
+        document.getElementById('saveTemplate').addEventListener('click', function() {
+            const total = parseInt(processWeight.value) + parseInt(skillsWeight.value) + parseInt(commWeight.value);
+            if (total !== 100) {
+                alert('權重總和必須為100%，目前為' + total + '%');
+                return;
+            }
+            
+            alert('模板儲存成功！');
+        });
+
+        // Initialize
+        updateWeights();
+    </script>
+</body>
+</html>

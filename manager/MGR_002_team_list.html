@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>團隊管理 - SalesAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE',
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'gray-dark': '#1A1A1A',
+                        'gray-medium': '#666666',
+                        'gray-light': '#999999',
+                        'gray-bg': '#F8F9FA',
+                        'gray-border': '#E5E5E5'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-bg h-full">
+    <div class="min-h-full pb-20">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-border">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center">
+                        <button onclick="history.back()" class="p-2 text-gray-medium hover:text-gray-dark transition-colors mr-2">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <h1 class="text-xl font-bold text-gray-dark">Team Phoenix</h1>
+                        <span class="ml-3 px-3 py-1 bg-warning/10 text-warning text-lg font-bold rounded-lg">95</span>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <!-- Notification Icon -->
+                        <div class="relative">
+                            <button onclick="location.href='../common/COMMON_008_notification_center.html'" class="p-2 text-gray-medium hover:text-gray-dark transition-colors">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-4-4V6a5 5 0 00-10 0v7l-4 4h5m4 0a2 2 0 01-4 0"></path>
+                                </svg>
+                            </button>
+                            <span class="absolute -top-1 -right-1 bg-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                        </div>
+                        <!-- Settings Icon -->
+                        <button onclick="location.href='../common/COMMON_001_settings.html'" class="p-2 text-gray-medium hover:text-gray-dark transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </button>
+                        <a href="MGR_003_add_member.html" class="flex items-center px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                            添加成員
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <!-- Team Performance Overview -->
+            <div class="mb-6">
+                <h2 class="text-lg font-bold text-gray-dark mb-4">團隊概況</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <!-- Process Adherence -->
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                        <h3 class="text-sm text-gray-medium mb-3">流程遵守度</h3>
+                        <div class="text-3xl font-bold text-success mb-3">92</div>
+                        <div class="text-sm text-gray-medium mb-2">團隊平均</div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-success h-2 rounded-full" style="width: 92%"></div>
+                        </div>
+                    </div>
+                    <!-- Sales Skills -->
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                        <h3 class="text-sm text-gray-medium mb-3">銷售技巧</h3>
+                        <div class="text-3xl font-bold text-success mb-3">94</div>
+                        <div class="text-sm text-gray-medium mb-2">團隊平均</div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-success h-2 rounded-full" style="width: 94%"></div>
+                        </div>
+                    </div>
+                    <!-- Communication -->
+                    <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                        <h3 class="text-sm text-gray-medium mb-3">溝通能力</h3>
+                        <div class="text-3xl font-bold text-success mb-3">98</div>
+                        <div class="text-sm text-gray-medium mb-2">團隊平均</div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-success h-2 rounded-full" style="width: 98%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search and Filter -->
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-border mb-6">
+                <div class="flex flex-col sm:flex-row gap-4">
+                    <div class="flex-1">
+                        <div class="relative">
+                            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <input type="text" placeholder="搜尋成員姓名或職位..." class="w-full pl-10 pr-4 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors">
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <select class="px-4 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                            <option>全部職位</option>
+                            <option>銷售專員</option>
+                            <option>資深銷售</option>
+                            <option>銷售主管</option>
+                        </select>
+                        <select class="px-4 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                            <option>全部團隊</option>
+                            <option>團隊A</option>
+                            <option>團隊B</option>
+                            <option>團隊C</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Members Performance -->
+            <div class="mb-6">
+                <h2 class="text-lg font-bold text-gray-dark mb-4">團隊成員績效</h2>
+            </div>
+            
+            <!-- Team Members List -->
+            <div class="space-y-4">
+                <!-- Member Card 1 -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-lg">張</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-dark text-lg">張小明</h3>
+                                <p class="text-gray-medium">保險業務專員</p>
+                                <p class="text-sm text-gray-light">2 個專案</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-3xl font-bold text-success">98</div>
+                            <a href="MGR_004_member_detail.html" class="text-primary hover:text-primary/80 transition-colors inline-flex items-center mt-2">
+                                <span class="text-sm mr-1">查看</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Performance Indicators -->
+                    <div class="mt-4 pt-4 border-t border-gray-border">
+                        <div class="grid grid-cols-3 gap-4 text-center">
+                            <div>
+                                <div class="text-sm text-gray-medium mb-1">流程</div>
+                                <div class="text-lg font-semibold text-gray-dark">95</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-medium mb-1">技巧</div>
+                                <div class="text-lg font-semibold text-gray-dark">97</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-medium mb-1">溝通</div>
+                                <div class="text-lg font-semibold text-gray-dark">99</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Member Card 2 -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-secondary to-secondary/80 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-lg">李</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-dark text-lg">李美華</h3>
+                                <p class="text-gray-medium">保險業務專員</p>
+                                <p class="text-sm text-gray-light">1 個專案</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-3xl font-bold text-success">96</div>
+                            <a href="MGR_004_member_detail.html" class="text-primary hover:text-primary/80 transition-colors inline-flex items-center mt-2">
+                                <span class="text-sm mr-1">查看</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Performance Indicators -->
+                    <div class="mt-4 pt-4 border-t border-gray-border">
+                        <div class="grid grid-cols-3 gap-4 text-center">
+                            <div>
+                                <div class="text-sm text-gray-medium mb-1">流程</div>
+                                <div class="text-lg font-semibold text-gray-dark">93</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-medium mb-1">技巧</div>
+                                <div class="text-lg font-semibold text-gray-dark">95</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-medium mb-1">溝通</div>
+                                <div class="text-lg font-semibold text-gray-dark">98</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Member Card 3 -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-warning to-warning/80 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-lg">陳</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-dark text-lg">陳大文</h3>
+                                <p class="text-gray-medium">保險業務專員</p>
+                                <p class="text-sm text-gray-light">3 個專案</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-3xl font-bold text-warning">85</div>
+                            <a href="MGR_004_member_detail.html" class="text-primary hover:text-primary/80 transition-colors inline-flex items-center mt-2">
+                                <span class="text-sm mr-1">查看</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Performance Indicators -->
+                    <div class="mt-4 pt-4 border-t border-gray-border">
+                        <div class="grid grid-cols-3 gap-4 text-center">
+                            <div>
+                                <div class="text-sm text-gray-medium mb-1">流程</div>
+                                <div class="text-lg font-semibold text-gray-dark">88</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-medium mb-1">技巧</div>
+                                <div class="text-lg font-semibold text-gray-dark">82</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-medium mb-1">溝通</div>
+                                <div class="text-lg font-semibold text-gray-dark">85</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Member Card 4 -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border hover:shadow-md transition-shadow">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-error to-error/80 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-lg">林</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-dark text-lg">林志偉</h3>
+                                <p class="text-gray-medium">保險業務專員</p>
+                                <p class="text-sm text-gray-light">2 個專案</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-3xl font-bold text-warning">78</div>
+                            <a href="MGR_004_member_detail.html" class="text-primary hover:text-primary/80 transition-colors inline-flex items-center mt-2">
+                                <span class="text-sm mr-1">查看</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Performance Indicators -->
+                    <div class="mt-4 pt-4 border-t border-gray-border">
+                        <div class="grid grid-cols-3 gap-4 text-center">
+                            <div>
+                                <div class="text-sm text-gray-medium mb-1">流程</div>
+                                <div class="text-lg font-semibold text-gray-dark">75</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-medium mb-1">技巧</div>
+                                <div class="text-lg font-semibold text-gray-dark">80</div>
+                            </div>
+                            <div>
+                                <div class="text-sm text-gray-medium mb-1">溝通</div>
+                                <div class="text-lg font-semibold text-gray-dark">79</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Load More Button -->
+            <div class="text-center mt-8">
+                <button class="px-6 py-3 border border-primary text-primary rounded-lg hover:bg-primary hover:text-white transition-colors">
+                    載入更多成員...
+                </button>
+            </div>
+        </main>
+
+        <!-- Bottom Tab Bar -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-border">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex justify-around py-2">
+                    <!-- Dashboard -->
+                    <a href="MGR_001_dashboard.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        <span class="text-xs mt-1">儀表板</span>
+                    </a>
+                    <!-- Team -->
+                    <a href="MGR_002_team_list.html" class="flex flex-col items-center py-2 px-3 text-primary">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path>
+                        </svg>
+                        <span class="text-xs mt-1 font-medium">團隊</span>
+                    </a>
+                    <!-- Scoring Settings -->
+                    <a href="MGR_005_scoring_settings.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        <span class="text-xs mt-1">評分設定</span>
+                    </a>
+                    <!-- Ask AI -->
+                    <a href="MGR_012_ask_ai.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                        <span class="text-xs mt-1">Ask AI</span>
+                    </a>
+                    <!-- Notifications -->
+                    <a href="#" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors relative">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-4-4V6a5 5 0 00-10 0v7l-4 4h5m4 0a2 2 0 01-4 0"></path>
+                        </svg>
+                        <span class="text-xs mt-1">通知</span>
+                        <span class="absolute -top-1 -right-1 bg-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+    
+    <!-- 引入Modal組件 -->
+    <div id="modalContainer"></div>
+    <script>
+        // 動態載入Modal組件
+        fetch('../includes/modals-all.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('modalContainer').innerHTML = html;
+                
+                // 初始化頁面功能
+                initializeTeamList();
+            })
+            .catch(error => {
+                console.error('Error loading modals:', error);
+            });
+        
+        function initializeTeamList() {
+            // 為成員卡片添加長按事件
+            document.querySelectorAll('.member-card').forEach(card => {
+                let pressTimer;
+                
+                // 長按開始
+                card.addEventListener('mousedown', function() {
+                    pressTimer = setTimeout(() => {
+                        showMemberActions(card);
+                    }, 500); // 500ms長按
+                });
+                
+                card.addEventListener('touchstart', function() {
+                    pressTimer = setTimeout(() => {
+                        showMemberActions(card);
+                    }, 500);
+                });
+                
+                // 長按結束
+                card.addEventListener('mouseup', () => clearTimeout(pressTimer));
+                card.addEventListener('touchend', () => clearTimeout(pressTimer));
+                card.addEventListener('mouseleave', () => clearTimeout(pressTimer));
+            });
+        }
+        
+        // 顯示成員操作選單
+        function showMemberActions(card) {
+            const memberName = card.querySelector('h3')?.textContent || '成員';
+            
+            showActionSheet({
+                title: memberName,
+                actions: [
+                    {
+                        text: '查看詳情',
+                        handler: () => {
+                            window.location.href = 'MGR_004_member_detail.html';
+                        }
+                    },
+                    {
+                        text: '編輯資料',
+                        handler: () => {
+                            console.log('編輯成員資料');
+                        }
+                    },
+                    {
+                        text: '發送訊息',
+                        handler: () => {
+                            console.log('發送訊息給成員');
+                        }
+                    },
+                    {
+                        text: '刪除成員',
+                        destructive: true,
+                        handler: () => {
+                            confirmDeleteMember(memberName);
+                        }
+                    }
+                ]
+            });
+        }
+        
+        // 確認刪除成員
+        function confirmDeleteMember(memberName) {
+            showConfirm({
+                title: '刪除成員',
+                message: `確定要刪除「${memberName}」嗎？此操作無法復原。`,
+                onConfirm: () => {
+                    showLoading('正在刪除...');
+                    setTimeout(() => {
+                        hideLoading();
+                        showWarning({
+                            title: '刪除成功',
+                            message: `${memberName} 已從團隊中移除`,
+                            onConfirm: () => {
+                                location.reload(); // 重新載入頁面
+                            }
+                        });
+                    }, 1000);
+                }
+            });
+        }
+        
+        // 添加成員類別以便識別
+        document.addEventListener('DOMContentLoaded', function() {
+            // 為所有成員卡片添加類別
+            const memberCards = document.querySelectorAll('.bg-white.rounded-xl.p-6');
+            memberCards.forEach((card, index) => {
+                if (index > 0 && index < memberCards.length - 1) { // 排除統計卡片
+                    card.classList.add('member-card');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

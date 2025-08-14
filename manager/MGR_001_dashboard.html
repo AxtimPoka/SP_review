@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主控台儀表板 - SalesAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE',
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'gray-dark': '#1A1A1A',
+                        'gray-medium': '#666666',
+                        'gray-light': '#999999',
+                        'gray-bg': '#F8F9FA',
+                        'gray-border': '#E5E5E5'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-bg h-full">
+    <div class="min-h-full">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-border">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center">
+                        <h1 class="text-xl font-bold text-gray-dark">儀表板</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <!-- Notification Icon -->
+                        <div class="relative">
+                            <button onclick="location.href='../common/COMMON_008_notification_center.html'" class="p-2 text-gray-medium hover:text-gray-dark transition-colors">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-4-4V6a5 5 0 00-10 0v7l-4 4h5m4 0a2 2 0 01-4 0"></path>
+                                </svg>
+                            </button>
+                            <span class="absolute -top-1 -right-1 bg-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                        </div>
+                        <!-- Settings Icon -->
+                        <button onclick="location.href='../common/COMMON_001_settings.html'" class="p-2 text-gray-medium hover:text-gray-dark transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <!-- Key Metrics Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Process Adherence -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-dark">流程遵守度</h3>
+                            <div class="mt-2">
+                                <span class="text-3xl font-bold text-gray-dark">82%</span>
+                                <span class="text-success text-sm ml-2 flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    +5%
+                                </span>
+                            </div>
+                        </div>
+                        <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                            <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sales Skills -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-dark">銷售技巧</h3>
+                            <div class="mt-2">
+                                <span class="text-3xl font-bold text-gray-dark">7.8</span>
+                                <span class="text-success text-sm ml-2 flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    +0.3
+                                </span>
+                            </div>
+                        </div>
+                        <div class="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center">
+                            <svg class="w-8 h-8 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Communication Ability -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border sm:col-span-2 lg:col-span-1">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-dark">溝通能力</h3>
+                            <div class="mt-2">
+                                <span class="text-3xl font-bold text-gray-dark">8.2/10</span>
+                                <span class="text-error text-sm ml-2 flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    -0.1
+                                </span>
+                            </div>
+                        </div>
+                        <div class="w-16 h-16 bg-warning/10 rounded-full flex items-center justify-center">
+                            <svg class="w-8 h-8 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Team Performance Overview -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold text-gray-dark">團隊績效概覽</h2>
+                    <div class="flex space-x-2">
+                        <button class="px-4 py-2 text-sm font-medium text-gray-medium border border-gray-border rounded-lg hover:bg-gray-50 transition-colors">本週</button>
+                        <button class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary/90 transition-colors">本月</button>
+                        <button class="px-4 py-2 text-sm font-medium text-gray-medium border border-gray-border rounded-lg hover:bg-gray-50 transition-colors">本季</button>
+                    </div>
+                </div>
+
+                <!-- Team Performance Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Team Phoenix -->
+                    <a href="MGR_002_team_list.html" class="block group">
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-1 cursor-pointer">
+                            <div class="text-center mb-4">
+                                <h3 class="text-lg font-semibold text-gray-dark mb-2">Team Phoenix</h3>
+                                <div class="text-4xl font-bold text-success mb-1">95</div>
+                                <p class="text-sm text-gray-medium">31 Recordings</p>
+                            </div>
+                            <div class="grid grid-cols-3 gap-3 pt-4 border-t border-gray-border">
+                                <div class="text-center">
+                                    <div class="text-sm text-gray-medium mb-1">流程</div>
+                                    <div class="text-lg font-semibold text-gray-dark">92</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-sm text-gray-medium mb-1">技巧</div>
+                                    <div class="text-lg font-semibold text-gray-dark">94</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-sm text-gray-medium mb-1">溝通</div>
+                                    <div class="text-lg font-semibold text-gray-dark">98</div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Team Chicago -->
+                    <a href="MGR_002_team_list.html" class="block group">
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-1 cursor-pointer">
+                            <div class="text-center mb-4">
+                                <h3 class="text-lg font-semibold text-gray-dark mb-2">Team Chicago</h3>
+                                <div class="text-4xl font-bold text-warning mb-1">75</div>
+                                <p class="text-sm text-gray-medium">18 Recordings</p>
+                            </div>
+                            <div class="grid grid-cols-3 gap-3 pt-4 border-t border-gray-border">
+                                <div class="text-center">
+                                    <div class="text-sm text-gray-medium mb-1">流程</div>
+                                    <div class="text-lg font-semibold text-gray-dark">79</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-sm text-gray-medium mb-1">技巧</div>
+                                    <div class="text-lg font-semibold text-gray-dark">69</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-sm text-gray-medium mb-1">溝通</div>
+                                    <div class="text-lg font-semibold text-gray-dark">78</div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <!-- Team Omaha -->
+                    <a href="MGR_002_team_list.html" class="block group">
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-1 cursor-pointer">
+                            <div class="text-center mb-4">
+                                <h3 class="text-lg font-semibold text-gray-dark mb-2">Team Omaha</h3>
+                                <div class="text-4xl font-bold text-error mb-1">38</div>
+                                <p class="text-sm text-gray-medium">18 Recordings</p>
+                            </div>
+                            <div class="grid grid-cols-3 gap-3 pt-4 border-t border-gray-border">
+                                <div class="text-center">
+                                    <div class="text-sm text-gray-medium mb-1">流程</div>
+                                    <div class="text-lg font-semibold text-gray-dark">30</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-sm text-gray-medium mb-1">技巧</div>
+                                    <div class="text-lg font-semibold text-gray-dark">40</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="text-sm text-gray-medium mb-1">溝通</div>
+                                    <div class="text-lg font-semibold text-gray-dark">50</div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Action Button -->
+            <div class="text-center">
+                <button class="bg-primary text-white px-8 py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors">
+                    查看詳細報表
+                </button>
+            </div>
+        </main>
+
+        <!-- Bottom Tab Bar -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-border">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex justify-around py-2">
+                    <!-- Dashboard -->
+                    <a href="MGR_001_dashboard.html" class="flex flex-col items-center py-2 px-3 text-primary">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10.707 2.293a1 1 0 00-1.414 0l-9 9a1 1 0 001.414 1.414L8 5.414V17a1 1 0 001 1h2a1 1 0 001-1v-3.586l3.293 3.293a1 1 0 001.414-1.414l-9-9z"></path>
+                        </svg>
+                        <span class="text-xs mt-1 font-medium">儀表板</span>
+                    </a>
+                    <!-- Team -->
+                    <a href="MGR_002_team_list.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <span class="text-xs mt-1">團隊</span>
+                    </a>
+                    <!-- Scoring Settings -->
+                    <a href="MGR_005_scoring_settings.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        <span class="text-xs mt-1">評分設定</span>
+                    </a>
+                    <!-- Ask AI -->
+                    <a href="MGR_012_ask_ai.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                        <span class="text-xs mt-1">Ask AI</span>
+                    </a>
+                    <!-- Notifications -->
+                    <a href="../common/COMMON_008_notification_center.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors relative">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-4-4V6a5 5 0 00-10 0v7l-4 4h5m4 0a2 2 0 01-4 0"></path>
+                        </svg>
+                        <span class="text-xs mt-1">通知</span>
+                        <span class="absolute -top-1 -right-1 bg-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    
+    <!-- 引入Modal組件 -->
+    <div id="modalContainer"></div>
+    <script>
+        // 動態載入Modal組件
+        fetch('../includes/modals-all.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('modalContainer').innerHTML = html;
+                
+                // 初始化頁面功能
+                initializeDashboard();
+            })
+            .catch(error => {
+                console.error('Error loading modals:', error);
+            });
+        
+        function initializeDashboard() {
+            // 模擬數據載入
+            showLoading('正在載入儀表板數據...');
+            
+            // 模擬載入完成
+            setTimeout(() => {
+                hideLoading();
+                
+                // 可選：顯示載入完成提示
+                // showWarning({
+                //     title: '數據已更新',
+                //     message: '儀表板數據已成功載入',
+                //     onConfirm: () => console.log('用戶已確認')
+                // });
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

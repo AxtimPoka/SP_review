@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalesAI - CASE詳情</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#2E5BFF',
+                        'secondary': '#00C6AE',
+                        'success': '#00D563',
+                        'warning': '#FFB800',
+                        'error': '#FF4757',
+                        'text-primary': '#1A1A1A',
+                        'text-secondary': '#666666',
+                        'text-tertiary': '#999999'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm px-4 py-3 sticky top-0 z-10">
+        <div class="flex items-center justify-between">
+            <button onclick="history.back()" class="text-text-secondary">
+                <i class="fas fa-arrow-left text-lg"></i>
+            </button>
+            <h1 class="text-lg font-semibold text-text-primary">壽險規劃CASE</h1>
+            <div class="flex items-center space-x-3">
+                <button onclick="markComplete()" class="text-success">
+                    <i class="fas fa-check text-lg"></i>
+                </button>
+                <button onclick="showMenu()" class="text-text-secondary">
+                    <i class="fas fa-ellipsis-v text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="flex">
+            <button class="tab-button flex-1 py-3 text-center border-b-2 border-primary text-primary font-medium" onclick="showTab('analysis')">
+                分析
+            </button>
+            <button class="tab-button flex-1 py-3 text-center border-b-2 border-transparent text-text-tertiary" onclick="showTab('recordings')">
+                錄音
+            </button>
+            <button class="tab-button flex-1 py-3 text-center border-b-2 border-transparent text-text-tertiary" onclick="showTab('askai')">
+                Ask AI
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="px-4 py-6 pb-24">
+        <!-- Analysis Tab -->
+        <div id="analysisTab" class="tab-content">
+            <!-- Overall Score -->
+            <section class="mb-6">
+                <div class="bg-white rounded-xl p-6 shadow-sm text-center">
+                    <div class="mb-4">
+                        <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <span class="text-2xl font-bold text-primary">7.8</span>
+                        </div>
+                        <h2 class="text-xl font-bold text-text-primary mb-2">整體評分</h2>
+                        <p class="text-text-secondary">基於 3 次錄音分析</p>
+                    </div>
+                    <button class="w-full bg-primary text-white py-2 rounded-lg" onclick="location.href='SALES_011_ai_analysis.html'">
+                        查看詳細分析 →
+                    </button>
+                </div>
+            </section>
+
+            <!-- Three Dimensions -->
+            <section class="mb-6">
+                <h3 class="text-lg font-semibold text-text-primary mb-4">三維度得分</h3>
+                <div class="space-y-4">
+                    <div class="bg-white rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium text-text-primary">流程遵守度</span>
+                            <span class="text-primary font-bold">82%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-primary h-2 rounded-full" style="width: 82%"></div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium text-text-primary">銷售技巧</span>
+                            <span class="text-secondary font-bold">75%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-secondary h-2 rounded-full" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div class="bg-white rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-medium text-text-primary">溝通能力</span>
+                            <span class="text-success font-bold">80%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-success h-2 rounded-full" style="width: 80%"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section>
+                <div class="bg-white rounded-xl p-4 shadow-sm">
+                    <h3 class="font-semibold text-text-primary mb-3">AI分析摘要</h3>
+                    <div class="space-y-3">
+                        <div class="bg-success/10 rounded-lg p-3">
+                            <h4 class="text-sm font-medium text-success mb-1">優點</h4>
+                            <ul class="text-sm text-text-secondary space-y-1">
+                                <li>• 需求診斷完整，SPIN流程清晰</li>
+                                <li>• 客戶關係建立良好</li>
+                            </ul>
+                        </div>
+                        <div class="bg-warning/10 rounded-lg p-3">
+                            <h4 class="text-sm font-medium text-warning mb-1">待改善</h4>
+                            <ul class="text-sm text-text-secondary space-y-1">
+                                <li>• 異議處理技巧需加強</li>
+                                <li>• 時間掌控有待改善</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Recordings Tab -->
+        <div id="recordingsTab" class="tab-content hidden">
+            <div class="space-y-4">
+                <div class="bg-white rounded-lg p-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-medium text-text-primary">初次諮詢</h4>
+                        <span class="text-xs bg-success/10 text-success px-2 py-1 rounded-full">已分析</span>
+                    </div>
+                    <p class="text-sm text-text-tertiary mb-2">2024/08/12 14:30 | 28:35</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <button class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                <i class="fas fa-play text-white text-xs"></i>
+                            </button>
+                            <div class="w-24 h-1 bg-gray-200 rounded">
+                                <div class="w-0 h-1 bg-primary rounded"></div>
+                            </div>
+                        </div>
+                        <span class="text-sm font-medium text-primary">8.2分</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ask AI Tab -->
+        <div id="askaiTab" class="tab-content hidden">
+            <div class="bg-white rounded-xl p-4">
+                <div class="mb-4">
+                    <input type="text" placeholder="詢問關於此CASE的問題..." class="w-full border border-gray-200 rounded-lg px-4 py-2">
+                </div>
+                <div class="space-y-3">
+                    <div class="bg-gray-50 rounded-lg p-3">
+                        <p class="text-sm font-medium text-text-primary mb-1">建議問題:</p>
+                        <ul class="text-sm text-text-secondary space-y-1">
+                            <li>• 客戶的主要痛點是什麼？</li>
+                            <li>• 如何提升成交機率？</li>
+                            <li>• 建議的話術改進？</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Tab Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+        <div class="grid grid-cols-5 py-2">
+            <button class="flex flex-col items-center py-2 text-primary" onclick="location.href='SALES_001_home.html'">
+                <i class="fas fa-home text-lg mb-1"></i>
+                <span class="text-xs">首頁</span>
+            </button>
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='SALES_010_success_cases.html'">
+                <i class="fas fa-trophy text-lg mb-1"></i>
+                <span class="text-xs">案例</span>
+            </button>
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='SALES_002_recording.html'">
+                <i class="fas fa-microphone text-lg mb-1"></i>
+                <span class="text-xs">錄音</span>
+            </button>
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='../manager/MGR_012_ask_ai.html'">
+                <i class="fas fa-robot text-lg mb-1"></i>
+                <span class="text-xs">Ask AI</span>
+            </button>
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='../common/COMMON_008_notification_center.html'">
+                <i class="fas fa-bell text-lg mb-1"></i>
+                <span class="text-xs">通知</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            // Remove active styles from all tab buttons
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('border-primary', 'text-primary');
+                btn.classList.add('border-transparent', 'text-text-tertiary');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName + 'Tab').classList.remove('hidden');
+            
+            // Add active styles to selected tab button
+            event.target.classList.remove('border-transparent', 'text-text-tertiary');
+            event.target.classList.add('border-primary', 'text-primary');
+        }
+
+        function markComplete() {
+            // Use custom modal instead of confirm
+            showCaseSuccess({
+                onSubmit: (data) => {
+                    console.log('Case marked as complete:', data);
+                    showWarning({
+                        title: '成交成功！',
+                        message: '恭喜！此CASE已標記為成交，資料已提交。',
+                        onConfirm: () => {
+                            location.href = 'SALES_001_home.html';
+                        }
+                    });
+                }
+            });
+        }
+
+        function showMenu() {
+            showActionSheet({
+                title: 'CASE操作',
+                actions: [
+                    {
+                        text: '編輯CASE',
+                        handler: () => {
+                            location.href = 'SALES_008_edit_case.html';
+                        }
+                    },
+                    {
+                        text: '複製CASE',
+                        handler: () => {
+                            showLoading('正在複製CASE...');
+                            setTimeout(() => {
+                                hideLoading();
+                                showWarning({
+                                    title: '複製成功',
+                                    message: 'CASE已成功複製',
+                                    onConfirm: () => {}
+                                });
+                            }, 1000);
+                        }
+                    },
+                    {
+                        text: '刪除CASE',
+                        destructive: true,
+                        handler: () => {
+                            showConfirm({
+                                title: '刪除CASE',
+                                message: '確定要刪除此CASE嗎？此操作無法復原。',
+                                onConfirm: () => {
+                                    showLoading('正在刪除...');
+                                    setTimeout(() => {
+                                        hideLoading();
+                                        location.href = 'SALES_005_customer_detail.html';
+                                    }, 1000);
+                                }
+                            });
+                        }
+                    }
+                ]
+            });
+        }
+        
+        // Load modal components on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            fetch('../includes/modals-all.html')
+                .then(response => response.text())
+                .then(html => {
+                    const container = document.createElement('div');
+                    container.id = 'modalContainer';
+                    container.innerHTML = html;
+                    document.body.appendChild(container);
+                })
+                .catch(error => {
+                    console.error('Error loading modals:', error);
+                });
+        });
+    </script>
+</body>
+</html>

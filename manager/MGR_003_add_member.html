@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>添加成員 - SalesAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE',
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'gray-dark': '#1A1A1A',
+                        'gray-medium': '#666666',
+                        'gray-light': '#999999',
+                        'gray-bg': '#F8F9FA',
+                        'gray-border': '#E5E5E5'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-bg h-full">
+    <div class="min-h-full pb-20">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-border">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center">
+                        <button onclick="history.back()" class="p-2 text-gray-medium hover:text-gray-dark transition-colors mr-2">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <h1 class="text-xl font-bold text-gray-dark">添加成員</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <!-- Notification Icon -->
+                        <div class="relative">
+                            <button onclick="location.href='../common/COMMON_008_notification_center.html'" class="p-2 text-gray-medium hover:text-gray-dark transition-colors">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-4-4V6a5 5 0 00-10 0v7l-4 4h5m4 0a2 2 0 01-4 0"></path>
+                                </svg>
+                            </button>
+                            <span class="absolute -top-1 -right-1 bg-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                        </div>
+                        <!-- Settings Icon -->
+                        <button onclick="location.href='../common/COMMON_001_settings.html'" class="p-2 text-gray-medium hover:text-gray-dark transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </button>
+                        <button id="saveButton" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed" disabled>
+                            保存
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <form id="addMemberForm" class="space-y-6">
+                <!-- Basic Information -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                    <h2 class="text-lg font-bold text-gray-dark mb-4">基本資訊</h2>
+                    
+                    <!-- Profile Photo -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-dark mb-2">頭像</label>
+                        <div class="flex items-center space-x-4">
+                            <div id="avatarPreview" class="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center border-2 border-dashed border-gray-border">
+                                <svg class="w-8 h-8 text-gray-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <input type="file" id="avatarInput" class="hidden" accept="image/*">
+                                <button type="button" onclick="document.getElementById('avatarInput').click()" class="px-4 py-2 bg-gray-100 text-gray-dark rounded-lg border border-gray-border hover:bg-gray-200 transition-colors">
+                                    選擇圖片
+                                </button>
+                                <p class="text-sm text-gray-light mt-1">支援 JPG、PNG 格式，建議尺寸 200x200px</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Name -->
+                    <div class="mb-4">
+                        <label for="fullName" class="block text-sm font-medium text-gray-dark mb-2">
+                            姓名 <span class="text-error">*</span>
+                        </label>
+                        <input type="text" id="fullName" name="fullName" required class="w-full px-4 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors" placeholder="請輸入完整姓名">
+                        <div id="fullNameError" class="text-error text-sm mt-1 hidden">請輸入姓名</div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-4">
+                        <label for="email" class="block text-sm font-medium text-gray-dark mb-2">
+                            電子郵件 <span class="text-error">*</span>
+                        </label>
+                        <input type="email" id="email" name="email" required class="w-full px-4 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors" placeholder="example@company.com">
+                        <div id="emailError" class="text-error text-sm mt-1 hidden">請輸入有效的電子郵件地址</div>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="mb-4">
+                        <label for="phone" class="block text-sm font-medium text-gray-dark mb-2">
+                            電話號碼 <span class="text-error">*</span>
+                        </label>
+                        <input type="tel" id="phone" name="phone" required class="w-full px-4 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors" placeholder="09XX-XXX-XXX">
+                        <div id="phoneError" class="text-error text-sm mt-1 hidden">請輸入有效的電話號碼</div>
+                    </div>
+
+                    <!-- Employee ID -->
+                    <div class="mb-4">
+                        <label for="employeeId" class="block text-sm font-medium text-gray-dark mb-2">
+                            員工編號 <span class="text-error">*</span>
+                        </label>
+                        <input type="text" id="employeeId" name="employeeId" required class="w-full px-4 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors" placeholder="EMP001">
+                        <div id="employeeIdError" class="text-error text-sm mt-1 hidden">請輸入員工編號</div>
+                    </div>
+                </div>
+
+                <!-- Position & Team -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                    <h2 class="text-lg font-bold text-gray-dark mb-4">職位與團隊</h2>
+                    
+                    <!-- Position -->
+                    <div class="mb-4">
+                        <label for="position" class="block text-sm font-medium text-gray-dark mb-2">
+                            職位 <span class="text-error">*</span>
+                        </label>
+                        <select id="position" name="position" required class="w-full px-4 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors">
+                            <option value="">請選擇職位</option>
+                            <option value="sales_rep">銷售專員</option>
+                            <option value="senior_sales">資深銷售</option>
+                            <option value="sales_manager">銷售主管</option>
+                            <option value="team_leader">團隊領導</option>
+                        </select>
+                        <div id="positionError" class="text-error text-sm mt-1 hidden">請選擇職位</div>
+                    </div>
+
+                    <!-- Team -->
+                    <div class="mb-4">
+                        <label for="team" class="block text-sm font-medium text-gray-dark mb-2">
+                            所屬團隊 <span class="text-error">*</span>
+                        </label>
+                        <select id="team" name="team" required class="w-full px-4 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors">
+                            <option value="">請選擇團隊</option>
+                            <option value="team_a">團隊A - 壽險專組</option>
+                            <option value="team_b">團隊B - 產險專組</option>
+                            <option value="team_c">團隊C - 綜合業務組</option>
+                        </select>
+                        <div id="teamError" class="text-error text-sm mt-1 hidden">請選擇團隊</div>
+                    </div>
+
+                    <!-- Direct Supervisor -->
+                    <div class="mb-4">
+                        <label for="supervisor" class="block text-sm font-medium text-gray-dark mb-2">直屬主管</label>
+                        <select id="supervisor" name="supervisor" class="w-full px-4 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors">
+                            <option value="">請選擇主管</option>
+                            <option value="manager_1">林經理</option>
+                            <option value="manager_2">王經理</option>
+                            <option value="manager_3">陳經理</option>
+                        </select>
+                    </div>
+
+                    <!-- Start Date -->
+                    <div class="mb-4">
+                        <label for="startDate" class="block text-sm font-medium text-gray-dark mb-2">
+                            到職日期 <span class="text-error">*</span>
+                        </label>
+                        <input type="date" id="startDate" name="startDate" required class="w-full px-4 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors">
+                        <div id="startDateError" class="text-error text-sm mt-1 hidden">請選擇到職日期</div>
+                    </div>
+                </div>
+
+                <!-- Permissions -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                    <h2 class="text-lg font-bold text-gray-dark mb-4">系統權限</h2>
+                    
+                    <!-- Access Level -->
+                    <div class="mb-4">
+                        <label for="accessLevel" class="block text-sm font-medium text-gray-dark mb-2">
+                            存取權限 <span class="text-error">*</span>
+                        </label>
+                        <select id="accessLevel" name="accessLevel" required class="w-full px-4 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors">
+                            <option value="">請選擇權限級別</option>
+                            <option value="basic">基礎權限 - 僅能查看自己的數據</option>
+                            <option value="team_view">團隊查看 - 可查看所屬團隊數據</option>
+                            <option value="team_manage">團隊管理 - 可管理所屬團隊</option>
+                            <option value="admin">管理員 - 完整系統權限</option>
+                        </select>
+                        <div id="accessLevelError" class="text-error text-sm mt-1 hidden">請選擇存取權限</div>
+                    </div>
+
+                    <!-- Feature Permissions -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-dark mb-2">功能權限</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="permissions" value="recording" class="w-4 h-4 text-primary border-gray-border rounded focus:ring-primary/20">
+                                <span class="ml-2 text-sm text-gray-dark">錄音功能</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="permissions" value="analysis" class="w-4 h-4 text-primary border-gray-border rounded focus:ring-primary/20">
+                                <span class="ml-2 text-sm text-gray-dark">AI 分析結果查看</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="permissions" value="reports" class="w-4 h-4 text-primary border-gray-border rounded focus:ring-primary/20">
+                                <span class="ml-2 text-sm text-gray-dark">報表功能</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="permissions" value="settings" class="w-4 h-4 text-primary border-gray-border rounded focus:ring-primary/20">
+                                <span class="ml-2 text-sm text-gray-dark">系統設定</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="checkbox" name="permissions" value="ai_query" class="w-4 h-4 text-primary border-gray-border rounded focus:ring-primary/20">
+                                <span class="ml-2 text-sm text-gray-dark">Ask AI 功能</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Temporary Account -->
+                    <div class="mb-4">
+                        <label class="flex items-center">
+                            <input type="checkbox" id="isTemporary" name="isTemporary" class="w-4 h-4 text-primary border-gray-border rounded focus:ring-primary/20">
+                            <span class="ml-2 text-sm text-gray-dark">建立臨時帳號（30天後自動停用）</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Initial Password -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                    <h2 class="text-lg font-bold text-gray-dark mb-4">帳號設定</h2>
+                    
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-warning mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-sm text-warning font-medium">系統將自動生成登入帳號和臨時密碼，並透過電子郵件發送給新成員</span>
+                        </div>
+                    </div>
+
+                    <!-- Send Welcome Email -->
+                    <div class="mb-4">
+                        <label class="flex items-center">
+                            <input type="checkbox" id="sendWelcome" name="sendWelcome" checked class="w-4 h-4 text-primary border-gray-border rounded focus:ring-primary/20">
+                            <span class="ml-2 text-sm text-gray-dark">發送歡迎郵件（包含登入資訊和使用指南）</span>
+                        </label>
+                    </div>
+
+                    <!-- SMS Notification -->
+                    <div class="mb-4">
+                        <label class="flex items-center">
+                            <input type="checkbox" id="sendSMS" name="sendSMS" class="w-4 h-4 text-primary border-gray-border rounded focus:ring-primary/20">
+                            <span class="ml-2 text-sm text-gray-dark">同時發送簡訊通知</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-end">
+                    <button type="button" onclick="history.back()" class="px-6 py-3 border border-gray-border text-gray-dark rounded-lg hover:bg-gray-50 transition-colors">
+                        取消
+                    </button>
+                    <button type="button" id="previewButton" class="px-6 py-3 bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors">
+                        預覽資訊
+                    </button>
+                    <button type="submit" id="submitButton" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed" disabled>
+                        創建帳號
+                    </button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="previewModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden">
+        <div class="flex items-center justify-center p-4 min-h-screen">
+            <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-xl font-bold text-gray-dark">確認成員資訊</h2>
+                        <button id="closePreview" class="p-2 text-gray-medium hover:text-gray-dark transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="previewContent"></div>
+                    <div class="flex gap-4 justify-end mt-6">
+                        <button id="editButton" class="px-6 py-3 border border-gray-border text-gray-dark rounded-lg hover:bg-gray-50 transition-colors">
+                            返回編輯
+                        </button>
+                        <button id="confirmCreate" class="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+                            確認創建
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Form validation and interactivity
+        const form = document.getElementById('addMemberForm');
+        const submitButton = document.getElementById('submitButton');
+        const saveButton = document.getElementById('saveButton');
+        const previewButton = document.getElementById('previewButton');
+        const previewModal = document.getElementById('previewModal');
+        const closePreview = document.getElementById('closePreview');
+        const editButton = document.getElementById('editButton');
+        const confirmCreate = document.getElementById('confirmCreate');
+
+        // Required fields
+        const requiredFields = ['fullName', 'email', 'phone', 'employeeId', 'position', 'team', 'startDate', 'accessLevel'];
+
+        // Validate form
+        function validateForm() {
+            let isValid = true;
+            
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                const error = document.getElementById(fieldId + 'Error');
+                
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('border-error');
+                    if (error) error.classList.remove('hidden');
+                } else {
+                    field.classList.remove('border-error');
+                    if (error) error.classList.add('hidden');
+                }
+            });
+
+            // Email validation
+            const email = document.getElementById('email');
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email.value && !emailPattern.test(email.value)) {
+                isValid = false;
+                email.classList.add('border-error');
+                document.getElementById('emailError').classList.remove('hidden');
+            }
+
+            submitButton.disabled = !isValid;
+            saveButton.disabled = !isValid;
+            previewButton.disabled = !isValid;
+            
+            return isValid;
+        }
+
+        // Add event listeners to form fields
+        requiredFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            field.addEventListener('input', validateForm);
+            field.addEventListener('change', validateForm);
+        });
+
+        // Avatar preview
+        document.getElementById('avatarInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            const preview = document.getElementById('avatarPreview');
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover rounded-full">`;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Preview functionality
+        previewButton.addEventListener('click', function() {
+            if (validateForm()) {
+                showPreview();
+            }
+        });
+
+        function showPreview() {
+            const formData = new FormData(form);
+            const permissions = Array.from(form.querySelectorAll('input[name="permissions"]:checked')).map(cb => cb.value);
+            
+            const previewHTML = `
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <h3 class="font-semibold text-gray-dark">姓名</h3>
+                            <p class="text-gray-medium">${formData.get('fullName')}</p>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-dark">電子郵件</h3>
+                            <p class="text-gray-medium">${formData.get('email')}</p>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-dark">電話</h3>
+                            <p class="text-gray-medium">${formData.get('phone')}</p>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-dark">員工編號</h3>
+                            <p class="text-gray-medium">${formData.get('employeeId')}</p>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-dark">職位</h3>
+                            <p class="text-gray-medium">${document.getElementById('position').selectedOptions[0].text}</p>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-dark">團隊</h3>
+                            <p class="text-gray-medium">${document.getElementById('team').selectedOptions[0].text}</p>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-dark">到職日期</h3>
+                            <p class="text-gray-medium">${formData.get('startDate')}</p>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-dark">存取權限</h3>
+                            <p class="text-gray-medium">${document.getElementById('accessLevel').selectedOptions[0].text}</p>
+                        </div>
+                    </div>
+                    ${permissions.length > 0 ? `
+                        <div>
+                            <h3 class="font-semibold text-gray-dark">功能權限</h3>
+                            <div class="flex flex-wrap gap-2 mt-2">
+                                ${permissions.map(perm => `<span class="px-2 py-1 bg-primary/10 text-primary rounded text-sm">${getPermissionText(perm)}</span>`).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            document.getElementById('previewContent').innerHTML = previewHTML;
+            previewModal.classList.remove('hidden');
+        }
+
+        function getPermissionText(perm) {
+            const texts = {
+                'recording': '錄音功能',
+                'analysis': 'AI分析',
+                'reports': '報表功能',
+                'settings': '系統設定',
+                'ai_query': 'Ask AI'
+            };
+            return texts[perm] || perm;
+        }
+
+        // Close preview modal
+        closePreview.addEventListener('click', () => previewModal.classList.add('hidden'));
+        editButton.addEventListener('click', () => previewModal.classList.add('hidden'));
+
+        // Form submission
+        confirmCreate.addEventListener('click', function() {
+            // Show success message and redirect
+            alert('成員帳號創建成功！歡迎郵件已發送至新成員信箱。');
+            window.location.href = 'MGR_002_team_list.html';
+        });
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (validateForm()) {
+                showPreview();
+            }
+        });
+
+        // Initial validation
+        validateForm();
+    </script>
+</body>
+</html>

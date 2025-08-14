@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>七大維度配置 - SalesAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE',
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'gray-dark': '#1A1A1A',
+                        'gray-medium': '#666666',
+                        'gray-light': '#999999',
+                        'gray-bg': '#F8F9FA',
+                        'gray-border': '#E5E5E5'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-bg h-full">
+    <div class="min-h-full pb-20">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-border">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center">
+                        <button onclick="history.back()" class="p-2 text-gray-medium hover:text-gray-dark transition-colors mr-2">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <h1 class="text-xl font-bold text-gray-dark">七大維度配置</h1>
+                    </div>
+                    <button class="flex items-center px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12"></path>
+                        </svg>
+                        儲存變更
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <!-- Introduction -->
+            <div class="bg-gradient-to-r from-primary/5 to-secondary/5 border border-primary/20 rounded-xl p-6 mb-6">
+                <h2 class="text-lg font-bold text-gray-dark mb-2">七大客戶需求維度</h2>
+                <p class="text-gray-medium text-sm">深入了解客戶的核心需求，提供最適合的保險解決方案</p>
+            </div>
+
+            <!-- Seven Dimensions -->
+            <div class="space-y-6">
+                <!-- 1. Urgency -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-error/10 rounded-full flex items-center justify-center mr-4">
+                                <span class="text-error font-bold text-lg">急</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-dark">購買急迫性 (Purchase Urgency)</h3>
+                                <p class="text-sm text-gray-medium">評估客戶購買保險的緊急程度</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-2xl font-bold text-error">25</span>
+                            <p class="text-sm text-gray-medium">最高分數</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h4 class="font-medium text-gray-dark mb-2">關鍵評估指標</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="p-3 bg-red-50 border border-red-200 rounded-lg">
+                                <h5 class="font-medium text-sm text-gray-dark">時間壓力</h5>
+                                <p class="text-xs text-gray-medium mt-1">是否有明確的時間限制</p>
+                            </div>
+                            <div class="p-3 bg-red-50 border border-red-200 rounded-lg">
+                                <h5 class="font-medium text-sm text-gray-dark">事件觸發</h5>
+                                <p class="text-xs text-gray-medium mt-1">是否有特殊事件觸發</p>
+                            </div>
+                            <div class="p-3 bg-red-50 border border-red-200 rounded-lg">
+                                <h5 class="font-medium text-sm text-gray-dark">競爭情況</h5>
+                                <p class="text-xs text-gray-medium mt-1">是否正在比較不同方案</p>
+                            </div>
+                            <div class="p-3 bg-red-50 border border-red-200 rounded-lg">
+                                <h5 class="font-medium text-sm text-gray-dark">決策進度</h5>
+                                <p class="text-xs text-gray-medium mt-1">目前決策進度狀況</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <h4 class="font-medium text-gray-dark mb-2">評分標準</h4>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between p-2 bg-green-50 rounded">
+                                <span>20-25分: 非常緊急</span>
+                                <span class="text-gray-medium">明確時間限制且有具體觸發事件</span>
+                            </div>
+                            <div class="flex justify-between p-2 bg-yellow-50 rounded">
+                                <span>15-19分: 中等緊急</span>
+                                <span class="text-gray-medium">有一定時間壓力但不緊急</span>
+                            </div>
+                            <div class="flex justify-between p-2 bg-red-50 rounded">
+                                <span>0-14分: 不緊急</span>
+                                <span class="text-gray-medium">沒有明確時間限制</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-3 rounded-lg">
+                        <h5 class="font-medium text-sm text-gray-dark mb-1">AI識別關鍵詞</h5>
+                        <div class="flex flex-wrap gap-1 text-xs">
+                            <span class="px-2 py-1 bg-error/10 text-error rounded">急</span>
+                            <span class="px-2 py-1 bg-error/10 text-error rounded">马上</span>
+                            <span class="px-2 py-1 bg-error/10 text-error rounded">快</span>
+                            <span class="px-2 py-1 bg-error/10 text-error rounded">最近</span>
+                            <span class="px-2 py-1 bg-error/10 text-error rounded">趕紧</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Expectation Gap -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-warning/10 rounded-full flex items-center justify-center mr-4">
+                                <span class="text-warning font-bold text-lg">期</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-dark">期待現況落差 (Expectation Gap)</h3>
+                                <p class="text-sm text-gray-medium">客戶期待與現況的差距程度</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-2xl font-bold text-warning">20</span>
+                            <p class="text-sm text-gray-medium">最高分數</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                        <div class="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">現狀不滿</h5>
+                            <p class="text-xs text-gray-medium mt-1">對目前情況的不滿程度</p>
+                        </div>
+                        <div class="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">理想狀態</h5>
+                            <p class="text-xs text-gray-medium mt-1">對未來理想狀態的描述</p>
+                        </div>
+                        <div class="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">落差大小</h5>
+                            <p class="text-xs text-gray-medium mt-1">期待與現實的差距</p>
+                        </div>
+                        <div class="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">改善意願</h5>
+                            <p class="text-xs text-gray-medium mt-1">改善現狀的意願強度</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Financial Background -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-success/10 rounded-full flex items-center justify-center mr-4">
+                                <span class="text-success font-bold text-lg">財</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-dark">背景財務狀況 (Financial Background)</h3>
+                                <p class="text-sm text-gray-medium">了解客戶的財務能力和狀況</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-2xl font-bold text-success">15</span>
+                            <p class="text-sm text-gray-medium">最高分數</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                        <div class="p-3 bg-green-50 border border-green-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">收入狀況</h5>
+                            <p class="text-xs text-gray-medium mt-1">每月收入穩定度和範圍</p>
+                        </div>
+                        <div class="p-3 bg-green-50 border border-green-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">支出結構</h5>
+                            <p class="text-xs text-gray-medium mt-1">主要支出項目和比例</p>
+                        </div>
+                        <div class="p-3 bg-green-50 border border-green-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">債務情況</h5>
+                            <p class="text-xs text-gray-medium mt-1">現有負債和還款壓力</p>
+                        </div>
+                        <div class="p-3 bg-green-50 border border-green-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">理財習慣</h5>
+                            <p class="text-xs text-gray-medium mt-1">理財採側和投資經驗</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Decision Maker -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-4">
+                                <span class="text-primary font-bold text-lg">決</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-dark">決策者識別 (Decision Maker)</h3>
+                                <p class="text-sm text-gray-medium">確認真正的決策者和影響者</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-2xl font-bold text-primary">15</span>
+                            <p class="text-sm text-gray-medium">最高分數</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                        <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">主決策者</h5>
+                            <p class="text-xs text-gray-medium mt-1">最終決定購買的人</p>
+                        </div>
+                        <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">影響者</h5>
+                            <p class="text-xs text-gray-medium mt-1">對決策有影響力的人</p>
+                        </div>
+                        <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">決策模式</h5>
+                            <p class="text-xs text-gray-medium mt-1">獨立決策或共同決策</p>
+                        </div>
+                        <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">決策權重</h5>
+                            <p class="text-xs text-gray-medium mt-1">在決策中的權重分配</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. Budget Competition -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mr-4">
+                                <span class="text-secondary font-bold text-lg">競</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-dark">預算競爭者 (Budget Competition)</h3>
+                                <p class="text-sm text-gray-medium">評估預算分配的競爭情況</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-2xl font-bold text-secondary">10</span>
+                            <p class="text-sm text-gray-medium">最高分數</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                        <div class="p-3 bg-teal-50 border border-teal-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">競爭優先項</h5>
+                            <p class="text-xs text-gray-medium mt-1">保險在預算中的優先級</p>
+                        </div>
+                        <div class="p-3 bg-teal-50 border border-teal-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">其他需求</h5>
+                            <p class="text-xs text-gray-medium mt-1">同時競爭預算的項目</p>
+                        </div>
+                        <div class="p-3 bg-teal-50 border border-teal-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">預算彈性</h5>
+                            <p class="text-xs text-gray-medium mt-1">預算調整的可能性</p>
+                        </div>
+                        <div class="p-3 bg-teal-50 border border-teal-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">時間窓口</h5>
+                            <p class="text-xs text-gray-medium mt-1">預算決策的時間限制</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. Future Concerns -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+                                <span class="text-purple-600 font-bold text-lg">懂</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-dark">未來期待擔心 (Future Concerns)</h3>
+                                <p class="text-sm text-gray-medium">客戶對未來的擔心和期待</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-2xl font-bold text-purple-600">10</span>
+                            <p class="text-sm text-gray-medium">最高分數</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                        <div class="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">風險擔心</h5>
+                            <p class="text-xs text-gray-medium mt-1">對未來風險的擔心</p>
+                        </div>
+                        <div class="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">目標期待</h5>
+                            <p class="text-xs text-gray-medium mt-1">對未來生活的期待</p>
+                        </div>
+                        <div class="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">保障需求</h5>
+                            <p class="text-xs text-gray-medium mt-1">期待的保障程度</p>
+                        </div>
+                        <div class="p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">應對計畫</h5>
+                            <p class="text-xs text-gray-medium mt-1">現有的應對措施</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. Solution Preference -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mr-4">
+                                <span class="text-pink-600 font-bold text-lg">方</span>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-dark">方案偏好 (Solution Preference)</h3>
+                                <p class="text-sm text-gray-medium">客戶對不同解決方案的偏好</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-2xl font-bold text-pink-600">5</span>
+                            <p class="text-sm text-gray-medium">最高分數</p>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                        <div class="p-3 bg-pink-50 border border-pink-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">方案類型</h5>
+                            <p class="text-xs text-gray-medium mt-1">傾向的保險產品類型</p>
+                        </div>
+                        <div class="p-3 bg-pink-50 border border-pink-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">保障範圍</h5>
+                            <p class="text-xs text-gray-medium mt-1">期待的保障範圍</p>
+                        </div>
+                        <div class="p-3 bg-pink-50 border border-pink-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">繳費方式</h5>
+                            <p class="text-xs text-gray-medium mt-1">偏好的付費方式</p>
+                        </div>
+                        <div class="p-3 bg-pink-50 border border-pink-200 rounded-lg">
+                            <h5 class="font-medium text-sm text-gray-dark">服務期待</h5>
+                            <p class="text-xs text-gray-medium mt-1">對服務品質的要求</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border mt-6">
+                <h2 class="text-lg font-bold text-gray-dark mb-4">維度配分總覽</h2>
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
+                    <div class="text-center p-3 bg-error/5 border border-error/20 rounded-lg">
+                        <div class="text-2xl font-bold text-error">25</div>
+                        <div class="text-xs text-gray-medium mt-1">急迫性</div>
+                    </div>
+                    <div class="text-center p-3 bg-warning/5 border border-warning/20 rounded-lg">
+                        <div class="text-2xl font-bold text-warning">20</div>
+                        <div class="text-xs text-gray-medium mt-1">期待落差</div>
+                    </div>
+                    <div class="text-center p-3 bg-success/5 border border-success/20 rounded-lg">
+                        <div class="text-2xl font-bold text-success">15</div>
+                        <div class="text-xs text-gray-medium mt-1">財務狀況</div>
+                    </div>
+                    <div class="text-center p-3 bg-primary/5 border border-primary/20 rounded-lg">
+                        <div class="text-2xl font-bold text-primary">15</div>
+                        <div class="text-xs text-gray-medium mt-1">決策者</div>
+                    </div>
+                    <div class="text-center p-3 bg-secondary/5 border border-secondary/20 rounded-lg">
+                        <div class="text-2xl font-bold text-secondary">10</div>
+                        <div class="text-xs text-gray-medium mt-1">預算競爭</div>
+                    </div>
+                    <div class="text-center p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                        <div class="text-2xl font-bold text-purple-600">10</div>
+                        <div class="text-xs text-gray-medium mt-1">未來擔心</div>
+                    </div>
+                    <div class="text-center p-3 bg-pink-50 border border-pink-200 rounded-lg">
+                        <div class="text-2xl font-bold text-pink-600">5</div>
+                        <div class="text-xs text-gray-medium mt-1">方案偏好</div>
+                    </div>
+                </div>
+                <div class="mt-4 text-center">
+                    <div class="text-3xl font-bold text-gray-dark">100</div>
+                    <div class="text-sm text-gray-medium">總分</div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

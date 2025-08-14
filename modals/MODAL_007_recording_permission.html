@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODAL_007 - 錄音權限請求</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE',
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'text-primary': '#1A1A1A',
+                        'text-secondary': '#666666',
+                        'text-tertiary': '#999999'
+                    },
+                    boxShadow: {
+                        'level-4': '0px 8px 24px rgba(0,0,0,0.15)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .modal-backdrop {
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-enter {
+            animation: modalEnter 0.3s ease-out;
+        }
+        
+        .modal-exit {
+            animation: modalExit 0.2s ease-in;
+        }
+        
+        @keyframes modalEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        @keyframes modalExit {
+            from {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+        }
+        
+        /* 麥克風圖標動畫 */
+        .mic-pulse {
+            animation: micPulse 2s infinite;
+        }
+        
+        @keyframes micPulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+        }
+        
+        /* 音波動畫 */
+        .sound-wave {
+            animation: soundWave 1.5s infinite;
+        }
+        
+        .sound-wave:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+        
+        .sound-wave:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+        
+        @keyframes soundWave {
+            0%, 100% {
+                opacity: 0;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+        
+        /* 防止背景滾動 */
+        .no-scroll {
+            overflow: hidden;
+        }
+        
+        /* 權限步驟指示器 */
+        .step-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #E5E7EB;
+            transition: all 0.3s ease;
+        }
+        
+        .step-indicator.active {
+            background: #2E5BFF;
+            transform: scale(1.2);
+        }
+        
+        .step-indicator.completed {
+            background: #00D563;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
+    <!-- 示例觸發按鈕 -->
+    <div class="max-w-sm mx-auto space-y-4">
+        <h1 class="text-2xl font-bold text-text-primary text-center mb-8">MODAL_007 - 錄音權限請求</h1>
+        
+        <div class="space-y-4">
+            <button id="requestPermissionBtn" class="w-full bg-primary text-white py-3 px-6 rounded-lg font-medium">
+                請求錄音權限
+            </button>
+            
+            <button id="firstTimeUserBtn" class="w-full bg-secondary text-white py-3 px-6 rounded-lg font-medium">
+                首次使用者引導
+            </button>
+            
+            <button id="deniedPermissionBtn" class="w-full bg-warning text-white py-3 px-6 rounded-lg font-medium">
+                權限被拒絕情況
+            </button>
+            
+            <button id="checkPermissionBtn" class="w-full bg-success text-white py-3 px-6 rounded-lg font-medium">
+                檢查權限狀態
+            </button>
+        </div>
+        
+        <div class="mt-8 p-4 bg-white rounded-lg shadow">
+            <h3 class="font-semibold text-text-primary mb-2">權限狀態：</h3>
+            <div id="permissionStatus" class="text-sm text-text-secondary">
+                <span class="inline-block w-2 h-2 bg-gray-400 rounded-full mr-2"></span>
+                未檢查
+            </div>
+        </div>
+        
+        <div class="mt-4 p-4 bg-white rounded-lg shadow">
+            <h3 class="font-semibold text-text-primary mb-2">組件說明：</h3>
+            <ul class="text-sm text-text-secondary space-y-1">
+                <li>• 錄音權限請求對話框</li>
+                <li>• 支援權限說明和重要性解釋</li>
+                <li>• 處理權限拒絕的引導</li>
+                <li>• 支援分步驟權限申請</li>
+                <li>• 美觀的麥克風動畫效果</li>
+                <li>• 提供手動設定的引導</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 錄音權限請求模態框 -->
+    <div id="permissionModal" class="fixed inset-0 z-50 hidden">
+        <!-- 背景遮罩 -->
+        <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-60 transition-opacity duration-300"></div>
+        
+        <!-- 模態框內容 -->
+        <div class="fixed inset-0 flex items-center justify-center p-4">
+            <div class="modal-enter bg-white rounded-xl shadow-level-4 w-full max-w-sm mx-auto">
+                <!-- 模態框頭部 -->
+                <div class="p-6 text-center">
+                    <!-- 麥克風圖標和音波 -->
+                    <div class="relative flex items-center justify-center mb-6">
+                        <!-- 音波圈 -->
+                        <div class="absolute">
+                            <div class="sound-wave w-24 h-24 border-2 border-primary border-opacity-30 rounded-full"></div>
+                        </div>
+                        <div class="absolute">
+                            <div class="sound-wave w-20 h-20 border-2 border-primary border-opacity-20 rounded-full"></div>
+                        </div>
+                        <div class="absolute">
+                            <div class="sound-wave w-16 h-16 border-2 border-primary border-opacity-10 rounded-full"></div>
+                        </div>
+                        
+                        <!-- 麥克風圖標 -->
+                        <div class="mic-pulse w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <h3 id="permissionTitle" class="text-xl font-bold text-text-primary mb-3">
+                        需要錄音權限
+                    </h3>
+                    
+                    <p id="permissionMessage" class="text-text-secondary leading-relaxed mb-6">
+                        為了提供語音分析服務，我們需要存取您的麥克風進行錄音。
+                    </p>
+                </div>
+                
+                <!-- 權限說明區域 -->
+                <div id="permissionExplanation" class="px-6 pb-4">
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                        <h4 class="font-medium text-text-primary mb-2 flex items-center">
+                            <svg class="w-4 h-4 text-primary mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                            </svg>
+                            為什麼需要這個權限？
+                        </h4>
+                        <ul id="permissionReasons" class="text-sm text-text-secondary space-y-1">
+                            <li>• 錄製銷售對話以供 AI 分析</li>
+                            <li>• 評估銷售技巧和溝通能力</li>
+                            <li>• 生成個人化改善建議</li>
+                            <li>• 建立團隊學習資源</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- 隱私保護說明 -->
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <h4 class="font-medium text-text-primary mb-2 flex items-center">
+                            <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            隱私保護承諾
+                        </h4>
+                        <ul class="text-sm text-text-secondary space-y-1">
+                            <li>• 錄音檔案加密儲存</li>
+                            <li>• 僅用於分析，不會外洩</li>
+                            <li>• 可隨時刪除個人資料</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- 權限申請步驟 -->
+                <div id="permissionSteps" class="px-6 pb-4 hidden">
+                    <div class="text-center mb-4">
+                        <h4 class="font-medium text-text-primary mb-3">權限設定步驟</h4>
+                        <div class="flex justify-center space-x-2 mb-4">
+                            <div class="step-indicator" data-step="1"></div>
+                            <div class="step-indicator" data-step="2"></div>
+                            <div class="step-indicator" data-step="3"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="stepContent" class="text-sm text-text-secondary space-y-3">
+                        <!-- 動態顯示步驟內容 -->
+                    </div>
+                </div>
+                
+                <!-- 模態框按鈕 -->
+                <div class="p-6 pt-0">
+                    <div id="permissionButtons" class="flex gap-3">
+                        <button id="denyPermissionBtn" class="flex-1 bg-gray-100 text-text-secondary py-3 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors">
+                            暫不使用
+                        </button>
+                        <button id="allowPermissionBtn" class="flex-1 bg-primary text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                            允許權限
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 錄音權限請求類
+        class RecordingPermissionModal {
+            constructor() {
+                this.modal = document.getElementById('permissionModal');
+                this.permissionTitle = document.getElementById('permissionTitle');
+                this.permissionMessage = document.getElementById('permissionMessage');
+                this.permissionExplanation = document.getElementById('permissionExplanation');
+                this.permissionSteps = document.getElementById('permissionSteps');
+                this.stepContent = document.getElementById('stepContent');
+                this.permissionButtons = document.getElementById('permissionButtons');
+                this.denyBtn = document.getElementById('denyPermissionBtn');
+                this.allowBtn = document.getElementById('allowPermissionBtn');
+                this.backdrop = this.modal.querySelector('.modal-backdrop');
+                this.modalContent = this.modal.querySelector('.modal-enter');
+                
+                this.onAllow = null;
+                this.onDeny = null;
+                this.currentStep = 1;
+                
+                this.init();
+            }
+            
+            init() {
+                // ESC鍵關閉
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && !this.modal.classList.contains('hidden')) {
+                        this.hide();
+                    }
+                });
+                
+                // 拒絕按鈕
+                this.denyBtn.addEventListener('click', () => {
+                    this.hide();
+                    if (this.onDeny) this.onDeny();
+                });
+                
+                // 允許按鈕
+                this.allowBtn.addEventListener('click', () => {
+                    this.requestPermission();
+                });
+            }
+            
+            show(options = {}) {
+                const {
+                    title = '需要錄音權限',
+                    message = '為了提供語音分析服務，我們需要存取您的麥克風進行錄音。',
+                    type = 'request', // request, denied, guide
+                    onAllow = null,
+                    onDeny = null,
+                    showSteps = false
+                } = options;
+                
+                // 設置內容
+                this.permissionTitle.textContent = title;
+                this.permissionMessage.textContent = message;
+                this.onAllow = onAllow;
+                this.onDeny = onDeny;
+                
+                // 根據類型設置界面
+                this.setupModalType(type, showSteps);
+                
+                // 防止背景滾動
+                document.body.classList.add('no-scroll');
+                
+                // 顯示模態框
+                this.modal.classList.remove('hidden');
+                this.modalContent.classList.remove('modal-exit');
+                this.modalContent.classList.add('modal-enter');
+            }
+            
+            hide() {
+                this.modalContent.classList.remove('modal-enter');
+                this.modalContent.classList.add('modal-exit');
+                
+                setTimeout(() => {
+                    this.modal.classList.add('hidden');
+                    document.body.classList.remove('no-scroll');
+                }, 200);
+            }
+            
+            setupModalType(type, showSteps) {
+                // 重設界面
+                this.permissionExplanation.classList.remove('hidden');
+                this.permissionSteps.classList.add('hidden');
+                
+                switch (type) {
+                    case 'request':
+                        this.allowBtn.textContent = '允許權限';
+                        this.denyBtn.textContent = '暫不使用';
+                        break;
+                        
+                    case 'denied':
+                        this.permissionTitle.textContent = '權限被拒絕';
+                        this.permissionMessage.textContent = '您之前拒絕了錄音權限，請手動開啟權限設定。';
+                        this.allowBtn.textContent = '開啟設定';
+                        this.denyBtn.textContent = '稍後再說';
+                        this.showManualSteps();
+                        break;
+                        
+                    case 'guide':
+                        this.permissionTitle.textContent = '如何開啟錄音權限';
+                        this.permissionMessage.textContent = '請按照以下步驟手動開啟錄音權限：';
+                        this.allowBtn.textContent = '我知道了';
+                        this.denyBtn.textContent = '稍後設定';
+                        this.showManualSteps();
+                        break;
+                }
+                
+                if (showSteps) {
+                    this.showManualSteps();
+                }
+            }
+            
+            showManualSteps() {
+                this.permissionExplanation.classList.add('hidden');
+                this.permissionSteps.classList.remove('hidden');
+                
+                const steps = this.getPermissionSteps();
+                this.renderSteps(steps);
+                this.updateStepIndicator(1);
+                
+                // 自動播放步驟
+                this.playSteps(steps);
+            }
+            
+            getPermissionSteps() {
+                const userAgent = navigator.userAgent;
+                
+                if (/iPhone|iPad|iPod/.test(userAgent)) {
+                    return [
+                        {
+                            title: '開啟 iOS 設定',
+                            content: '從主畫面點擊「設定」應用程式',
+                            icon: '⚙️'
+                        },
+                        {
+                            title: '找到 SalesAI',
+                            content: '向下滾動找到「SalesAI」或在搜尋框輸入應用程式名稱',
+                            icon: '🔍'
+                        },
+                        {
+                            title: '開啟麥克風權限',
+                            content: '點擊「麥克風」開關，確保它呈現綠色狀態',
+                            icon: '🎤'
+                        }
+                    ];
+                } else if (/Android/.test(userAgent)) {
+                    return [
+                        {
+                            title: '開啟應用程式設定',
+                            content: '進入手機設定 > 應用程式管理',
+                            icon: '⚙️'
+                        },
+                        {
+                            title: '選擇 SalesAI',
+                            content: '在應用程式列表中找到並點擊 SalesAI',
+                            icon: '📱'
+                        },
+                        {
+                            title: '開啟權限',
+                            content: '點擊「權限」> 「麥克風」> 選擇「允許」',
+                            icon: '🎤'
+                        }
+                    ];
+                } else {
+                    return [
+                        {
+                            title: '檢查瀏覽器設定',
+                            content: '點擊網址列旁的鎖頭或麥克風圖標',
+                            icon: '🔒'
+                        },
+                        {
+                            title: '允許麥克風存取',
+                            content: '在彈出的選項中選擇「允許」',
+                            icon: '🎤'
+                        },
+                        {
+                            title: '重新載入頁面',
+                            content: '重新載入頁面以應用新的權限設定',
+                            icon: '🔄'
+                        }
+                    ];
+                }
+            }
+            
+            renderSteps(steps) {
+                this.stepContent.innerHTML = steps.map((step, index) => `
+                    <div class="step-item ${index === 0 ? 'opacity-100' : 'opacity-50'}" data-step="${index + 1}">
+                        <div class="flex items-start space-x-3">
+                            <div class="flex-shrink-0 w-8 h-8 bg-primary bg-opacity-10 rounded-full flex items-center justify-center">
+                                <span class="text-lg">${step.icon}</span>
+                            </div>
+                            <div class="flex-1">
+                                <h5 class="font-medium text-text-primary">${step.title}</h5>
+                                <p class="text-text-secondary mt-1">${step.content}</p>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            playSteps(steps) {
+                let currentStep = 1;
+                
+                const interval = setInterval(() => {
+                    if (currentStep <= steps.length) {
+                        this.updateStepIndicator(currentStep);
+                        this.highlightStep(currentStep);
+                        currentStep++;
+                    } else {
+                        clearInterval(interval);
+                    }
+                }, 2000);
+            }
+            
+            updateStepIndicator(step) {
+                document.querySelectorAll('.step-indicator').forEach((indicator, index) => {
+                    indicator.classList.remove('active', 'completed');
+                    
+                    if (index + 1 < step) {
+                        indicator.classList.add('completed');
+                    } else if (index + 1 === step) {
+                        indicator.classList.add('active');
+                    }
+                });
+            }
+            
+            highlightStep(step) {
+                document.querySelectorAll('.step-item').forEach((item, index) => {
+                    if (index + 1 === step) {
+                        item.classList.remove('opacity-50');
+                        item.classList.add('opacity-100');
+                    } else {
+                        item.classList.remove('opacity-100');
+                        item.classList.add('opacity-50');
+                    }
+                });
+            }
+            
+            async requestPermission() {
+                try {
+                    this.allowBtn.disabled = true;
+                    this.allowBtn.textContent = '請求中...';
+                    
+                    // 實際請求麥克風權限
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    
+                    // 成功獲得權限
+                    stream.getTracks().forEach(track => track.stop()); // 停止測試流
+                    
+                    this.showSuccessState();
+                    
+                    setTimeout(() => {
+                        this.hide();
+                        if (this.onAllow) this.onAllow(true);
+                    }, 1500);
+                    
+                } catch (error) {
+                    // 權限被拒絕
+                    console.error('權限請求失敗:', error);
+                    this.showDeniedState();
+                    
+                    setTimeout(() => {
+                        this.setupModalType('denied');
+                    }, 2000);
+                } finally {
+                    this.allowBtn.disabled = false;
+                }
+            }
+            
+            showSuccessState() {
+                this.permissionTitle.textContent = '權限授予成功！';
+                this.permissionMessage.textContent = '太棒了！現在您可以開始使用錄音功能了。';
+                
+                // 更新按鈕
+                this.allowBtn.textContent = '開始使用';
+                this.allowBtn.classList.remove('bg-primary', 'hover:bg-blue-600');
+                this.allowBtn.classList.add('bg-success', 'hover:bg-green-600');
+                
+                this.denyBtn.style.display = 'none';
+                
+                // 更新圖標為成功圖標
+                const micIcon = this.modal.querySelector('.mic-pulse');
+                micIcon.classList.remove('mic-pulse', 'bg-primary');
+                micIcon.classList.add('bg-success');
+                micIcon.innerHTML = '<svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>';
+            }
+            
+            showDeniedState() {
+                this.permissionTitle.textContent = '權限被拒絕';
+                this.permissionMessage.textContent = '無法獲得錄音權限，請手動在設定中開啟。';
+                
+                this.allowBtn.textContent = '開啟設定';
+                this.allowBtn.classList.remove('bg-success', 'hover:bg-green-600');
+                this.allowBtn.classList.add('bg-warning', 'hover:bg-yellow-600');
+            }
+            
+            static async checkPermissionStatus() {
+                try {
+                    const permission = await navigator.permissions.query({ name: 'microphone' });
+                    return permission.state; // 'granted', 'denied', 'prompt'
+                } catch (error) {
+                    // 瀏覽器不支援permissions API
+                    return 'unknown';
+                }
+            }
+        }
+        
+        // 初始化錄音權限模態框
+        const permissionModal = new RecordingPermissionModal();
+        
+        // 更新權限狀態顯示
+        function updatePermissionStatus(status) {
+            const statusElement = document.getElementById('permissionStatus');
+            const statusConfig = {
+                'granted': { color: 'bg-success', text: '已授權' },
+                'denied': { color: 'bg-error', text: '已拒絕' },
+                'prompt': { color: 'bg-warning', text: '待授權' },
+                'unknown': { color: 'bg-gray-400', text: '未知' }
+            };
+            
+            const config = statusConfig[status] || statusConfig['unknown'];
+            statusElement.innerHTML = `
+                <span class="inline-block w-2 h-2 ${config.color} rounded-full mr-2"></span>
+                ${config.text}
+            `;
+        }
+        
+        // 示例用法
+        document.getElementById('requestPermissionBtn').addEventListener('click', () => {
+            permissionModal.show({
+                title: '需要錄音權限',
+                message: '為了提供 AI 語音分析服務，我們需要存取您的麥克風。',
+                type: 'request',
+                onAllow: (success) => {
+                    if (success) {
+                        updatePermissionStatus('granted');
+                        alert('錄音權限已授予！');
+                    }
+                },
+                onDeny: () => {
+                    updatePermissionStatus('denied');
+                    alert('已拒絕錄音權限');
+                }
+            });
+        });
+        
+        document.getElementById('firstTimeUserBtn').addEventListener('click', () => {
+            permissionModal.show({
+                title: '歡迎使用 SalesAI',
+                message: '讓我們設定錄音功能，開始您的 AI 銷售分析之旅！',
+                type: 'request',
+                onAllow: (success) => {
+                    if (success) {
+                        updatePermissionStatus('granted');
+                        alert('設定完成！歡迎使用 SalesAI');
+                    }
+                }
+            });
+        });
+        
+        document.getElementById('deniedPermissionBtn').addEventListener('click', () => {
+            permissionModal.show({
+                type: 'denied',
+                onAllow: () => {
+                    // 開啟系統設定的邏輯
+                    alert('即將開啟系統設定...');
+                }
+            });
+        });
+        
+        document.getElementById('checkPermissionBtn').addEventListener('click', async () => {
+            const status = await RecordingPermissionModal.checkPermissionStatus();
+            updatePermissionStatus(status);
+            alert(`當前權限狀態：${status}`);
+        });
+    </script>
+</body>
+</html>

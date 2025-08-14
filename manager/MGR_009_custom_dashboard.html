@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自定義儀表板 - SalesAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE',
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'gray-dark': '#1A1A1A',
+                        'gray-medium': '#666666',
+                        'gray-light': '#999999',
+                        'gray-bg': '#F8F9FA',
+                        'gray-border': '#E5E5E5'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-bg h-full">
+    <div class="min-h-full pb-20">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-border">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center">
+                        <button onclick="history.back()" class="p-2 text-gray-medium hover:text-gray-dark transition-colors mr-2">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <h1 class="text-xl font-bold text-gray-dark">自定義儀表板</h1>
+                    </div>
+                    <button class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                        保存配置
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <!-- Dashboard Builder -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border mb-6">
+                <h2 class="text-lg font-bold text-gray-dark mb-4">儀表板建構器</h2>
+                
+                <!-- Widget Library -->
+                <div class="mb-6">
+                    <h3 class="font-semibold text-gray-dark mb-3">可用組件</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div class="p-4 border-2 border-dashed border-gray-border rounded-lg cursor-grab hover:border-primary transition-colors" draggable="true" data-widget="metric-card">
+                            <div class="text-center">
+                                <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-sm text-gray-dark">指標卡片</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-border rounded-lg cursor-grab hover:border-primary transition-colors" draggable="true" data-widget="line-chart">
+                            <div class="text-center">
+                                <div class="w-8 h-8 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <svg class="w-4 h-4 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-sm text-gray-dark">折線圖</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-border rounded-lg cursor-grab hover:border-primary transition-colors" draggable="true" data-widget="bar-chart">
+                            <div class="text-center">
+                                <div class="w-8 h-8 bg-warning/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <svg class="w-4 h-4 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-sm text-gray-dark">長條圖</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-border rounded-lg cursor-grab hover:border-primary transition-colors" draggable="true" data-widget="pie-chart">
+                            <div class="text-center">
+                                <div class="w-8 h-8 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <svg class="w-4 h-4 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-sm text-gray-dark">圓餅圖</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-border rounded-lg cursor-grab hover:border-primary transition-colors" draggable="true" data-widget="ranking">
+                            <div class="text-center">
+                                <div class="w-8 h-8 bg-error/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <svg class="w-4 h-4 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-sm text-gray-dark">排名列表</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-border rounded-lg cursor-grab hover:border-primary transition-colors" draggable="true" data-widget="progress">
+                            <div class="text-center">
+                                <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-sm text-gray-dark">進度條</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-border rounded-lg cursor-grab hover:border-primary transition-colors" draggable="true" data-widget="gauge">
+                            <div class="text-center">
+                                <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-sm text-gray-dark">儀表盤</span>
+                            </div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-border rounded-lg cursor-grab hover:border-primary transition-colors" draggable="true" data-widget="calendar">
+                            <div class="text-center">
+                                <div class="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <svg class="w-4 h-4 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-sm text-gray-dark">行事曆</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Canvas -->
+                <div class="mb-6">
+                    <h3 class="font-semibold text-gray-dark mb-3">儀表板畫布</h3>
+                    <div id="dashboard-canvas" class="min-h-96 border-2 border-dashed border-gray-border rounded-lg p-6 bg-gray-50">
+                        <div class="text-center text-gray-medium">
+                            <svg class="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            <p>將組件拖放到這裡開始建構您的儀表板</p>
+                        </div>
+                        
+                        <!-- Sample Widget -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 hidden" id="sample-widgets">
+                            <div class="bg-white p-6 rounded-xl border border-gray-border shadow-sm">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h4 class="font-semibold text-gray-dark">總成交數</h4>
+                                    <button class="text-gray-light hover:text-gray-medium">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="text-3xl font-bold text-primary mb-2">87</div>
+                                <div class="text-sm text-success">+12% 本月</div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-xl border border-gray-border shadow-sm">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h4 class="font-semibold text-gray-dark">平均評分</h4>
+                                    <button class="text-gray-light hover:text-gray-medium">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="text-3xl font-bold text-warning mb-2">8.2</div>
+                                <div class="text-sm text-success">+0.3 本週</div>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-xl border border-gray-border shadow-sm">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h4 class="font-semibold text-gray-dark">團隊活躍度</h4>
+                                    <button class="text-gray-light hover:text-gray-medium">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-3 mb-2">
+                                    <div class="bg-success h-3 rounded-full" style="width: 86%"></div>
+                                </div>
+                                <div class="text-sm text-gray-medium">13/15 成員活躍</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Layout Options -->
+                <div class="mb-6">
+                    <h3 class="font-semibold text-gray-dark mb-3">版面配置</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div class="p-3 border border-gray-border rounded-lg cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors layout-option" data-layout="1-column">
+                            <div class="space-y-1">
+                                <div class="h-4 bg-gray-200 rounded"></div>
+                                <div class="h-4 bg-gray-200 rounded"></div>
+                                <div class="h-4 bg-gray-200 rounded"></div>
+                            </div>
+                            <div class="text-xs text-gray-medium mt-2 text-center">單欄</div>
+                        </div>
+                        <div class="p-3 border border-primary bg-primary/5 rounded-lg cursor-pointer layout-option" data-layout="2-column">
+                            <div class="grid grid-cols-2 gap-1">
+                                <div class="space-y-1">
+                                    <div class="h-2 bg-gray-200 rounded"></div>
+                                    <div class="h-2 bg-gray-200 rounded"></div>
+                                </div>
+                                <div class="space-y-1">
+                                    <div class="h-2 bg-gray-200 rounded"></div>
+                                    <div class="h-2 bg-gray-200 rounded"></div>
+                                </div>
+                            </div>
+                            <div class="text-xs text-primary mt-2 text-center font-medium">雙欄</div>
+                        </div>
+                        <div class="p-3 border border-gray-border rounded-lg cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors layout-option" data-layout="3-column">
+                            <div class="grid grid-cols-3 gap-1">
+                                <div class="h-4 bg-gray-200 rounded"></div>
+                                <div class="h-4 bg-gray-200 rounded"></div>
+                                <div class="h-4 bg-gray-200 rounded"></div>
+                            </div>
+                            <div class="text-xs text-gray-medium mt-2 text-center">三欄</div>
+                        </div>
+                        <div class="p-3 border border-gray-border rounded-lg cursor-pointer hover:border-primary hover:bg-primary/5 transition-colors layout-option" data-layout="mixed">
+                            <div class="space-y-1">
+                                <div class="h-2 bg-gray-200 rounded"></div>
+                                <div class="grid grid-cols-2 gap-1">
+                                    <div class="h-2 bg-gray-200 rounded"></div>
+                                    <div class="h-2 bg-gray-200 rounded"></div>
+                                </div>
+                            </div>
+                            <div class="text-xs text-gray-medium mt-2 text-center">混合</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Saved Templates -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-bold text-gray-dark">已儲存模板</h2>
+                    <button class="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors">
+                        新增模板
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="border border-gray-border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer">
+                        <div class="h-24 bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg mb-3 flex items-center justify-center">
+                            <span class="text-primary text-sm font-medium">預覽</span>
+                        </div>
+                        <h4 class="font-medium text-gray-dark mb-1">團隊績效總覽</h4>
+                        <p class="text-sm text-gray-medium mb-3">綜合團隊表現指標</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-light">最後更新: 昨天</span>
+                            <button class="text-primary hover:text-primary/80 text-sm">使用</button>
+                        </div>
+                    </div>
+
+                    <div class="border border-gray-border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer">
+                        <div class="h-24 bg-gradient-to-br from-success/10 to-success/5 rounded-lg mb-3 flex items-center justify-center">
+                            <span class="text-success text-sm font-medium">預覽</span>
+                        </div>
+                        <h4 class="font-medium text-gray-dark mb-1">銷售分析儀表板</h4>
+                        <p class="text-sm text-gray-medium mb-3">詳細銷售數據分析</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-light">最後更新: 3天前</span>
+                            <button class="text-primary hover:text-primary/80 text-sm">使用</button>
+                        </div>
+                    </div>
+
+                    <div class="border border-gray-border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer">
+                        <div class="h-24 bg-gradient-to-br from-warning/10 to-warning/5 rounded-lg mb-3 flex items-center justify-center">
+                            <span class="text-warning text-sm font-medium">預覽</span>
+                        </div>
+                        <h4 class="font-medium text-gray-dark mb-1">個人表現追蹤</h4>
+                        <p class="text-sm text-gray-medium mb-3">個人績效監控面板</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-light">最後更新: 1週前</span>
+                            <button class="text-primary hover:text-primary/80 text-sm">使用</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Tab Bar -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-border">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex justify-around py-2">
+                    <a href="MGR_001_dashboard.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        <span class="text-xs mt-1">儀表板</span>
+                    </a>
+                    <a href="MGR_002_team_list.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <span class="text-xs mt-1">團隊</span>
+                    </a>
+                    <a href="MGR_005_scoring_settings.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        <span class="text-xs mt-1">評分設定</span>
+                    </a>
+                    <a href="MGR_012_ask_ai.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                        <span class="text-xs mt-1">Ask AI</span>
+                    </a>
+                    <a href="#" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors relative">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-4-4V6a5 5 0 00-10 0v7l-4 4h5m4 0a2 2 0 01-4 0"></path>
+                        </svg>
+                        <span class="text-xs mt-1">通知</span>
+                        <span class="absolute -top-1 -right-1 bg-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        // Dashboard builder functionality
+        const canvas = document.getElementById('dashboard-canvas');
+        const sampleWidgets = document.getElementById('sample-widgets');
+        let isDragging = false;
+
+        // Drag and drop functionality
+        document.querySelectorAll('[data-widget]').forEach(widget => {
+            widget.addEventListener('dragstart', (e) => {
+                e.dataTransfer.setData('text/plain', e.target.dataset.widget);
+                isDragging = true;
+            });
+        });
+
+        canvas.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            if (isDragging) {
+                canvas.classList.add('border-primary', 'bg-primary/5');
+                canvas.classList.remove('border-gray-border', 'bg-gray-50');
+            }
+        });
+
+        canvas.addEventListener('dragleave', (e) => {
+            canvas.classList.remove('border-primary', 'bg-primary/5');
+            canvas.classList.add('border-gray-border', 'bg-gray-50');
+        });
+
+        canvas.addEventListener('drop', (e) => {
+            e.preventDefault();
+            const widgetType = e.dataTransfer.getData('text/plain');
+            canvas.classList.remove('border-primary', 'bg-primary/5');
+            canvas.classList.add('border-gray-border', 'bg-gray-50');
+            
+            // Show sample widgets
+            sampleWidgets.classList.remove('hidden');
+            canvas.querySelector('.text-center').style.display = 'none';
+            isDragging = false;
+        });
+
+        // Layout selection
+        document.querySelectorAll('.layout-option').forEach(option => {
+            option.addEventListener('click', (e) => {
+                // Remove active class from all options
+                document.querySelectorAll('.layout-option').forEach(opt => {
+                    opt.classList.remove('border-primary', 'bg-primary/5');
+                    opt.classList.add('border-gray-border');
+                    opt.querySelector('div:last-child').classList.remove('text-primary', 'font-medium');
+                    opt.querySelector('div:last-child').classList.add('text-gray-medium');
+                });
+                
+                // Add active class to clicked option
+                e.currentTarget.classList.add('border-primary', 'bg-primary/5');
+                e.currentTarget.classList.remove('border-gray-border');
+                e.currentTarget.querySelector('div:last-child').classList.add('text-primary', 'font-medium');
+                e.currentTarget.querySelector('div:last-child').classList.remove('text-gray-medium');
+            });
+        });
+    </script>
+</body>
+</html>

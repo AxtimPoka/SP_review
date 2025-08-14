@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODAL_005 - 時間選擇器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE',
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'text-primary': '#1A1A1A',
+                        'text-secondary': '#666666',
+                        'text-tertiary': '#999999'
+                    },
+                    boxShadow: {
+                        'level-4': '0px 8px 24px rgba(0,0,0,0.15)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .modal-backdrop {
+            backdrop-filter: blur(4px);
+        }
+        
+        .sheet-enter {
+            animation: slideUp 0.3s ease-out;
+        }
+        
+        .sheet-exit {
+            animation: slideDown 0.25s ease-in;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(100%);
+            }
+        }
+        
+        /* 時間滾輪樣式 */
+        .time-wheel {
+            height: 200px;
+            overflow-y: auto;
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .time-wheel::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .time-item {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            scroll-snap-align: center;
+            transition: all 0.2s ease;
+            font-size: 18px;
+        }
+        
+        .time-item.selected {
+            color: #2E5BFF;
+            font-weight: 600;
+            transform: scale(1.1);
+        }
+        
+        /* 滾輪指示器 */
+        .wheel-indicator {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 40px;
+            border-top: 2px solid #2E5BFF;
+            border-bottom: 2px solid #2E5BFF;
+            background: rgba(46, 91, 255, 0.05);
+            pointer-events: none;
+        }
+        
+        .wheel-container {
+            position: relative;
+        }
+        
+        /* 漸變遮罩 */
+        .wheel-mask {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 60px;
+            pointer-events: none;
+            z-index: 10;
+        }
+        
+        .wheel-mask.top {
+            top: 0;
+            background: linear-gradient(to bottom, rgba(255,255,255,1), rgba(255,255,255,0));
+        }
+        
+        .wheel-mask.bottom {
+            bottom: 0;
+            background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0));
+        }
+        
+        /* 手勢滑動指示器 */
+        .drag-handle {
+            width: 36px;
+            height: 4px;
+            background-color: #D1D5DB;
+            border-radius: 2px;
+        }
+        
+        /* 防止背景滾動 */
+        .no-scroll {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
+    <!-- 示例觸發按鈕 -->
+    <div class="max-w-sm mx-auto space-y-4">
+        <h1 class="text-2xl font-bold text-text-primary text-center mb-8">MODAL_005 - 時間選擇器</h1>
+        
+        <div class="space-y-4">
+            <div class="space-y-2">
+                <label class="text-sm font-medium text-text-primary">會議時間</label>
+                <button id="meetingTimeBtn" class="w-full border border-gray-300 rounded-lg py-3 px-4 text-left hover:border-primary transition-colors">
+                    <span class="text-text-tertiary" id="meetingTimeText">選擇會議時間</span>
+                </button>
+            </div>
+            
+            <div class="space-y-2">
+                <label class="text-sm font-medium text-text-primary">提醒時間</label>
+                <button id="reminderTimeBtn" class="w-full border border-gray-300 rounded-lg py-3 px-4 text-left hover:border-primary transition-colors">
+                    <span class="text-text-tertiary" id="reminderTimeText">設定提醒時間</span>
+                </button>
+            </div>
+            
+            <div class="space-y-2">
+                <label class="text-sm font-medium text-text-primary">錄音時間</label>
+                <button id="recordingTimeBtn" class="w-full border border-gray-300 rounded-lg py-3 px-4 text-left hover:border-primary transition-colors">
+                    <span class="text-text-tertiary" id="recordingTimeText">選擇錄音開始時間</span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="mt-8 p-4 bg-white rounded-lg shadow">
+            <h3 class="font-semibold text-text-primary mb-2">組件說明：</h3>
+            <ul class="text-sm text-text-secondary space-y-1">
+                <li>• iOS風格的時間滾輪選擇器</li>
+                <li>• 支援12/24小時制切換</li>
+                <li>• 平滑的滾動動畫效果</li>
+                <li>• 支援觸控手勢操作</li>
+                <li>• 自動對齊到最近的時間</li>
+                <li>• 支援時間範圍限制</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 時間選擇器模態框 -->
+    <div id="timePickerModal" class="fixed inset-0 z-50 hidden">
+        <!-- 背景遮罩 -->
+        <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300"></div>
+        
+        <!-- 底部表單內容 -->
+        <div class="fixed bottom-0 left-0 right-0 flex justify-center">
+            <div class="sheet-enter bg-white rounded-t-xl shadow-level-4 w-full max-w-md mx-4 mb-4">
+                <!-- 拖拽手柄 -->
+                <div class="flex justify-center pt-3 pb-2">
+                    <div class="drag-handle"></div>
+                </div>
+                
+                <!-- 標題區域 -->
+                <div class="px-4 pb-4 border-b border-gray-100">
+                    <h3 id="timePickerTitle" class="text-lg font-semibold text-text-primary text-center">
+                        選擇時間
+                    </h3>
+                    
+                    <!-- 12/24小時制切換 -->
+                    <div class="flex justify-center mt-3">
+                        <div class="bg-gray-100 rounded-lg p-1 flex">
+                            <button id="format12h" class="px-3 py-1 rounded-md text-sm font-medium transition-colors">
+                                12小時制
+                            </button>
+                            <button id="format24h" class="px-3 py-1 rounded-md text-sm font-medium transition-colors">
+                                24小時制
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 時間滾輪 -->
+                <div class="p-4">
+                    <div class="flex justify-center gap-2">
+                        <!-- 小時滾輪 -->
+                        <div class="wheel-container flex-1">
+                            <div class="wheel-mask top"></div>
+                            <div class="wheel-mask bottom"></div>
+                            <div class="wheel-indicator"></div>
+                            <div id="hourWheel" class="time-wheel">
+                                <!-- 動態生成小時選項 -->
+                            </div>
+                            <div class="text-center text-xs text-text-tertiary mt-2">小時</div>
+                        </div>
+                        
+                        <!-- 分鐘滾輪 -->
+                        <div class="wheel-container flex-1">
+                            <div class="wheel-mask top"></div>
+                            <div class="wheel-mask bottom"></div>
+                            <div class="wheel-indicator"></div>
+                            <div id="minuteWheel" class="time-wheel">
+                                <!-- 動態生成分鐘選項 -->
+                            </div>
+                            <div class="text-center text-xs text-text-tertiary mt-2">分鐘</div>
+                        </div>
+                        
+                        <!-- AM/PM滾輪 (僅12小時制顯示) -->
+                        <div id="ampmContainer" class="wheel-container flex-1">
+                            <div class="wheel-mask top"></div>
+                            <div class="wheel-mask bottom"></div>
+                            <div class="wheel-indicator"></div>
+                            <div id="ampmWheel" class="time-wheel">
+                                <div class="time-item" data-value="AM">上午</div>
+                                <div class="time-item" data-value="PM">下午</div>
+                            </div>
+                            <div class="text-center text-xs text-text-tertiary mt-2">時段</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 快速選擇 -->
+                <div class="px-4 pb-4">
+                    <div class="flex gap-2 overflow-x-auto">
+                        <button class="quick-time-btn whitespace-nowrap px-3 py-2 text-sm bg-gray-100 text-text-secondary rounded-lg hover:bg-gray-200 transition-colors" data-time="09:00">
+                            09:00
+                        </button>
+                        <button class="quick-time-btn whitespace-nowrap px-3 py-2 text-sm bg-gray-100 text-text-secondary rounded-lg hover:bg-gray-200 transition-colors" data-time="12:00">
+                            12:00
+                        </button>
+                        <button class="quick-time-btn whitespace-nowrap px-3 py-2 text-sm bg-gray-100 text-text-secondary rounded-lg hover:bg-gray-200 transition-colors" data-time="14:00">
+                            14:00
+                        </button>
+                        <button class="quick-time-btn whitespace-nowrap px-3 py-2 text-sm bg-gray-100 text-text-secondary rounded-lg hover:bg-gray-200 transition-colors" data-time="18:00">
+                            18:00
+                        </button>
+                        <button class="quick-time-btn whitespace-nowrap px-3 py-2 text-sm bg-gray-100 text-text-secondary rounded-lg hover:bg-gray-200 transition-colors" data-time="now">
+                            現在
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 模態框按鈕 -->
+                <div class="p-4 pt-0 flex gap-3 border-t border-gray-100">
+                    <button id="cancelTimeBtn" class="flex-1 bg-gray-100 text-text-secondary py-3 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors">
+                        取消
+                    </button>
+                    <button id="confirmTimeBtn" class="flex-1 bg-primary text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                        確認
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 時間選擇器類
+        class TimePicker {
+            constructor() {
+                this.modal = document.getElementById('timePickerModal');
+                this.timePickerTitle = document.getElementById('timePickerTitle');
+                this.format12hBtn = document.getElementById('format12h');
+                this.format24hBtn = document.getElementById('format24h');
+                this.hourWheel = document.getElementById('hourWheel');
+                this.minuteWheel = document.getElementById('minuteWheel');
+                this.ampmWheel = document.getElementById('ampmWheel');
+                this.ampmContainer = document.getElementById('ampmContainer');
+                this.cancelBtn = document.getElementById('cancelTimeBtn');
+                this.confirmBtn = document.getElementById('confirmTimeBtn');
+                this.backdrop = this.modal.querySelector('.modal-backdrop');
+                this.sheetContent = this.modal.querySelector('.sheet-enter');
+                
+                this.is24HourFormat = true;
+                this.selectedHour = 9;
+                this.selectedMinute = 0;
+                this.selectedAmPm = 'AM';
+                this.onConfirm = null;
+                this.onCancel = null;
+                
+                this.init();
+            }
+            
+            init() {
+                // ESC鍵關閉
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && !this.modal.classList.contains('hidden')) {
+                        this.hide();
+                    }
+                });
+                
+                // 背景點擊關閉
+                this.backdrop.addEventListener('click', () => {
+                    this.hide();
+                });
+                
+                // 取消按鈕
+                this.cancelBtn.addEventListener('click', () => {
+                    this.hide();
+                    if (this.onCancel) this.onCancel();
+                });
+                
+                // 確認按鈕
+                this.confirmBtn.addEventListener('click', () => {
+                    const time = this.getSelectedTime();
+                    this.hide();
+                    if (this.onConfirm) this.onConfirm(time);
+                });
+                
+                // 時間格式切換
+                this.format12hBtn.addEventListener('click', () => {
+                    this.setTimeFormat(false);
+                });
+                
+                this.format24hBtn.addEventListener('click', () => {
+                    this.setTimeFormat(true);
+                });
+                
+                // 滾輪事件
+                this.initWheelEvents();
+                
+                // 快速選擇按鈕
+                document.querySelectorAll('.quick-time-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const time = btn.dataset.time;
+                        if (time === 'now') {
+                            this.setCurrentTime();
+                        } else {
+                            this.setTime(time);
+                        }
+                    });
+                });
+                
+                // 初始化滾輪
+                this.setTimeFormat(true);
+            }
+            
+            initWheelEvents() {
+                // 小時滾輪
+                this.hourWheel.addEventListener('scroll', () => {
+                    this.debounce(() => {
+                        this.updateSelectedHour();
+                    }, 100)();
+                });
+                
+                // 分鐘滾輪
+                this.minuteWheel.addEventListener('scroll', () => {
+                    this.debounce(() => {
+                        this.updateSelectedMinute();
+                    }, 100)();
+                });
+                
+                // AM/PM滾輪
+                this.ampmWheel.addEventListener('scroll', () => {
+                    this.debounce(() => {
+                        this.updateSelectedAmPm();
+                    }, 100)();
+                });
+            }
+            
+            show(options = {}) {
+                const {
+                    title = '選擇時間',
+                    time = null,
+                    format24h = true,
+                    onConfirm = null,
+                    onCancel = null
+                } = options;
+                
+                // 設置選項
+                this.timePickerTitle.textContent = title;
+                this.onConfirm = onConfirm;
+                this.onCancel = onCancel;
+                
+                // 設置時間格式
+                this.setTimeFormat(format24h);
+                
+                // 設置初始時間
+                if (time) {
+                    this.setTime(time);
+                } else {
+                    this.setCurrentTime();
+                }
+                
+                // 防止背景滾動
+                document.body.classList.add('no-scroll');
+                
+                // 顯示模態框
+                this.modal.classList.remove('hidden');
+                this.sheetContent.classList.remove('sheet-exit');
+                this.sheetContent.classList.add('sheet-enter');
+            }
+            
+            hide() {
+                this.sheetContent.classList.remove('sheet-enter');
+                this.sheetContent.classList.add('sheet-exit');
+                
+                setTimeout(() => {
+                    this.modal.classList.add('hidden');
+                    document.body.classList.remove('no-scroll');
+                }, 250);
+            }
+            
+            setTimeFormat(is24Hour) {
+                this.is24HourFormat = is24Hour;
+                
+                // 更新按鈕樣式
+                if (is24Hour) {
+                    this.format24hBtn.classList.add('bg-white', 'text-primary');
+                    this.format24hBtn.classList.remove('text-text-secondary');
+                    this.format12hBtn.classList.remove('bg-white', 'text-primary');
+                    this.format12hBtn.classList.add('text-text-secondary');
+                    this.ampmContainer.classList.add('hidden');
+                } else {
+                    this.format12hBtn.classList.add('bg-white', 'text-primary');
+                    this.format12hBtn.classList.remove('text-text-secondary');
+                    this.format24hBtn.classList.remove('bg-white', 'text-primary');
+                    this.format24hBtn.classList.add('text-text-secondary');
+                    this.ampmContainer.classList.remove('hidden');
+                }
+                
+                // 重新生成小時選項
+                this.generateHourOptions();
+                this.generateMinuteOptions();
+                
+                // 重新設置選中狀態
+                this.scrollToSelected();
+            }
+            
+            generateHourOptions() {
+                this.hourWheel.innerHTML = '';
+                
+                // 添加空白項目用於居中對齊
+                for (let i = 0; i < 4; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'time-item';
+                    this.hourWheel.appendChild(div);
+                }
+                
+                // 生成小時選項
+                const maxHour = this.is24HourFormat ? 23 : 12;
+                const minHour = this.is24HourFormat ? 0 : 1;
+                
+                for (let hour = minHour; hour <= maxHour; hour++) {
+                    const div = document.createElement('div');
+                    div.className = 'time-item';
+                    div.textContent = hour.toString().padStart(2, '0');
+                    div.dataset.value = hour;
+                    this.hourWheel.appendChild(div);
+                }
+                
+                // 添加空白項目用於居中對齊
+                for (let i = 0; i < 4; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'time-item';
+                    this.hourWheel.appendChild(div);
+                }
+            }
+            
+            generateMinuteOptions() {
+                this.minuteWheel.innerHTML = '';
+                
+                // 添加空白項目用於居中對齊
+                for (let i = 0; i < 4; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'time-item';
+                    this.minuteWheel.appendChild(div);
+                }
+                
+                // 生成分鐘選項（5分鐘間隔）
+                for (let minute = 0; minute < 60; minute += 5) {
+                    const div = document.createElement('div');
+                    div.className = 'time-item';
+                    div.textContent = minute.toString().padStart(2, '0');
+                    div.dataset.value = minute;
+                    this.minuteWheel.appendChild(div);
+                }
+                
+                // 添加空白項目用於居中對齊
+                for (let i = 0; i < 4; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'time-item';
+                    this.minuteWheel.appendChild(div);
+                }
+            }
+            
+            setTime(timeString) {
+                const [hourStr, minuteStr] = timeString.split(':');
+                let hour = parseInt(hourStr);
+                const minute = parseInt(minuteStr);
+                
+                // 處理12小時制轉換
+                if (!this.is24HourFormat) {
+                    if (hour === 0) {
+                        this.selectedAmPm = 'AM';
+                        hour = 12;
+                    } else if (hour < 12) {
+                        this.selectedAmPm = 'AM';
+                    } else if (hour === 12) {
+                        this.selectedAmPm = 'PM';
+                    } else {
+                        this.selectedAmPm = 'PM';
+                        hour -= 12;
+                    }
+                }
+                
+                this.selectedHour = hour;
+                this.selectedMinute = Math.floor(minute / 5) * 5; // 對齊到5分鐘間隔
+                
+                this.scrollToSelected();
+            }
+            
+            setCurrentTime() {
+                const now = new Date();
+                const timeString = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+                this.setTime(timeString);
+            }
+            
+            scrollToSelected() {
+                // 滾動到選中的小時
+                const hourItems = this.hourWheel.querySelectorAll('.time-item[data-value]');
+                hourItems.forEach(item => {
+                    item.classList.remove('selected');
+                    if (parseInt(item.dataset.value) === this.selectedHour) {
+                        item.classList.add('selected');
+                        item.scrollIntoView({ block: 'center', behavior: 'smooth' });
+                    }
+                });
+                
+                // 滾動到選中的分鐘
+                const minuteItems = this.minuteWheel.querySelectorAll('.time-item[data-value]');
+                minuteItems.forEach(item => {
+                    item.classList.remove('selected');
+                    if (parseInt(item.dataset.value) === this.selectedMinute) {
+                        item.classList.add('selected');
+                        item.scrollIntoView({ block: 'center', behavior: 'smooth' });
+                    }
+                });
+                
+                // 滾動到選中的AM/PM
+                if (!this.is24HourFormat) {
+                    const ampmItems = this.ampmWheel.querySelectorAll('.time-item[data-value]');
+                    ampmItems.forEach(item => {
+                        item.classList.remove('selected');
+                        if (item.dataset.value === this.selectedAmPm) {
+                            item.classList.add('selected');
+                            item.scrollIntoView({ block: 'center', behavior: 'smooth' });
+                        }
+                    });
+                }
+            }
+            
+            updateSelectedHour() {
+                const centerY = this.hourWheel.offsetTop + this.hourWheel.offsetHeight / 2;
+                let closestItem = null;
+                let minDistance = Infinity;
+                
+                this.hourWheel.querySelectorAll('.time-item[data-value]').forEach(item => {
+                    const itemY = item.offsetTop + item.offsetHeight / 2;
+                    const distance = Math.abs(itemY - centerY);
+                    
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closestItem = item;
+                    }
+                });
+                
+                if (closestItem) {
+                    this.selectedHour = parseInt(closestItem.dataset.value);
+                    this.updateSelection();
+                }
+            }
+            
+            updateSelectedMinute() {
+                const centerY = this.minuteWheel.offsetTop + this.minuteWheel.offsetHeight / 2;
+                let closestItem = null;
+                let minDistance = Infinity;
+                
+                this.minuteWheel.querySelectorAll('.time-item[data-value]').forEach(item => {
+                    const itemY = item.offsetTop + item.offsetHeight / 2;
+                    const distance = Math.abs(itemY - centerY);
+                    
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closestItem = item;
+                    }
+                });
+                
+                if (closestItem) {
+                    this.selectedMinute = parseInt(closestItem.dataset.value);
+                    this.updateSelection();
+                }
+            }
+            
+            updateSelectedAmPm() {
+                const centerY = this.ampmWheel.offsetTop + this.ampmWheel.offsetHeight / 2;
+                let closestItem = null;
+                let minDistance = Infinity;
+                
+                this.ampmWheel.querySelectorAll('.time-item[data-value]').forEach(item => {
+                    const itemY = item.offsetTop + item.offsetHeight / 2;
+                    const distance = Math.abs(itemY - centerY);
+                    
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closestItem = item;
+                    }
+                });
+                
+                if (closestItem) {
+                    this.selectedAmPm = closestItem.dataset.value;
+                    this.updateSelection();
+                }
+            }
+            
+            updateSelection() {
+                // 更新所有選中狀態
+                document.querySelectorAll('.time-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+                
+                // 標記選中項目
+                document.querySelectorAll('.time-item[data-value]').forEach(item => {
+                    if (item.closest('#hourWheel') && parseInt(item.dataset.value) === this.selectedHour) {
+                        item.classList.add('selected');
+                    } else if (item.closest('#minuteWheel') && parseInt(item.dataset.value) === this.selectedMinute) {
+                        item.classList.add('selected');
+                    } else if (item.closest('#ampmWheel') && item.dataset.value === this.selectedAmPm) {
+                        item.classList.add('selected');
+                    }
+                });
+            }
+            
+            getSelectedTime() {
+                let hour = this.selectedHour;
+                
+                // 12小時制轉24小時制
+                if (!this.is24HourFormat) {
+                    if (this.selectedAmPm === 'AM' && hour === 12) {
+                        hour = 0;
+                    } else if (this.selectedAmPm === 'PM' && hour !== 12) {
+                        hour += 12;
+                    }
+                }
+                
+                return {
+                    hour: hour,
+                    minute: this.selectedMinute,
+                    formatted: `${hour.toString().padStart(2, '0')}:${this.selectedMinute.toString().padStart(2, '0')}`,
+                    formatted12h: this.format12HourTime(hour, this.selectedMinute)
+                };
+            }
+            
+            format12HourTime(hour, minute) {
+                const ampm = hour >= 12 ? '下午' : '上午';
+                const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+                return `${ampm} ${displayHour}:${minute.toString().padStart(2, '0')}`;
+            }
+            
+            debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            }
+        }
+        
+        // 初始化時間選擇器
+        const timePicker = new TimePicker();
+        
+        // 示例用法
+        document.getElementById('meetingTimeBtn').addEventListener('click', () => {
+            timePicker.show({
+                title: '選擇會議時間',
+                time: '14:00',
+                format24h: false,
+                onConfirm: (time) => {
+                    document.getElementById('meetingTimeText').textContent = time.formatted12h;
+                    document.getElementById('meetingTimeText').classList.remove('text-text-tertiary');
+                    document.getElementById('meetingTimeText').classList.add('text-text-primary');
+                }
+            });
+        });
+        
+        document.getElementById('reminderTimeBtn').addEventListener('click', () => {
+            timePicker.show({
+                title: '設定提醒時間',
+                format24h: true,
+                onConfirm: (time) => {
+                    document.getElementById('reminderTimeText').textContent = time.formatted;
+                    document.getElementById('reminderTimeText').classList.remove('text-text-tertiary');
+                    document.getElementById('reminderTimeText').classList.add('text-text-primary');
+                }
+            });
+        });
+        
+        document.getElementById('recordingTimeBtn').addEventListener('click', () => {
+            timePicker.show({
+                title: '選擇錄音開始時間',
+                time: '09:00',
+                format24h: true,
+                onConfirm: (time) => {
+                    document.getElementById('recordingTimeText').textContent = time.formatted;
+                    document.getElementById('recordingTimeText').classList.remove('text-text-tertiary');
+                    document.getElementById('recordingTimeText').classList.add('text-text-primary');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

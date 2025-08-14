@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODAL_008 - 麥克風權限請求 | SalesAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom animations */
+        @keyframes pulse-mic {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+        
+        .animate-pulse-mic {
+            animation: pulse-mic 2s ease-in-out infinite;
+        }
+        
+        @keyframes sound-wave {
+            0% { transform: scaleY(0.3); }
+            50% { transform: scaleY(1); }
+            100% { transform: scaleY(0.3); }
+        }
+        
+        .wave-1 { animation: sound-wave 1s ease-in-out infinite; }
+        .wave-2 { animation: sound-wave 1s ease-in-out infinite 0.1s; }
+        .wave-3 { animation: sound-wave 1s ease-in-out infinite 0.2s; }
+        .wave-4 { animation: sound-wave 1s ease-in-out infinite 0.3s; }
+        .wave-5 { animation: sound-wave 1s ease-in-out infinite 0.4s; }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE',
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'gray-dark': '#1A1A1A',
+                        'gray-medium': '#666666',
+                        'gray-light': '#999999',
+                        'gray-bg': '#F8F9FA',
+                        'gray-border': '#E5E5E5'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-bg">
+    <!-- Demo Container -->
+    <div class="min-h-screen flex flex-col items-center justify-center p-4">
+        <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-6">
+            <h1 class="text-2xl font-bold text-gray-dark mb-2">MODAL_008</h1>
+            <h2 class="text-lg text-gray-medium mb-6">麥克風權限請求</h2>
+            
+            <div class="space-y-4">
+                <button onclick="microphonePermission.show()" 
+                        class="w-full px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+                    觸發麥克風權限請求
+                </button>
+                
+                <button onclick="microphonePermission.checkAndRequest()" 
+                        class="w-full px-6 py-3 bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors">
+                    檢查並請求權限
+                </button>
+            </div>
+            
+            <div class="mt-6 p-4 bg-gray-bg rounded-lg">
+                <h3 class="font-bold text-gray-dark mb-2">組件說明：</h3>
+                <ul class="text-sm text-gray-medium space-y-1">
+                    <li>• 請求麥克風權限的專用彈窗</li>
+                    <li>• 包含動畫效果和聲波視覺化</li>
+                    <li>• 支援權限狀態檢查</li>
+                    <li>• 提供設定引導說明</li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- Permission Status -->
+        <div id="permissionStatus" class="mt-4 p-3 bg-white rounded-lg shadow-md">
+            <span class="text-sm text-gray-medium">權限狀態：</span>
+            <span id="statusText" class="text-sm font-medium text-gray-dark">未檢查</span>
+        </div>
+    </div>
+
+    <!-- Microphone Permission Modal -->
+    <div id="microphonePermissionModal" class="fixed inset-0 z-50 hidden">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"></div>
+        
+        <!-- Modal Content -->
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-sm w-full shadow-xl transform transition-all duration-300 scale-95 opacity-0">
+                <!-- Icon and Animation -->
+                <div class="pt-8 pb-4 px-6">
+                    <div class="relative mx-auto w-24 h-24">
+                        <!-- Microphone Icon -->
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center animate-pulse-mic">
+                                <svg class="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        
+                        <!-- Sound Waves -->
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="flex space-x-1">
+                                <div class="w-1 h-8 bg-primary/30 rounded-full wave-1"></div>
+                                <div class="w-1 h-8 bg-primary/30 rounded-full wave-2"></div>
+                                <div class="w-1 h-8 bg-primary/30 rounded-full wave-3"></div>
+                                <div class="w-1 h-8 bg-primary/30 rounded-full wave-4"></div>
+                                <div class="w-1 h-8 bg-primary/30 rounded-full wave-5"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Content -->
+                <div class="px-6 pb-4 text-center">
+                    <h3 class="text-xl font-bold text-gray-dark mb-2">需要麥克風權限</h3>
+                    <p class="text-gray-medium text-sm leading-relaxed mb-4">
+                        為了錄製您的銷售對話並進行AI分析，我們需要您的麥克風權限。
+                    </p>
+                    
+                    <!-- Features List -->
+                    <div class="bg-gray-bg rounded-lg p-3 mb-4">
+                        <div class="space-y-2 text-left">
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-4 h-4 text-success flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-xs text-gray-medium">錄音僅在您主動開啟時進行</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-4 h-4 text-success flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-xs text-gray-medium">您的錄音資料會安全加密儲存</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <svg class="w-4 h-4 text-success flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                                <span class="text-xs text-gray-medium">可隨時在設定中關閉權限</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actions -->
+                <div class="px-6 pb-6 space-y-2">
+                    <button onclick="microphonePermission.requestPermission()" 
+                            class="w-full px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium">
+                        允許使用麥克風
+                    </button>
+                    <button onclick="microphonePermission.hide()" 
+                            class="w-full px-4 py-3 text-gray-medium hover:bg-gray-bg rounded-lg transition-colors">
+                        稍後再說
+                    </button>
+                </div>
+                
+                <!-- Help Link -->
+                <div class="border-t border-gray-border px-6 py-3">
+                    <button onclick="microphonePermission.showHelp()" 
+                            class="text-xs text-primary hover:underline">
+                        無法啟用？查看幫助
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class MicrophonePermissionModal {
+            constructor() {
+                this.modal = document.getElementById('microphonePermissionModal');
+                this.statusText = document.getElementById('statusText');
+                this.init();
+            }
+            
+            init() {
+                // Click backdrop to close
+                this.modal.querySelector('.bg-black\\/50').addEventListener('click', () => this.hide());
+                
+                // ESC key to close
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && !this.modal.classList.contains('hidden')) {
+                        this.hide();
+                    }
+                });
+            }
+            
+            show() {
+                this.modal.classList.remove('hidden');
+                requestAnimationFrame(() => {
+                    const content = this.modal.querySelector('.bg-white');
+                    content.classList.remove('scale-95', 'opacity-0');
+                    content.classList.add('scale-100', 'opacity-100');
+                });
+            }
+            
+            hide() {
+                const content = this.modal.querySelector('.bg-white');
+                content.classList.remove('scale-100', 'opacity-100');
+                content.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    this.modal.classList.add('hidden');
+                }, 300);
+            }
+            
+            async checkAndRequest() {
+                try {
+                    const result = await navigator.permissions.query({ name: 'microphone' });
+                    this.updateStatus(result.state);
+                    
+                    if (result.state === 'prompt' || result.state === 'denied') {
+                        this.show();
+                    } else if (result.state === 'granted') {
+                        alert('麥克風權限已授予！');
+                    }
+                    
+                    result.addEventListener('change', () => {
+                        this.updateStatus(result.state);
+                    });
+                } catch (error) {
+                    // Fallback for browsers that don't support permissions API
+                    this.show();
+                }
+            }
+            
+            async requestPermission() {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    stream.getTracks().forEach(track => track.stop());
+                    this.updateStatus('granted');
+                    this.hide();
+                    alert('麥克風權限已成功授予！');
+                } catch (error) {
+                    this.updateStatus('denied');
+                    alert('麥克風權限被拒絕。請在瀏覽器設定中手動允許。');
+                }
+            }
+            
+            updateStatus(state) {
+                const statusMap = {
+                    'granted': { text: '已允許', color: 'text-success' },
+                    'denied': { text: '已拒絕', color: 'text-error' },
+                    'prompt': { text: '待授權', color: 'text-warning' }
+                };
+                
+                const status = statusMap[state] || { text: '未知', color: 'text-gray-medium' };
+                this.statusText.textContent = status.text;
+                this.statusText.className = `text-sm font-medium ${status.color}`;
+            }
+            
+            showHelp() {
+                alert('請檢查瀏覽器設定：\n1. 點擊網址列的鎖頭圖標\n2. 找到「麥克風」權限\n3. 選擇「允許」\n4. 重新整理頁面');
+            }
+        }
+        
+        // Initialize
+        const microphonePermission = new MicrophonePermissionModal();
+    </script>
+</body>
+</html>

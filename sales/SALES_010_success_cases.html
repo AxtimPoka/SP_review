@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalesAI - 成功案例</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#2E5BFF',
+                        'secondary': '#00C6AE',
+                        'success': '#00D563',
+                        'warning': '#FFB800',
+                        'error': '#FF4757',
+                        'text-primary': '#1A1A1A',
+                        'text-secondary': '#666666',
+                        'text-tertiary': '#999999'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 font-sans">
+    <header class="bg-white shadow-sm px-4 py-3 sticky top-0 z-10">
+        <div class="flex items-center justify-between">
+            <h1 class="text-lg font-semibold text-text-primary">成功案例</h1>
+            <div class="flex items-center space-x-4">
+                <div class="relative cursor-pointer" onclick="location.href='../common/COMMON_008_notification_center.html'">
+                    <i class="fas fa-bell text-text-secondary text-lg"></i>
+                    <span class="absolute -top-2 -right-2 bg-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
+                </div>
+                <button onclick="location.href='../common/COMMON_001_settings.html'" class="text-text-secondary">
+                    <i class="fas fa-cog text-lg"></i>
+                </button>
+                <button onclick="showFilter()" class="text-text-secondary">
+                    <i class="fas fa-filter text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="px-4 py-6 pb-24">
+        <!-- Search Bar -->
+        <section class="mb-6">
+            <div class="flex space-x-3">
+                <div class="flex-1 relative">
+                    <input type="text" placeholder="搜尋關鍵字..." class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2 pl-10">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-text-tertiary"></i>
+                </div>
+                <select class="bg-white border border-gray-200 rounded-lg px-3 py-2 min-w-20">
+                    <option value="">險種</option>
+                    <option value="壽險">壽險</option>
+                    <option value="醫療險">醫療險</option>
+                    <option value="意外險">意外險</option>
+                    <option value="儲蓄險">儲蓄險</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Team Contribution -->
+        <section class="mb-6">
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h3 class="font-semibold text-text-primary mb-4">團隊貢獻</h3>
+                <div class="grid grid-cols-3 gap-4 mb-4">
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-chart-bar text-primary"></i>
+                        </div>
+                        <p class="text-xs text-text-tertiary">總案例</p>
+                        <p class="text-lg font-bold text-text-primary">156</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-plus text-success"></i>
+                        </div>
+                        <p class="text-xs text-text-tertiary">本月新增</p>
+                        <p class="text-lg font-bold text-text-primary">23</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-12 h-12 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-2">
+                            <i class="fas fa-users text-secondary"></i>
+                        </div>
+                        <p class="text-xs text-text-tertiary">活躍成員</p>
+                        <p class="text-lg font-bold text-text-primary">12</p>
+                    </div>
+                </div>
+                
+                <!-- Leaderboard -->
+                <div class="bg-gray-50 rounded-lg p-3">
+                    <h4 class="font-medium text-text-primary mb-3">貢獻排行榜</h4>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-warning text-lg">🥇</span>
+                                <span class="text-sm font-medium">李美華</span>
+                            </div>
+                            <span class="text-sm text-text-tertiary">15個案例</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-text-tertiary text-lg">🥈</span>
+                                <span class="text-sm font-medium">王小明</span>
+                            </div>
+                            <span class="text-sm text-text-tertiary">12個案例</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-warning text-lg">🥉</span>
+                                <span class="text-sm font-medium">陳大文</span>
+                            </div>
+                            <span class="text-sm text-text-tertiary">8個案例</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Latest Cases -->
+        <section>
+            <h3 class="font-semibold text-text-primary mb-4">最新案例</h3>
+            <div class="space-y-4">
+                <!-- Case 1 -->
+                <div class="bg-white rounded-xl p-4 shadow-sm" onclick="location.href='SALES_015_case_details.html?case=增額壽險成交案'">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-text-primary mb-1">增額壽險成交案</h4>
+                            <div class="flex items-center space-x-2 mb-2">
+                                <span class="text-xs bg-success/10 text-success px-2 py-1 rounded-full">壽險</span>
+                                <span class="text-xs text-text-tertiary">李美華</span>
+                                <span class="text-xs text-text-tertiary">今天 10:30</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-warning">★ 4.8</span>
+                            <i class="fas fa-chevron-right text-text-tertiary"></i>
+                        </div>
+                    </div>
+                    <p class="text-sm text-text-secondary mb-3">客戶: 35歲工程師，年收入150萬，有房貸壓力但積極規劃未來...</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4 text-xs text-text-tertiary">
+                            <span>保額: 1000萬</span>
+                            <span>成交週期: 2週</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="event.stopPropagation(); likeCase()" class="text-text-tertiary">
+                                <i class="far fa-heart"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); shareCase()" class="text-text-tertiary">
+                                <i class="fas fa-share"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Case 2 -->
+                <div class="bg-white rounded-xl p-4 shadow-sm" onclick="location.href='SALES_015_case_details.html?case=醫療險家庭保障'">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-text-primary mb-1">醫療險家庭保障</h4>
+                            <div class="flex items-center space-x-2 mb-2">
+                                <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">醫療險</span>
+                                <span class="text-xs text-text-tertiary">王小明</span>
+                                <span class="text-xs text-text-tertiary">昨天 15:20</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-warning">★ 4.6</span>
+                            <i class="fas fa-chevron-right text-text-tertiary"></i>
+                        </div>
+                    </div>
+                    <p class="text-sm text-text-secondary mb-3">雙薪家庭，重視醫療保障，透過案例分享建立信任...</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4 text-xs text-text-tertiary">
+                            <span>保額: 500萬</span>
+                            <span>成交週期: 1週</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="event.stopPropagation(); likeCase()" class="text-error">
+                                <i class="fas fa-heart"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); shareCase()" class="text-text-tertiary">
+                                <i class="fas fa-share"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Case 3 -->
+                <div class="bg-white rounded-xl p-4 shadow-sm" onclick="location.href='SALES_015_case_details.html?case=退休規劃儲蓄險'">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-text-primary mb-1">退休規劃儲蓄險</h4>
+                            <div class="flex items-center space-x-2 mb-2">
+                                <span class="text-xs bg-secondary/10 text-secondary px-2 py-1 rounded-full">儲蓄險</span>
+                                <span class="text-xs text-text-tertiary">陳大文</span>
+                                <span class="text-xs text-text-tertiary">2天前</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-sm text-warning">★ 4.9</span>
+                            <i class="fas fa-chevron-right text-text-tertiary"></i>
+                        </div>
+                    </div>
+                    <p class="text-sm text-text-secondary mb-3">50歲客戶規劃退休，重視資產保值增值...</p>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4 text-xs text-text-tertiary">
+                            <span>保額: 800萬</span>
+                            <span>成交週期: 3週</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="event.stopPropagation(); likeCase()" class="text-text-tertiary">
+                                <i class="far fa-heart"></i>
+                            </button>
+                            <button onclick="event.stopPropagation(); shareCase()" class="text-text-tertiary">
+                                <i class="fas fa-share"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Load More -->
+            <button class="w-full mt-6 py-3 text-primary font-medium" onclick="loadMoreCases()">
+                載入更多案例...
+            </button>
+        </section>
+    </main>
+
+    <!-- Bottom Tab Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+        <div class="grid grid-cols-5 py-2">
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='SALES_001_home.html'">
+                <i class="fas fa-home text-lg mb-1"></i>
+                <span class="text-xs">首頁</span>
+            </button>
+            <button class="flex flex-col items-center py-2 text-primary">
+                <i class="fas fa-trophy text-lg mb-1"></i>
+                <span class="text-xs">案例</span>
+            </button>
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='SALES_002_recording.html'">
+                <i class="fas fa-microphone text-lg mb-1"></i>
+                <span class="text-xs">錄音</span>
+            </button>
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='../manager/MGR_012_ask_ai.html'">
+                <i class="fas fa-robot text-lg mb-1"></i>
+                <span class="text-xs">Ask AI</span>
+            </button>
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='../common/COMMON_008_notification_center.html'">
+                <i class="fas fa-bell text-lg mb-1"></i>
+                <span class="text-xs">通知</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        function showFilter() {
+            // Show filter modal
+            alert('篩選功能：\n1. 按產品類型\n2. 按評分\n3. 按時間\n4. 按成交金額');
+        }
+
+        function likeCase() {
+            event.target.classList.toggle('far');
+            event.target.classList.toggle('fas');
+            event.target.classList.toggle('text-error');
+        }
+
+        function shareCase() {
+            alert('案例已分享！');
+        }
+
+        function loadMoreCases() {
+            alert('載入更多案例...');
+        }
+    </script>
+</body>
+</html>

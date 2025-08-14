@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>銷售評分系統 - 保險業預設模板</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.2em;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .template-info {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .template-info h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .template-info p {
+            color: #666;
+            line-height: 1.8;
+        }
+        
+        .dimension-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            background: white;
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            background: #f0f2f5;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .tab:hover:not(.active) {
+            background: #e9ecef;
+        }
+        
+        .score-badge {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0,0,0,0.2);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        
+        .dimension-content {
+            display: none;
+        }
+        
+        .dimension-content.active {
+            display: block;
+        }
+        
+        .dimension-overview {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .dimension-overview h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .dimension-overview p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .dimension-stats {
+            display: flex;
+            gap: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .stat-item {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .questions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .question-display {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f0f2f5;
+            padding-bottom: 15px;
+        }
+        
+        .question-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .question-number {
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .question-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .question-score {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f0f2f5;
+            padding: 8px 15px;
+            border-radius: 8px;
+        }
+        
+        .question-score-value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .question-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .info-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .info-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .scoring-section {
+            margin-top: 20px;
+        }
+        
+        .scoring-section h4 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .scoring-criteria {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .criteria-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .criteria-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .criteria-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #667eea;
+        }
+        
+        .criteria-text {
+            flex: 1;
+            color: #333;
+        }
+        
+        .criteria-score {
+            background: #e0e7ff;
+            color: #4c51bf;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: 500;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .range-criteria {
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+        }
+        
+        .range-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 12px;
+            padding: 10px;
+            border-left: 3px solid #e0e7ff;
+        }
+        
+        .range-score {
+            font-weight: 600;
+            color: #667eea;
+            min-width: 60px;
+        }
+        
+        .range-desc {
+            flex: 1;
+            color: #333;
+            line-height: 1.5;
+        }
+        
+        .ai-criteria {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f4ff;
+            border-radius: 8px;
+            border: 1px solid #c7d2fe;
+        }
+        
+        .ai-criteria h5 {
+            color: #4c51bf;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .ai-criteria ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .ai-criteria li {
+            padding: 5px 0;
+            color: #555;
+            font-size: 14px;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .ai-criteria li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+        }
+        
+        .action-section {
+            margin-top: 40px;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background: #5a67d8;
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 15px 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .design-note {
+            background: #fef3c7;
+            border: 1px solid #fbbf24;
+            color: #92400e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        
+        /* Bottom Tab Bar Styles */
+        .pb-20 {
+            padding-bottom: 5rem;
+        }
+        
+        .fixed {
+            position: fixed;
+        }
+        
+        .bottom-0 {
+            bottom: 0;
+        }
+        
+        .left-0 {
+            left: 0;
+        }
+        
+        .right-0 {
+            right: 0;
+        }
+        
+        .bg-white {
+            background-color: white;
+        }
+        
+        .border-t {
+            border-top-width: 1px;
+        }
+        
+        .border-gray-border {
+            border-color: #e5e7eb;
+        }
+        
+        .max-w-7xl {
+            max-width: 80rem;
+        }
+        
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .flex {
+            display: flex;
+        }
+        
+        .justify-around {
+            justify-content: space-around;
+        }
+        
+        .py-2 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+        
+        .flex-col {
+            flex-direction: column;
+        }
+        
+        .items-center {
+            align-items: center;
+        }
+        
+        .px-3 {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+        
+        .text-primary {
+            color: #667eea;
+        }
+        
+        .text-gray-medium {
+            color: #6b7280;
+        }
+        
+        .hover\:text-primary:hover {
+            color: #667eea;
+        }
+        
+        .transition-colors {
+            transition-property: color;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+        
+        .w-6 {
+            width: 1.5rem;
+        }
+        
+        .h-6 {
+            height: 1.5rem;
+        }
+        
+        .text-xs {
+            font-size: 0.75rem;
+            line-height: 1rem;
+        }
+        
+        .mt-1 {
+            margin-top: 0.25rem;
+        }
+        
+        .font-medium {
+            font-weight: 500;
+        }
+        
+        .relative {
+            position: relative;
+        }
+        
+        .absolute {
+            position: absolute;
+        }
+        
+        .-top-1 {
+            top: -0.25rem;
+        }
+        
+        .-right-1 {
+            right: -0.25rem;
+        }
+        
+        .bg-error {
+            background-color: #dc2626;
+        }
+        
+        .text-white {
+            color: white;
+        }
+        
+        .rounded-full {
+            border-radius: 9999px;
+        }
+        
+        .w-5 {
+            width: 1.25rem;
+        }
+        
+        .h-5 {
+            height: 1.25rem;
+        }
+        
+        .justify-center {
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container pb-20">
+        <div class="header">
+            <h1>🏦 保險業銷售評分系統</h1>
+            <p>基於SPIN銷售法與七大需求分析的專業評分模板<br>為保險業務人員量身打造的標準化評估工具</p>
+        </div>
+        
+        <div class="template-info">
+            <h2>📋 模板說明</h2>
+            <p>此評分系統整合了國際認可的SPIN銷售方法論與保險業特有的七大客戶需求分析框架，提供全方位的銷售能力評估。系統分為三大維度，每個維度滿分100分，透過多元化的題型設計，能夠客觀且精準地評估銷售人員的專業表現。</p>
+        </div>
+        
+        <div class="dimension-tabs">
+            <button class="tab active" onclick="switchDimension(1)">
+                維度一：流程遵守度
+                <span class="score-badge">100分</span>
+            </button>
+            <button class="tab" onclick="switchDimension(2)">
+                維度二：銷售技巧
+                <span class="score-badge">100分</span>
+            </button>
+            <button class="tab" onclick="switchDimension(3)">
+                維度三：溝通能力
+                <span class="score-badge">100分</span>
+            </button>
+        </div>
+        
+        <!-- 維度一：流程遵守度 -->
+        <div class="dimension-content active" id="dimension-1">
+            <div class="dimension-overview">
+                <h2>流程遵守度 (Process Adherence)</h2>
+                <p>評估銷售人員是否遵循標準銷售流程，包含開場、需求診斷、方案呈現、成交等各個環節的執行情況。此維度確保銷售品質的一致性和專業性。</p>
+                <div class="dimension-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">評估題目</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">100</div>
+                        <div class="stat-label">總分</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">SPIN+七大</div>
+                        <div class="stat-label">理論基礎</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="questions-list">
+                <!-- 題目1.1 -->
+                <div class="question-display">
+                    <div class="question-header">
+                        <div class="question-title">
+                            <span class="question-number">題目 1.1</span>
+                            <span class="question-name">銷售流程完整性</span>
+                        </div>
+                        <div class="question-score">
+                            <span>配分：</span>
+                            <span class="question-score-value">30分</span>
+                        </div>
+                    </div>
+                    
+                    <div class="question-info">
+                        <div class="info-item">
+                            <span class="info-label">題型</span>
+                            <span class="info-value">多重選擇</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">理論依據</span>
+                            <span class="info-value">SPIN完整流程</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">設計邏輯</span>
+                            <span class="info-value">SPIN銷售法強調循序漸進的問題引導，每個階段缺一不可</span>
+                        </div>
+                    </div>
+                    
+                    <div class="scoring-section">
+                        <h4>📊 評分項目</h4>
+                        <div class="scoring-criteria">
+                            <div class="criteria-list">
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">☐</div>
+                                    <div class="criteria-text">開場建立關係與暖場（SPIN-開場階段）</div>
+                                    <div class="criteria-score">5分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">☐</div>
+                                    <div class="criteria-text">情境問題探詢（Situation Questions）</div>
+                                    <div class="criteria-score">5分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">☐</div>
+                                    <div class="criteria-text">問題診斷與痛點發掘（Problem Questions）</div>
+                                    <div class="criteria-score">5分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">☐</div>
+                                    <div class="criteria-text">影響擴大與需求確認（Implication Questions）</div>
+                                    <div class="criteria-score">5分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">☐</div>
+                                    <div class="criteria-text">解決方案價值呈現（Need-payoff Questions）</div>
+                                    <div class="criteria-score">5分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">☐</div>
+                                    <div class="criteria-text">成交詢問與後續規劃（SPIN-成交階段）</div>
+                                    <div class="criteria-score">5分</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="ai-criteria">
+                            <h5>AI判斷標準</h5>
+                            <ul>
+                                <li>開場：出現問候語、自我介紹、暖場話題</li>
+                                <li>情境問題：包含"目前"、"現在"、"多久"等詞彙的問句≥2個</li>
+                                <li>問題診斷：包含"困難"、"問題"、"困擾"等詞彙的問句≥2個</li>
+                                <li>影響擴大：包含"如果...會"、"影響"、"導致"等詞彙的問句≥1個</li>
+                                <li>方案呈現：出現產品介紹、利益說明、價值強調</li>
+                                <li>成交詢問：出現成交提問、後續安排、行動確認</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 題目1.2 -->
+                <div class="question-display">
+                    <div class="question-header">
+                        <div class="question-title">
+                            <span class="question-number">題目 1.2</span>
+                            <span class="question-name">需求診斷流程</span>
+                        </div>
+                        <div class="question-score">
+                            <span>配分：</span>
+                            <span class="question-score-value">25分</span>
+                        </div>
+                    </div>
+                    
+                    <div class="question-info">
+                        <div class="info-item">
+                            <span class="info-label">題型</span>
+                            <span class="info-value">範圍題（0-5分×5項）</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">理論依據</span>
+                            <span class="info-value">七大需求分析</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">設計邏輯</span>
+                            <span class="info-value">七大需求是判斷客戶是否為合格潛在客戶的關鍵指標</span>
+                        </div>
+                    </div>
+                    
+                    <div class="scoring-section">
+                        <h4>📊 評分項目（每項0-5分）</h4>
+                        <div class="scoring-criteria">
+                            <div class="range-criteria">
+                                <h5>1. 購買急迫性評估（七大需求-購買急迫性）</h5>
+                                <div class="range-item">
+                                    <div class="range-score">5分</div>
+                                    <div class="range-desc">立即需求+具體時間點+觸發事件</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">4分</div>
+                                    <div class="range-desc">有具體事件驅動如"小孩出生"、"房貸"</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">3分</div>
+                                    <div class="range-desc">明確時間如"這個月"、"下季度"</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">2分</div>
+                                    <div class="range-desc">提到"最近考慮"、"打算"</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">1分</div>
+                                    <div class="range-desc">提到"以後"、"有空再說"</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">0分</div>
+                                    <div class="range-desc">無任何時間相關討論</div>
+                                </div>
+                                
+                                <h5 style="margin-top: 20px;">2. 期待現況落差診斷（七大需求-期待現況落差）</h5>
+                                <div class="range-item">
+                                    <div class="range-score">5分</div>
+                                    <div class="range-desc">完整分析+量化+影響說明</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">4分</div>
+                                    <div class="range-desc">量化缺口金額或比例</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">3分</div>
+                                    <div class="range-desc">明確3個以上保障缺口</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">2分</div>
+                                    <div class="range-desc">指出1-2個具體不足</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">1分</div>
+                                    <div class="range-desc">籠統提到"保障不夠"</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">0分</div>
+                                    <div class="range-desc">未討論保障需求</div>
+                                </div>
+                                
+                                <p style="margin-top: 20px; color: #666; font-style: italic;">
+                                    * 另外3項（背景財務狀況、決策者識別、未來期望擔心）評分標準類似
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 題目1.3 -->
+                <div class="question-display">
+                    <div class="question-header">
+                        <div class="question-title">
+                            <span class="question-number">題目 1.3</span>
+                            <span class="question-name">時間節奏掌控</span>
+                        </div>
+                        <div class="question-score">
+                            <span>配分：</span>
+                            <span class="question-score-value">20分</span>
+                        </div>
+                    </div>
+                    
+                    <div class="question-info">
+                        <div class="info-item">
+                            <span class="info-label">題型</span>
+                            <span class="info-value">範圍題（0-20分）</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">理論依據</span>
+                            <span class="info-value">SPIN時間管理</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">設計邏輯</span>
+                            <span class="info-value">SPIN理想時間比例S(20%)、P(30%)、I(30%)、N(20%)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="scoring-section">
+                        <h4>📊 評分標準</h4>
+                        <div class="scoring-criteria">
+                            <div class="range-criteria">
+                                <div class="range-item">
+                                    <div class="range-score">20分</div>
+                                    <div class="range-desc">S(18-22%)、P(28-32%)、I(28-32%)、N(18-22%)</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">16分</div>
+                                    <div class="range-desc">S(15-25%)、P(25-35%)、I(25-35%)、N(15-25%)</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">12分</div>
+                                    <div class="range-desc">S(10-30%)、P(20-40%)、I(20-40%)、N(10-30%)</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">8分</div>
+                                    <div class="range-desc">明顯偏離但有完整流程</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">4分</div>
+                                    <div class="range-desc">嚴重偏離或跳過階段</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">0分</div>
+                                    <div class="range-desc">完全無SPIN結構</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="ai-criteria">
+                            <h5>AI計算邏輯</h5>
+                            <ul>
+                                <li>計算總對話時間T</li>
+                                <li>計算各階段時間占比</li>
+                                <li>根據偏離程度評分</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 題目1.4 -->
+                <div class="question-display">
+                    <div class="question-header">
+                        <div class="question-title">
+                            <span class="question-number">題目 1.4</span>
+                            <span class="question-name">合規與文件管理</span>
+                        </div>
+                        <div class="question-score">
+                            <span>配分：</span>
+                            <span class="question-score-value">15分</span>
+                        </div>
+                    </div>
+                    
+                    <div class="question-info">
+                        <div class="info-item">
+                            <span class="info-label">題型</span>
+                            <span class="info-value">多重選擇</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">理論依據</span>
+                            <span class="info-value">保險業法規</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">設計邏輯</span>
+                            <span class="info-value">確保資訊透明、風險告知、客戶權益保護</span>
+                        </div>
+                    </div>
+                    
+                    <div class="scoring-section">
+                        <h4>📊 評分項目</h4>
+                        <div class="scoring-criteria">
+                            <div class="criteria-list">
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">☐</div>
+                                    <div class="criteria-text">法規遵循與資訊揭露</div>
+                                    <div class="criteria-score">3分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">☐</div>
+                                    <div class="criteria-text">客戶權益說明完整</div>
+                                    <div class="criteria-score">3分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">☐</div>
+                                    <div class="criteria-text">風險告知與同意確認</div>
+                                    <div class="criteria-score">3分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">☐</div>
+                                    <div class="criteria-text">文件準備與記錄規範</div>
+                                    <div class="criteria-score">3分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">☐</div>
+                                    <div class="criteria-text">後續服務承諾明確</div>
+                                    <div class="criteria-score">3分</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 題目1.5 -->
+                <div class="question-display">
+                    <div class="question-header">
+                        <div class="question-title">
+                            <span class="question-number">題目 1.5</span>
+                            <span class="question-name">SPIN問句運用檢核</span>
+                        </div>
+                        <div class="question-score">
+                            <span>配分：</span>
+                            <span class="question-score-value">10分</span>
+                        </div>
+                    </div>
+                    
+                    <div class="question-info">
+                        <div class="info-item">
+                            <span class="info-label">題型</span>
+                            <span class="info-value">單選題</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">理論依據</span>
+                            <span class="info-value">SPIN四種問句</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">設計邏輯</span>
+                            <span class="info-value">統計問句使用頻率，評估是否真正掌握SPIN技巧</span>
+                        </div>
+                    </div>
+                    
+                    <div class="scoring-section">
+                        <h4>📊 單選評分選項</h4>
+                        <div class="scoring-criteria">
+                            <div class="criteria-list">
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">⭕</div>
+                                    <div class="criteria-text">四種問句都有使用且比例均衡（每種20-30%）</div>
+                                    <div class="criteria-score">10分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">⭕</div>
+                                    <div class="criteria-text">四種都用但比例略失衡（某種>40%）</div>
+                                    <div class="criteria-score">8分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">⭕</div>
+                                    <div class="criteria-text">只用3種問句</div>
+                                    <div class="criteria-score">6分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">⭕</div>
+                                    <div class="criteria-text">只用2種問句</div>
+                                    <div class="criteria-score">4分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">⭕</div>
+                                    <div class="criteria-text">只用1種問句</div>
+                                    <div class="criteria-score">2分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">⭕</div>
+                                    <div class="criteria-text">無結構化問句使用</div>
+                                    <div class="criteria-score">0分</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 維度二：銷售技巧 -->
+        <div class="dimension-content" id="dimension-2">
+            <div class="dimension-overview">
+                <h2>銷售技巧 (Sales Skills)</h2>
+                <p>評估銷售人員的專業銷售技巧，包含需求分析、方案設計、異議處理、成交促進等核心能力的表現。</p>
+                <div class="dimension-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">評估題目</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">100</div>
+                        <div class="stat-label">總分</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">SPIN+七大</div>
+                        <div class="stat-label">理論基礎</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="questions-list">
+                <!-- 題目2.1 -->
+                <div class="question-display">
+                    <div class="question-header">
+                        <div class="question-title">
+                            <span class="question-number">題目 2.1</span>
+                            <span class="question-name">需求診斷深度</span>
+                        </div>
+                        <div class="question-score">
+                            <span>配分：</span>
+                            <span class="question-score-value">25分</span>
+                        </div>
+                    </div>
+                    
+                    <div class="question-info">
+                        <div class="info-item">
+                            <span class="info-label">題型</span>
+                            <span class="info-value">範圍題（0-25分）</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">理論依據</span>
+                            <span class="info-value">SPIN四階段</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">設計邏輯</span>
+                            <span class="info-value">評估每個SPIN階段的執行品質，而非只看是否執行</span>
+                        </div>
+                    </div>
+                    
+                    <div class="scoring-section">
+                        <h4>📊 AI綜合評分標準</h4>
+                        <div class="scoring-criteria">
+                            <div class="range-criteria">
+                                <h5>S-情境了解（0-6分）</h5>
+                                <div class="range-item">
+                                    <div class="range-score">6分</div>
+                                    <div class="range-desc">全面了解（工作、家庭、財務、保險）+追問細節</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">4分</div>
+                                    <div class="range-desc">了解3個面向+基本追問</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">2分</div>
+                                    <div class="range-desc">了解1-2個面向</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">0分</div>
+                                    <div class="range-desc">表面了解或未深入</div>
+                                </div>
+                                
+                                <h5 style="margin-top: 20px;">P-問題發掘（0-7分）</h5>
+                                <div class="range-item">
+                                    <div class="range-score">7分</div>
+                                    <div class="range-desc">發現3個以上痛點+客戶認同+情感共鳴</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">5分</div>
+                                    <div class="range-desc">發現2個痛點+客戶認同</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">3分</div>
+                                    <div class="range-desc">發現1個痛點</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">0分</div>
+                                    <div class="range-desc">未發現實質問題</div>
+                                </div>
+                                
+                                <p style="margin-top: 20px; color: #666; font-style: italic;">
+                                    * I-影響擴大（0-6分）、N-價值塑造（0-6分）評分標準類似
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 題目2.2 -->
+                <div class="question-display">
+                    <div class="question-header">
+                        <div class="question-title">
+                            <span class="question-number">題目 2.2</span>
+                            <span class="question-name">七大需求掌握度</span>
+                        </div>
+                        <div class="question-score">
+                            <span>配分：</span>
+                            <span class="question-score-value">25分</span>
+                        </div>
+                    </div>
+                    
+                    <div class="question-info">
+                        <div class="info-item">
+                            <span class="info-label">題型</span>
+                            <span class="info-value">多重選擇+範圍</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">理論依據</span>
+                            <span class="info-value">七大需求完整</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">設計邏輯</span>
+                            <span class="info-value">評估銷售員對七大需求的掌握精準度</span>
+                        </div>
+                    </div>
+                    
+                    <div class="scoring-section">
+                        <h4>📊 第一部分：多重選擇（基礎分）</h4>
+                        <div class="scoring-criteria">
+                            <div class="criteria-list">
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">☐</div>
+                                    <div class="criteria-text">急迫性有效探詢（七大需求-購買急迫性）</div>
+                                    <div class="criteria-score">基礎2分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">☐</div>
+                                    <div class="criteria-text">落差有效分析（七大需求-期待現況落差）</div>
+                                    <div class="criteria-score">基礎2分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">☐</div>
+                                    <div class="criteria-text">財務有效評估（七大需求-背景財務狀況）</div>
+                                    <div class="criteria-score">基礎2分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">☐</div>
+                                    <div class="criteria-text">決策者有效識別（七大需求-決策者）</div>
+                                    <div class="criteria-score">基礎1.5分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">☐</div>
+                                    <div class="criteria-text">預算有效了解（七大需求-預算競爭者）</div>
+                                    <div class="criteria-score">基礎1.5分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">☐</div>
+                                    <div class="criteria-text">擔憂有效理解（七大需求-未來期望擔心）</div>
+                                    <div class="criteria-score">基礎2分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">☐</div>
+                                    <div class="criteria-text">偏好有效掌握（七大需求-方案偏好）</div>
+                                    <div class="criteria-score">基礎1.5分</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h4 style="margin-top: 20px;">📊 第二部分：範圍評分（加成分）</h4>
+                        <div class="design-note">
+                            每項深度評估0-2分（或0-1.5分），根據探詢深度、分析精確度、評估合理性等給予加成分數
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 題目2.3 -->
+                <div class="question-display">
+                    <div class="question-header">
+                        <div class="question-title">
+                            <span class="question-number">題目 2.3</span>
+                            <span class="question-name">解決方案設計</span>
+                        </div>
+                        <div class="question-score">
+                            <span>配分：</span>
+                            <span class="question-score-value">20分</span>
+                        </div>
+                    </div>
+                    
+                    <div class="question-info">
+                        <div class="info-item">
+                            <span class="info-label">題型</span>
+                            <span class="info-value">單選×4題</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">理論依據</span>
+                            <span class="info-value">七大需求應用</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">設計邏輯</span>
+                            <span class="info-value">好的解決方案必須精準回應客戶需求</span>
+                        </div>
+                    </div>
+                    
+                    <div class="scoring-section">
+                        <h4>📊 AI評分題組（每題5分）</h4>
+                        <div class="scoring-criteria">
+                            <h5>Q1. 方案與急迫性匹配度（七大需求-購買急迫性）</h5>
+                            <div class="criteria-list">
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">⭕</div>
+                                    <div class="criteria-text">完美匹配（急迫需求配快速生效方案）</div>
+                                    <div class="criteria-score">5分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">⭕</div>
+                                    <div class="criteria-text">基本匹配</div>
+                                    <div class="criteria-score">3分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">⭕</div>
+                                    <div class="criteria-text">不匹配</div>
+                                    <div class="criteria-score">1分</div>
+                                </div>
+                                <div class="criteria-item">
+                                    <div class="criteria-icon">⭕</div>
+                                    <div class="criteria-text">未考慮急迫性</div>
+                                    <div class="criteria-score">0分</div>
+                                </div>
+                            </div>
+                            
+                            <p style="margin-top: 20px; color: #666; font-style: italic;">
+                                * Q2-Q4（落差填補、財務匹配、期望滿足）評分方式類似
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 題目2.4-2.6 略... -->
+            </div>
+        </div>
+        
+        <!-- 維度三：溝通能力 -->
+        <div class="dimension-content" id="dimension-3">
+            <div class="dimension-overview">
+                <h2>溝通能力 (Communication)</h2>
+                <p>評估銷售人員的溝通表達能力，包含提問技巧、傾聽能力、同理心展現、說服力等軟實力的綜合表現。</p>
+                <div class="dimension-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">6</div>
+                        <div class="stat-label">評估題目</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">100</div>
+                        <div class="stat-label">總分</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">SPIN+七大</div>
+                        <div class="stat-label">理論基礎</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="questions-list">
+                <!-- 題目3.1 -->
+                <div class="question-display">
+                    <div class="question-header">
+                        <div class="question-title">
+                            <span class="question-number">題目 3.1</span>
+                            <span class="question-name">SPIN問句質量分析</span>
+                        </div>
+                        <div class="question-score">
+                            <span>配分：</span>
+                            <span class="question-score-value">25分</span>
+                        </div>
+                    </div>
+                    
+                    <div class="question-info">
+                        <div class="info-item">
+                            <span class="info-label">題型</span>
+                            <span class="info-value">範圍題（0-25分）</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">理論依據</span>
+                            <span class="info-value">SPIN四種問句</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">設計邏輯</span>
+                            <span class="info-value">透過AI語意分析自動識別問句類型和品質</span>
+                        </div>
+                    </div>
+                    
+                    <div class="scoring-section">
+                        <h4>📊 AI自動計算標準</h4>
+                        <div class="scoring-criteria">
+                            <div class="range-criteria">
+                                <h5>使用平衡度（0-10分）</h5>
+                                <div class="range-item">
+                                    <div class="range-score">10分</div>
+                                    <div class="range-desc">S(20-30%)、P(25-35%)、I(20-30%)、N(15-25%)</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">7分</div>
+                                    <div class="range-desc">有1種問句超過40%或低於10%</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">4分</div>
+                                    <div class="range-desc">有2種問句比例失衡</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">0分</div>
+                                    <div class="range-desc">只使用1-2種問句</div>
+                                </div>
+                                
+                                <h5 style="margin-top: 20px;">邏輯遞進性（0-8分）</h5>
+                                <div class="range-item">
+                                    <div class="range-score">8分</div>
+                                    <div class="range-desc">完美遵循S→P→I→N順序，無跳躍</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">6分</div>
+                                    <div class="range-desc">大致遵循，偶有跳躍（<2次）</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">4分</div>
+                                    <div class="range-desc">部分遵循，跳躍3-4次</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">2分</div>
+                                    <div class="range-desc">頻繁跳躍（>5次）</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">0分</div>
+                                    <div class="range-desc">無邏輯順序</div>
+                                </div>
+                                
+                                <h5 style="margin-top: 20px;">引導有效性（0-7分）</h5>
+                                <div class="range-item">
+                                    <div class="range-score">7分</div>
+                                    <div class="range-desc">客戶平均回應>20字，提供豐富資訊</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">5分</div>
+                                    <div class="range-desc">客戶平均回應15-20字</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">3分</div>
+                                    <div class="range-desc">客戶平均回應10-15字</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">1分</div>
+                                    <div class="range-desc">客戶平均回應<10字</div>
+                                </div>
+                                <div class="range-item">
+                                    <div class="range-score">0分</div>
+                                    <div class="range-desc">多為是/否簡答</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 其他題目類似格式... -->
+            </div>
+        </div>
+        
+        <div class="action-section">
+            <h2>開始使用保險業評分模板</h2>
+            <p>此模板整合了SPIN銷售法與七大需求分析，已經過專業設計和驗證</p>
+            <p style="color: #666; font-size: 14px; margin-top: 10px;">
+                評分系統會根據AI語意分析自動計算分數，確保評估的客觀性和一致性
+            </p>
+            <div class="action-buttons">
+                <button class="btn-secondary" onclick="downloadTemplate()">下載模板說明</button>
+                <button class="btn-primary" onclick="useTemplate()">啟用此評分模板</button>
+            </div>
+        </div>
+    
+        
+    
+    </div>
+    
+    <script>
+        let currentDimension = 1;
+        
+        function switchDimension(dim) {
+            currentDimension = dim;
+            
+            // 更新標籤樣式
+            document.querySelectorAll('.tab').forEach((tab, index) => {
+                if (index === dim - 1) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+            
+            // 更新內容顯示
+            document.querySelectorAll('.dimension-content').forEach((content, index) => {
+                if (index === dim - 1) {
+                    content.classList.add('active');
+                } else {
+                    content.classList.remove('active');
+                }
+            });
+        }
+        
+        function downloadTemplate() {
+            alert('正在準備下載保險業評分模板說明文件...\n\n文件將包含：\n- 完整評分標準\n- SPIN銷售法說明\n- 七大需求分析指南\n- AI評分邏輯說明');
+        }
+        
+        function useTemplate() {
+            const btn = event.target;
+            const originalText = btn.textContent;
+            
+            // 顯示載入狀態
+            btn.textContent = '啟用中...';
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+            
+            setTimeout(() => {
+                // 恢復按鈕
+                btn.textContent = originalText;
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                
+                // 顯示成功訊息
+                showSuccessMessage();
+            }, 1000);
+        }
+        
+        function showSuccessMessage() {
+            // 創建成功訊息元素
+            const successDiv = document.createElement('div');
+            successDiv.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: white;
+                padding: 40px;
+                border-radius: 12px;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+                z-index: 1000;
+                text-align: center;
+                max-width: 400px;
+            `;
+            
+            successDiv.innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 20px;">✅</div>
+                <h2 style="color: #10b981; margin-bottom: 10px;">模板啟用成功！</h2>
+                <p style="color: #666; margin-bottom: 20px;">保險業評分模板已成功啟用</p>
+                <p style="color: #999; font-size: 14px;">您現在可以開始評分銷售對話了</p>
+                <button onclick="this.parentElement.remove(); document.getElementById('overlay').remove();" 
+                        style="margin-top: 20px; padding: 10px 30px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                    開始使用
+                </button>
+            `;
+            
+            // 創建背景遮罩
+            const overlay = document.createElement('div');
+            overlay.id = 'overlay';
+            overlay.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0,0,0,0.5);
+                z-index: 999;
+            `;
+            
+            document.body.appendChild(overlay);
+            document.body.appendChild(successDiv);
+        }
+    </script>
+    
+    <!-- Bottom Tab Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-border">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex justify-around py-2">
+                <!-- Dashboard -->
+                <a href="MGR_001_dashboard.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                    </svg>
+                    <span class="text-xs mt-1">儀表板</span>
+                </a>
+                <!-- Team -->
+                <a href="MGR_002_team_list.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <span class="text-xs mt-1">團隊</span>
+                </a>
+                <!-- Scoring Settings -->
+                <a href="MGR_005_scoring_settings.html" class="flex flex-col items-center py-2 px-3 text-primary">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                    </svg>
+                    <span class="text-xs mt-1 font-medium">評分設定</span>
+                </a>
+                <!-- Ask AI -->
+                <a href="MGR_012_ask_ai.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                    </svg>
+                    <span class="text-xs mt-1">Ask AI</span>
+                </a>
+                <!-- Notifications -->
+                <a href="#" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors relative">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-4-4V6a5 5 0 00-10 0v7l-4 4h5m4 0a2 2 0 01-4 0"></path>
+                    </svg>
+                    <span class="text-xs mt-1">通知</span>
+                    <span class="absolute -top-1 -right-1 bg-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalesAI - 首頁</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#2E5BFF',
+                        'secondary': '#00C6AE',
+                        'success': '#00D563',
+                        'warning': '#FFB800',
+                        'error': '#FF4757',
+                        'text-primary': '#1A1A1A',
+                        'text-secondary': '#666666',
+                        'text-tertiary': '#999999'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .wave-animation {
+            animation: wave 1.5s ease-in-out infinite;
+        }
+        @keyframes wave {
+            0%, 100% { transform: scaleY(1); }
+            50% { transform: scaleY(1.5); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm px-4 py-3 sticky top-0 z-10">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3" onclick="location.href='../common/COMMON_002_profile.html'">
+                <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center cursor-pointer">
+                    <span class="text-white text-sm font-bold">S</span>
+                </div>
+                <div>
+                    <p class="text-sm text-text-tertiary">早安！</p>
+                    <p class="text-base font-medium text-text-primary">王小明</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="relative cursor-pointer" onclick="location.href='../common/COMMON_008_notification_center.html'">
+                    <i class="fas fa-bell text-text-secondary text-lg"></i>
+                    <span class="absolute -top-2 -right-2 bg-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
+                </div>
+                <i class="fas fa-cog text-text-secondary text-lg cursor-pointer" onclick="location.href='../common/COMMON_001_settings.html'"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="px-4 py-6 pb-24">
+        <!-- Recording Status Card -->
+        <section class="mb-6">
+            <div class="bg-white rounded-lg shadow-sm p-4">
+                <h2 class="text-lg font-semibold text-text-primary mb-4">錄音分析狀態</h2>
+                <div class="grid grid-cols-2 gap-4 mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-success/10 rounded-full flex items-center justify-center">
+                            <i class="fas fa-check text-success"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-text-tertiary">已分析</p>
+                            <p class="text-xl font-bold text-text-primary">23</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-warning/10 rounded-full flex items-center justify-center">
+                            <i class="fas fa-clock text-warning"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-text-tertiary">待處理</p>
+                            <p class="text-xl font-bold text-text-primary">5</p>
+                        </div>
+                    </div>
+                </div>
+                <button class="w-full bg-primary text-white py-2 rounded-lg font-medium" onclick="location.href='SALES_002_recording.html'">
+                    查看錄音管理 →
+                </button>
+            </div>
+        </section>
+
+        <!-- Quick Actions -->
+        <section class="mb-6">
+            <div class="grid grid-cols-2 gap-4">
+                <button class="bg-primary text-white p-4 rounded-lg text-center" onclick="location.href='SALES_002_recording.html'">
+                    <i class="fas fa-microphone text-2xl mb-2"></i>
+                    <p class="font-medium">開始錄音</p>
+                </button>
+                <button class="bg-secondary text-white p-4 rounded-lg text-center" onclick="location.href='SALES_007_new_case.html'">
+                    <i class="fas fa-plus text-2xl mb-2"></i>
+                    <p class="font-medium">新增CASE</p>
+                </button>
+            </div>
+        </section>
+
+        <!-- Customer List -->
+        <section>
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-lg font-semibold text-text-primary">我的客戶</h2>
+                <button class="text-primary font-medium" onclick="addCustomer()">
+                    <i class="fas fa-plus text-sm mr-1"></i>新增客戶
+                </button>
+            </div>
+            
+            <!-- Search Bar -->
+            <div class="relative mb-4">
+                <input type="text" placeholder="搜尋客戶..." class="w-full bg-white border border-gray-200 rounded-lg px-4 py-2 pl-10">
+                <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-text-tertiary"></i>
+            </div>
+
+            <!-- Customer Cards -->
+            <div class="space-y-3">
+                <!-- Customer 1 -->
+                <div class="bg-white rounded-lg p-4 shadow-sm" onclick="location.href='SALES_005_customer_detail.html?customer=張先生'">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-semibold text-text-primary">張先生</h3>
+                        <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">進行中</span>
+                    </div>
+                    <p class="text-sm text-text-secondary mb-2">最新: 壽險規劃 (進行中)</p>
+                    <div class="flex items-center justify-between text-xs text-text-tertiary">
+                        <span>CASE數: 2</span>
+                        <span>錄音: 5</span>
+                        <span>評分: 7.8</span>
+                    </div>
+                </div>
+
+                <!-- Customer 2 -->
+                <div class="bg-white rounded-lg p-4 shadow-sm" onclick="location.href='SALES_005_customer_detail.html?customer=李太太'">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-semibold text-text-primary">李太太</h3>
+                        <span class="text-xs bg-success/10 text-success px-2 py-1 rounded-full">已成交</span>
+                    </div>
+                    <p class="text-sm text-text-secondary mb-2">最新: 醫療險 (已成交)</p>
+                    <div class="flex items-center justify-between text-xs text-text-tertiary">
+                        <span>CASE數: 1</span>
+                        <span>錄音: 3</span>
+                        <span>評分: 8.5</span>
+                    </div>
+                </div>
+
+                <!-- Customer 3 -->
+                <div class="bg-white rounded-lg p-4 shadow-sm" onclick="location.href='SALES_005_customer_detail.html?customer=陳小姐'">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-semibold text-text-primary">陳小姐</h3>
+                        <span class="text-xs bg-warning/10 text-warning px-2 py-1 rounded-full">待跟進</span>
+                    </div>
+                    <p class="text-sm text-text-secondary mb-2">最新: 儲蓄險諮詢 (待跟進)</p>
+                    <div class="flex items-center justify-between text-xs text-text-tertiary">
+                        <span>CASE數: 2</span>
+                        <span>錄音: 4</span>
+                        <span>評分: 6.9</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Tab Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+        <div class="grid grid-cols-5 py-2">
+            <button class="flex flex-col items-center py-2 text-primary">
+                <i class="fas fa-home text-lg mb-1"></i>
+                <span class="text-xs">首頁</span>
+            </button>
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='SALES_010_success_cases.html'">
+                <i class="fas fa-trophy text-lg mb-1"></i>
+                <span class="text-xs">案例</span>
+            </button>
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='SALES_002_recording.html'">
+                <i class="fas fa-microphone text-lg mb-1"></i>
+                <span class="text-xs">錄音</span>
+            </button>
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='../manager/MGR_012_ask_ai.html'">
+                <i class="fas fa-robot text-lg mb-1"></i>
+                <span class="text-xs">Ask AI</span>
+            </button>
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='../common/COMMON_008_notification_center.html'">
+                <i class="fas fa-bell text-lg mb-1"></i>
+                <span class="text-xs">通知</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        function addCustomer() {
+            // Navigate to add customer page
+            location.href = 'SALES_009_customer_edit.html?mode=new';
+        }
+
+        // Add click animations
+        document.querySelectorAll('button, [onclick]').forEach(element => {
+            element.addEventListener('click', function() {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 100);
+            });
+        });
+
+        // Simulate real-time data updates
+        setInterval(() => {
+            const analysedCount = document.querySelector('section:first-child .text-xl');
+            if (analysedCount) {
+                let count = parseInt(analysedCount.textContent);
+                if (Math.random() > 0.7) {
+                    analysedCount.textContent = count + 1;
+                }
+            }
+        }, 10000);
+    </script>
+</body>
+</html>

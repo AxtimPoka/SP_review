@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalesAI - 錄音功能</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#2E5BFF',
+                        'secondary': '#00C6AE',
+                        'success': '#00D563',
+                        'warning': '#FFB800',
+                        'error': '#FF4757',
+                        'text-primary': '#1A1A1A',
+                        'text-secondary': '#666666',
+                        'text-tertiary': '#999999'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .pulse-animation {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        .recording-button {
+            transition: all 0.3s ease;
+        }
+        .recording-button:hover {
+            transform: scale(1.05);
+        }
+        .wave-bar {
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(to top, #2E5BFF, #00C6AE);
+            margin: 0 2px;
+            border-radius: 2px;
+            display: inline-block;
+            animation: wave 1.2s ease-in-out infinite;
+        }
+        .wave-bar:nth-child(2) { animation-delay: 0.1s; }
+        .wave-bar:nth-child(3) { animation-delay: 0.2s; }
+        .wave-bar:nth-child(4) { animation-delay: 0.3s; }
+        .wave-bar:nth-child(5) { animation-delay: 0.4s; }
+        @keyframes wave {
+            0%, 100% { transform: scaleY(0.5); }
+            50% { transform: scaleY(1.5); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm px-4 py-3 sticky top-0 z-10">
+        <div class="flex items-center justify-between">
+            <button onclick="history.back()" class="text-text-secondary">
+                <i class="fas fa-arrow-left text-lg"></i>
+            </button>
+            <h1 class="text-lg font-semibold text-text-primary">錄音功能</h1>
+            <div class="flex items-center space-x-4">
+                <div class="relative cursor-pointer" onclick="location.href='../common/COMMON_008_notification_center.html'">
+                    <i class="fas fa-bell text-text-secondary text-lg"></i>
+                    <span class="absolute -top-2 -right-2 bg-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
+                </div>
+                <button class="text-text-secondary cursor-pointer" onclick="location.href='../common/COMMON_001_settings.html'">
+                    <i class="fas fa-cog text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="px-4 py-6 pb-24">
+        <!-- Recording Section -->
+        <section class="text-center mb-8">
+            <div class="bg-white rounded-2xl p-8 shadow-lg">
+                <!-- Recording Button -->
+                <div class="mb-6">
+                    <button id="recordButton" class="recording-button w-32 h-32 bg-primary rounded-full flex items-center justify-center shadow-lg" onclick="toggleRecording()">
+                        <i id="recordIcon" class="fas fa-microphone text-white text-4xl"></i>
+                    </button>
+                </div>
+                
+                <!-- Status Text -->
+                <p id="statusText" class="text-lg font-medium text-text-primary mb-2">準備錄音</p>
+                <p class="text-sm text-text-tertiary mb-4">點擊按鈕開始錄音</p>
+                
+                <!-- Audio Waveform (hidden initially) -->
+                <div id="waveform" class="hidden mb-4">
+                    <div class="flex justify-center items-end">
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                        <div class="wave-bar"></div>
+                    </div>
+                </div>
+                
+                <!-- Recording Timer -->
+                <div id="timer" class="hidden text-2xl font-mono text-text-primary">00:00</div>
+                
+                <!-- Tips -->
+                <div class="bg-blue-50 rounded-lg p-3 mt-4">
+                    <div class="flex items-center text-primary">
+                        <i class="fas fa-lightbulb mr-2"></i>
+                        <span class="text-sm font-medium">提示: 確保環境安靜，距離麥克風適當距離</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Filters -->
+        <section class="mb-6">
+            <div class="flex space-x-2 overflow-x-auto">
+                <button class="bg-primary text-white px-4 py-2 rounded-full text-sm whitespace-nowrap" onclick="filterRecordings('all')">全部</button>
+                <button class="bg-gray-200 text-text-secondary px-4 py-2 rounded-full text-sm whitespace-nowrap" onclick="filterRecordings('today')">今天</button>
+                <button class="bg-gray-200 text-text-secondary px-4 py-2 rounded-full text-sm whitespace-nowrap" onclick="filterRecordings('week')">本週</button>
+                <button class="bg-gray-200 text-text-secondary px-4 py-2 rounded-full text-sm whitespace-nowrap" onclick="filterRecordings('analyzing')">分析中</button>
+                <button class="bg-gray-200 text-text-secondary px-4 py-2 rounded-full text-sm whitespace-nowrap" onclick="filterRecordings('uncategorized')">未分類</button>
+            </div>
+        </section>
+
+        <!-- Recording History -->
+        <section>
+            <h2 class="text-lg font-semibold text-text-primary mb-4">錄音歷史</h2>
+            
+            <!-- Recording List -->
+            <div class="space-y-3">
+                <!-- Recording Item 1 -->
+                <div class="bg-white rounded-lg p-4 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-error/10 rounded-full flex items-center justify-center">
+                                <i class="fas fa-circle text-error text-xs"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-text-primary">張先生_壽險_0814</h3>
+                                <p class="text-xs text-text-tertiary">28:35 | 今天 14:30</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs bg-warning/10 text-warning px-2 py-1 rounded-full">AI分析中</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 text-xs text-text-tertiary">
+                        <i class="fas fa-folder"></i>
+                        <span>張先生 / 壽險規劃</span>
+                    </div>
+                </div>
+
+                <!-- Recording Item 2 -->
+                <div class="bg-white rounded-lg p-4 shadow-sm">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-success/10 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check text-success text-xs"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-text-primary">李太太_醫療險_0813</h3>
+                                <p class="text-xs text-text-tertiary">22:18 | 昨天 10:15</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs bg-success/10 text-success px-2 py-1 rounded-full">已完成</span>
+                            <p class="text-xs text-text-tertiary mt-1">評分: 8.5</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2 text-xs text-text-tertiary">
+                            <i class="fas fa-folder"></i>
+                            <span>李太太 / 醫療險</span>
+                        </div>
+                        <button class="text-primary text-xs" onclick="location.href='SALES_011_ai_analysis.html?recording=李太太_醫療險_0813'">查看分析</button>
+                    </div>
+                </div>
+
+                <!-- Recording Item 3 - Uncategorized -->
+                <div class="bg-white rounded-lg p-4 shadow-sm border-l-4 border-warning">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-warning/10 rounded-full flex items-center justify-center">
+                                <i class="fas fa-exclamation text-warning text-xs"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-text-primary">未分類錄音_0812</h3>
+                                <p class="text-xs text-text-tertiary">15:20 | 2天前 16:45</p>
+                            </div>
+                        </div>
+                        <button class="bg-warning text-white px-3 py-1 rounded text-xs" onclick="location.href='SALES_004_recording_process.html?recording=未分類錄音_0812'">立即分類</button>
+                    </div>
+                    <div class="flex items-center space-x-2 text-xs text-text-tertiary">
+                        <i class="fas fa-question-circle"></i>
+                        <span>需要歸檔至客戶CASE</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Load More -->
+            <button class="w-full mt-4 py-3 text-primary font-medium" onclick="loadMoreRecordings()">
+                載入更多錄音...
+            </button>
+        </section>
+    </main>
+
+    <!-- Bottom Tab Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+        <div class="grid grid-cols-5 py-2">
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='SALES_001_home.html'">
+                <i class="fas fa-home text-lg mb-1"></i>
+                <span class="text-xs">首頁</span>
+            </button>
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='SALES_010_success_cases.html'">
+                <i class="fas fa-trophy text-lg mb-1"></i>
+                <span class="text-xs">案例</span>
+            </button>
+            <button class="flex flex-col items-center py-2 text-primary">
+                <i class="fas fa-microphone text-lg mb-1"></i>
+                <span class="text-xs">錄音</span>
+            </button>
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='../manager/MGR_012_ask_ai.html'">
+                <i class="fas fa-robot text-lg mb-1"></i>
+                <span class="text-xs">Ask AI</span>
+            </button>
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='../common/COMMON_008_notification_center.html'">
+                <i class="fas fa-bell text-lg mb-1"></i>
+                <span class="text-xs">通知</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        let isRecording = false;
+        let recordingTimer = null;
+        let startTime = null;
+
+        function toggleRecording() {
+            if (!isRecording) {
+                startRecording();
+            } else {
+                stopRecording();
+            }
+        }
+
+        function startRecording() {
+            // Start countdown
+            let countdown = 3;
+            const recordButton = document.getElementById('recordButton');
+            const recordIcon = document.getElementById('recordIcon');
+            const statusText = document.getElementById('statusText');
+            
+            const countdownInterval = setInterval(() => {
+                statusText.textContent = `開始錄音倒數 ${countdown}`;
+                recordButton.className = 'recording-button w-32 h-32 bg-warning rounded-full flex items-center justify-center shadow-lg pulse-animation';
+                recordIcon.textContent = countdown;
+                countdown--;
+                
+                if (countdown < 0) {
+                    clearInterval(countdownInterval);
+                    actuallyStartRecording();
+                }
+            }, 1000);
+        }
+
+        function actuallyStartRecording() {
+            isRecording = true;
+            const recordButton = document.getElementById('recordButton');
+            const recordIcon = document.getElementById('recordIcon');
+            const statusText = document.getElementById('statusText');
+            const timer = document.getElementById('timer');
+            const waveform = document.getElementById('waveform');
+            
+            // Update UI
+            recordButton.className = 'recording-button w-32 h-32 bg-error rounded-full flex items-center justify-center shadow-lg pulse-animation';
+            recordIcon.className = 'fas fa-stop text-white text-4xl';
+            statusText.textContent = '錄音中...';
+            timer.classList.remove('hidden');
+            waveform.classList.remove('hidden');
+            
+            // Start timer
+            startTime = Date.now();
+            recordingTimer = setInterval(updateTimer, 1000);
+            
+            // Redirect to recording in progress page
+            setTimeout(() => {
+                location.href = 'SALES_003_recording_progress.html';
+            }, 1000);
+        }
+
+        function stopRecording() {
+            isRecording = false;
+            clearInterval(recordingTimer);
+            
+            // Redirect to processing page
+            location.href = 'SALES_004_recording_process.html';
+        }
+
+        function updateTimer() {
+            const elapsed = Math.floor((Date.now() - startTime) / 1000);
+            const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+            const seconds = (elapsed % 60).toString().padStart(2, '0');
+            document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+        }
+
+        function filterRecordings(filter) {
+            // Update filter buttons
+            document.querySelectorAll('section:nth-child(2) button').forEach(btn => {
+                btn.className = 'bg-gray-200 text-text-secondary px-4 py-2 rounded-full text-sm whitespace-nowrap';
+            });
+            event.target.className = 'bg-primary text-white px-4 py-2 rounded-full text-sm whitespace-nowrap';
+            
+            // Filter logic would go here
+            console.log('Filtering by:', filter);
+        }
+
+        function loadMoreRecordings() {
+            // Load more recordings logic
+            console.log('Loading more recordings...');
+        }
+
+        // Initialize modals and check permissions
+        window.onload = function() {
+            // Load modal components
+            fetch('../includes/modals-all.html')
+                .then(response => response.text())
+                .then(html => {
+                    const container = document.createElement('div');
+                    container.id = 'modalContainer';
+                    container.innerHTML = html;
+                    document.body.appendChild(container);
+                    
+                    // Check microphone permission
+                    checkMicrophonePermission();
+                })
+                .catch(error => {
+                    console.error('Error loading modals:', error);
+                });
+        };
+        
+        function checkMicrophonePermission() {
+            // Check if permission API is available
+            if (navigator.permissions && navigator.permissions.query) {
+                navigator.permissions.query({ name: 'microphone' })
+                    .then(function(result) {
+                        if (result.state === 'prompt' || result.state === 'denied') {
+                            // Show custom permission modal
+                            setTimeout(() => {
+                                showRecordingPermission();
+                            }, 1000);
+                        } else if (result.state === 'granted') {
+                            console.log('Microphone permission already granted');
+                        }
+                    })
+                    .catch(function(error) {
+                        // Fallback for browsers that don't support permission query
+                        checkMicrophoneFallback();
+                    });
+            } else {
+                // Fallback for browsers that don't support permission API
+                checkMicrophoneFallback();
+            }
+        }
+        
+        function checkMicrophoneFallback() {
+            // Try to access microphone to check permission
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(function(stream) {
+                        console.log('Microphone permission granted');
+                        stream.getTracks().forEach(track => track.stop());
+                    })
+                    .catch(function(err) {
+                        console.log('Microphone permission not granted');
+                        // Show custom permission modal
+                        setTimeout(() => {
+                            showRecordingPermission();
+                        }, 1000);
+                    });
+            }
+        }
+        
+        // Override start recording to check permission
+        const originalStartRecording = window.startRecording;
+        window.startRecording = function() {
+            // Check permission before starting
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(function(stream) {
+                        stream.getTracks().forEach(track => track.stop());
+                        // Permission granted, redirect to recording page
+                        window.location.href = 'SALES_003_recording_progress.html';
+                    })
+                    .catch(function(err) {
+                        // Permission denied, show modal
+                        showRecordingPermission();
+                    });
+            }
+        };
+    </script>
+</body>
+</html>

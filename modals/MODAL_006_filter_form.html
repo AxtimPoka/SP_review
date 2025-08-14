@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODAL_006 - 篩選器表單</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE',
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'text-primary': '#1A1A1A',
+                        'text-secondary': '#666666',
+                        'text-tertiary': '#999999'
+                    },
+                    boxShadow: {
+                        'level-4': '0px 8px 24px rgba(0,0,0,0.15)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .modal-backdrop {
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-enter {
+            animation: modalEnter 0.3s ease-out;
+        }
+        
+        .modal-exit {
+            animation: modalExit 0.2s ease-in;
+        }
+        
+        @keyframes modalEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        @keyframes modalExit {
+            from {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+        }
+        
+        /* 自定義複選框 */
+        .custom-checkbox {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #D1D5DB;
+            border-radius: 4px;
+            background: white;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .custom-checkbox:checked {
+            background: #2E5BFF;
+            border-color: #2E5BFF;
+        }
+        
+        .custom-checkbox:checked::after {
+            content: '';
+            position: absolute;
+            left: 6px;
+            top: 2px;
+            width: 6px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        
+        /* 自定義單選按鈕 */
+        .custom-radio {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #D1D5DB;
+            border-radius: 50%;
+            background: white;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .custom-radio:checked {
+            border-color: #2E5BFF;
+        }
+        
+        .custom-radio:checked::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 8px;
+            height: 8px;
+            background: #2E5BFF;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        /* 範圍滑桿 */
+        .range-slider {
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #E5E7EB;
+            outline: none;
+        }
+        
+        .range-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2E5BFF;
+            cursor: pointer;
+        }
+        
+        .range-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2E5BFF;
+            cursor: pointer;
+            border: none;
+        }
+        
+        /* 標籤樣式 */
+        .filter-tag {
+            background: #2E5BFF;
+            background-opacity: 0.1;
+            color: #2E5BFF;
+            border: 1px solid #2E5BFF;
+            border-opacity: 0.3;
+        }
+        
+        .filter-tag.active {
+            background: #2E5BFF;
+            color: white;
+            border-color: #2E5BFF;
+        }
+        
+        /* 防止背景滾動 */
+        .no-scroll {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
+    <!-- 示例觸發按鈕 -->
+    <div class="max-w-sm mx-auto space-y-4">
+        <h1 class="text-2xl font-bold text-text-primary text-center mb-8">MODAL_006 - 篩選器表單</h1>
+        
+        <div class="space-y-4">
+            <button id="recordingFilterBtn" class="w-full bg-primary text-white py-3 px-6 rounded-lg font-medium">
+                錄音篩選
+            </button>
+            
+            <button id="caseFilterBtn" class="w-full bg-secondary text-white py-3 px-6 rounded-lg font-medium">
+                CASE 篩選
+            </button>
+            
+            <button id="performanceFilterBtn" class="w-full bg-success text-white py-3 px-6 rounded-lg font-medium">
+                績效篩選
+            </button>
+            
+            <button id="customerFilterBtn" class="w-full bg-warning text-white py-3 px-6 rounded-lg font-medium">
+                客戶篩選
+            </button>
+        </div>
+        
+        <!-- 篩選結果顯示 -->
+        <div id="filterResults" class="mt-8 p-4 bg-white rounded-lg shadow hidden">
+            <h3 class="font-semibold text-text-primary mb-3">當前篩選條件：</h3>
+            <div id="activeFilters" class="flex flex-wrap gap-2">
+                <!-- 動態顯示篩選條件 -->
+            </div>
+        </div>
+        
+        <div class="mt-8 p-4 bg-white rounded-lg shadow">
+            <h3 class="font-semibold text-text-primary mb-2">組件說明：</h3>
+            <ul class="text-sm text-text-secondary space-y-1">
+                <li>• 多條件複合篩選器</li>
+                <li>• 支援分類選擇、範圍設定</li>
+                <li>• 支援快速標籤篩選</li>
+                <li>• 即時預覽篩選結果</li>
+                <li>• 支援篩選條件保存</li>
+                <li>• 支援重設和清除功能</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 篩選器表單模態框 -->
+    <div id="filterModal" class="fixed inset-0 z-50 hidden">
+        <!-- 背景遮罩 -->
+        <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300"></div>
+        
+        <!-- 模態框內容 -->
+        <div class="fixed inset-0 flex items-center justify-center p-4">
+            <div class="modal-enter bg-white rounded-xl shadow-level-4 w-full max-w-lg mx-auto max-h-[90vh] overflow-hidden flex flex-col">
+                <!-- 模態框頭部 -->
+                <div class="p-4 border-b border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <h3 id="filterTitle" class="text-lg font-semibold text-text-primary">
+                            篩選設定
+                        </h3>
+                        <button id="closeFilterBtn" class="w-8 h-8 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors">
+                            <svg class="w-5 h-5 text-text-tertiary" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- 篩選計數 -->
+                    <div class="mt-2 text-sm text-text-tertiary">
+                        <span id="filterCount">0</span> 個篩選條件
+                    </div>
+                </div>
+                
+                <!-- 篩選內容區域 -->
+                <div class="flex-1 overflow-y-auto p-4 space-y-6" id="filterContent">
+                    <!-- 動態生成篩選內容 -->
+                </div>
+                
+                <!-- 模態框按鈕 -->
+                <div class="p-4 border-t border-gray-100 flex gap-3">
+                    <button id="resetFilterBtn" class="flex-1 bg-gray-100 text-text-secondary py-3 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors">
+                        重設
+                    </button>
+                    <button id="applyFilterBtn" class="flex-1 bg-primary text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                        套用篩選
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 篩選器表單類
+        class FilterModal {
+            constructor() {
+                this.modal = document.getElementById('filterModal');
+                this.filterTitle = document.getElementById('filterTitle');
+                this.filterContent = document.getElementById('filterContent');
+                this.filterCount = document.getElementById('filterCount');
+                this.closeBtn = document.getElementById('closeFilterBtn');
+                this.resetBtn = document.getElementById('resetFilterBtn');
+                this.applyBtn = document.getElementById('applyFilterBtn');
+                this.backdrop = this.modal.querySelector('.modal-backdrop');
+                this.modalContent = this.modal.querySelector('.modal-enter');
+                
+                this.currentFilters = {};
+                this.onApply = null;
+                this.onReset = null;
+                
+                this.init();
+            }
+            
+            init() {
+                // ESC鍵關閉
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && !this.modal.classList.contains('hidden')) {
+                        this.hide();
+                    }
+                });
+                
+                // 背景點擊關閉
+                this.backdrop.addEventListener('click', () => {
+                    this.hide();
+                });
+                
+                // 關閉按鈕
+                this.closeBtn.addEventListener('click', () => {
+                    this.hide();
+                });
+                
+                // 重設按鈕
+                this.resetBtn.addEventListener('click', () => {
+                    this.resetFilters();
+                });
+                
+                // 套用按鈕
+                this.applyBtn.addEventListener('click', () => {
+                    this.applyFilters();
+                });
+            }
+            
+            show(options = {}) {
+                const {
+                    title = '篩選設定',
+                    filterGroups = [],
+                    currentFilters = {},
+                    onApply = null,
+                    onReset = null
+                } = options;
+                
+                // 設置選項
+                this.filterTitle.textContent = title;
+                this.currentFilters = { ...currentFilters };
+                this.onApply = onApply;
+                this.onReset = onReset;
+                
+                // 生成篩選內容
+                this.renderFilterGroups(filterGroups);
+                
+                // 更新篩選計數
+                this.updateFilterCount();
+                
+                // 防止背景滾動
+                document.body.classList.add('no-scroll');
+                
+                // 顯示模態框
+                this.modal.classList.remove('hidden');
+                this.modalContent.classList.remove('modal-exit');
+                this.modalContent.classList.add('modal-enter');
+            }
+            
+            hide() {
+                this.modalContent.classList.remove('modal-enter');
+                this.modalContent.classList.add('modal-exit');
+                
+                setTimeout(() => {
+                    this.modal.classList.add('hidden');
+                    document.body.classList.remove('no-scroll');
+                }, 200);
+            }
+            
+            renderFilterGroups(filterGroups) {
+                this.filterContent.innerHTML = '';
+                
+                filterGroups.forEach(group => {
+                    const groupElement = this.createFilterGroup(group);
+                    this.filterContent.appendChild(groupElement);
+                });
+            }
+            
+            createFilterGroup(group) {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'filter-group';
+                
+                // 群組標題
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'flex items-center justify-between mb-3';
+                titleDiv.innerHTML = `
+                    <h4 class="font-medium text-text-primary">${group.title}</h4>
+                    ${group.clearable ? `<button class="text-sm text-primary hover:text-blue-600 transition-colors" onclick="this.closest('.filter-group').querySelectorAll('input').forEach(input => { input.checked = false; input.value = ''; this.dispatchEvent(new Event('change', {bubbles: true})); })">清除</button>` : ''}
+                `;
+                groupDiv.appendChild(titleDiv);
+                
+                // 根據類型生成內容
+                const contentDiv = document.createElement('div');
+                
+                switch (group.type) {
+                    case 'checkbox':
+                        contentDiv.className = 'space-y-3';
+                        group.options.forEach(option => {
+                            contentDiv.appendChild(this.createCheckboxOption(group.key, option));
+                        });
+                        break;
+                        
+                    case 'radio':
+                        contentDiv.className = 'space-y-3';
+                        group.options.forEach(option => {
+                            contentDiv.appendChild(this.createRadioOption(group.key, option));
+                        });
+                        break;
+                        
+                    case 'range':
+                        contentDiv.appendChild(this.createRangeOption(group.key, group));
+                        break;
+                        
+                    case 'tags':
+                        contentDiv.className = 'flex flex-wrap gap-2';
+                        group.options.forEach(option => {
+                            contentDiv.appendChild(this.createTagOption(group.key, option));
+                        });
+                        break;
+                        
+                    case 'dateRange':
+                        contentDiv.appendChild(this.createDateRangeOption(group.key, group));
+                        break;
+                }
+                
+                groupDiv.appendChild(contentDiv);
+                return groupDiv;
+            }
+            
+            createCheckboxOption(groupKey, option) {
+                const div = document.createElement('div');
+                div.className = 'flex items-center space-x-3';
+                
+                const isChecked = this.currentFilters[groupKey] && this.currentFilters[groupKey].includes(option.value);
+                
+                div.innerHTML = `
+                    <input type="checkbox" 
+                           class="custom-checkbox" 
+                           id="${groupKey}_${option.value}" 
+                           value="${option.value}"
+                           ${isChecked ? 'checked' : ''}>
+                    <label for="${groupKey}_${option.value}" class="flex-1 text-text-secondary cursor-pointer">
+                        ${option.label}
+                        ${option.count ? `<span class="text-text-tertiary ml-1">(${option.count})</span>` : ''}
+                    </label>
+                `;
+                
+                div.querySelector('input').addEventListener('change', () => {
+                    this.updateCheckboxFilter(groupKey, option.value, div.querySelector('input').checked);
+                });
+                
+                return div;
+            }
+            
+            createRadioOption(groupKey, option) {
+                const div = document.createElement('div');
+                div.className = 'flex items-center space-x-3';
+                
+                const isChecked = this.currentFilters[groupKey] === option.value;
+                
+                div.innerHTML = `
+                    <input type="radio" 
+                           class="custom-radio" 
+                           name="${groupKey}" 
+                           id="${groupKey}_${option.value}" 
+                           value="${option.value}"
+                           ${isChecked ? 'checked' : ''}>
+                    <label for="${groupKey}_${option.value}" class="flex-1 text-text-secondary cursor-pointer">
+                        ${option.label}
+                    </label>
+                `;
+                
+                div.querySelector('input').addEventListener('change', () => {
+                    this.updateRadioFilter(groupKey, option.value);
+                });
+                
+                return div;
+            }
+            
+            createRangeOption(groupKey, group) {
+                const div = document.createElement('div');
+                div.className = 'space-y-4';
+                
+                const currentMin = this.currentFilters[groupKey] ? this.currentFilters[groupKey].min : group.min;
+                const currentMax = this.currentFilters[groupKey] ? this.currentFilters[groupKey].max : group.max;
+                
+                div.innerHTML = `
+                    <div class="flex justify-between text-sm text-text-tertiary">
+                        <span>最小值: <span id="${groupKey}_min_display">${currentMin}</span></span>
+                        <span>最大值: <span id="${groupKey}_max_display">${currentMax}</span></span>
+                    </div>
+                    <div class="space-y-3">
+                        <input type="range" 
+                               class="range-slider" 
+                               id="${groupKey}_min" 
+                               min="${group.min}" 
+                               max="${group.max}" 
+                               value="${currentMin}"
+                               step="${group.step || 1}">
+                        <input type="range" 
+                               class="range-slider" 
+                               id="${groupKey}_max" 
+                               min="${group.min}" 
+                               max="${group.max}" 
+                               value="${currentMax}"
+                               step="${group.step || 1}">
+                    </div>
+                `;
+                
+                const minSlider = div.querySelector(`#${groupKey}_min`);
+                const maxSlider = div.querySelector(`#${groupKey}_max`);
+                const minDisplay = div.querySelector(`#${groupKey}_min_display`);
+                const maxDisplay = div.querySelector(`#${groupKey}_max_display`);
+                
+                const updateRange = () => {
+                    const min = parseInt(minSlider.value);
+                    const max = parseInt(maxSlider.value);
+                    
+                    if (min > max) {
+                        minSlider.value = max;
+                        maxSlider.value = min;
+                    }
+                    
+                    minDisplay.textContent = minSlider.value;
+                    maxDisplay.textContent = maxSlider.value;
+                    
+                    this.updateRangeFilter(groupKey, {
+                        min: parseInt(minSlider.value),
+                        max: parseInt(maxSlider.value)
+                    });
+                };
+                
+                minSlider.addEventListener('input', updateRange);
+                maxSlider.addEventListener('input', updateRange);
+                
+                return div;
+            }
+            
+            createTagOption(groupKey, option) {
+                const button = document.createElement('button');
+                const isActive = this.currentFilters[groupKey] && this.currentFilters[groupKey].includes(option.value);
+                
+                button.className = `filter-tag px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive ? 'active' : ''}`;
+                button.textContent = option.label;
+                
+                button.addEventListener('click', () => {
+                    button.classList.toggle('active');
+                    this.updateTagFilter(groupKey, option.value, button.classList.contains('active'));
+                });
+                
+                return button;
+            }
+            
+            createDateRangeOption(groupKey, group) {
+                const div = document.createElement('div');
+                div.className = 'space-y-3';
+                
+                const currentStart = this.currentFilters[groupKey] ? this.currentFilters[groupKey].start : '';
+                const currentEnd = this.currentFilters[groupKey] ? this.currentFilters[groupKey].end : '';
+                
+                div.innerHTML = `
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-sm font-medium text-text-secondary mb-2">開始日期</label>
+                            <input type="date" 
+                                   class="w-full border border-gray-300 rounded-lg py-2 px-3 text-sm focus:ring-2 focus:ring-primary focus:border-transparent" 
+                                   id="${groupKey}_start"
+                                   value="${currentStart}">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-text-secondary mb-2">結束日期</label>
+                            <input type="date" 
+                                   class="w-full border border-gray-300 rounded-lg py-2 px-3 text-sm focus:ring-2 focus:ring-primary focus:border-transparent" 
+                                   id="${groupKey}_end"
+                                   value="${currentEnd}">
+                        </div>
+                    </div>
+                `;
+                
+                const startInput = div.querySelector(`#${groupKey}_start`);
+                const endInput = div.querySelector(`#${groupKey}_end`);
+                
+                const updateDateRange = () => {
+                    this.updateDateRangeFilter(groupKey, {
+                        start: startInput.value,
+                        end: endInput.value
+                    });
+                };
+                
+                startInput.addEventListener('change', updateDateRange);
+                endInput.addEventListener('change', updateDateRange);
+                
+                return div;
+            }
+            
+            updateCheckboxFilter(groupKey, value, checked) {
+                if (!this.currentFilters[groupKey]) {
+                    this.currentFilters[groupKey] = [];
+                }
+                
+                if (checked) {
+                    if (!this.currentFilters[groupKey].includes(value)) {
+                        this.currentFilters[groupKey].push(value);
+                    }
+                } else {
+                    this.currentFilters[groupKey] = this.currentFilters[groupKey].filter(v => v !== value);
+                    if (this.currentFilters[groupKey].length === 0) {
+                        delete this.currentFilters[groupKey];
+                    }
+                }
+                
+                this.updateFilterCount();
+            }
+            
+            updateRadioFilter(groupKey, value) {
+                this.currentFilters[groupKey] = value;
+                this.updateFilterCount();
+            }
+            
+            updateRangeFilter(groupKey, range) {
+                this.currentFilters[groupKey] = range;
+                this.updateFilterCount();
+            }
+            
+            updateTagFilter(groupKey, value, active) {
+                if (!this.currentFilters[groupKey]) {
+                    this.currentFilters[groupKey] = [];
+                }
+                
+                if (active) {
+                    if (!this.currentFilters[groupKey].includes(value)) {
+                        this.currentFilters[groupKey].push(value);
+                    }
+                } else {
+                    this.currentFilters[groupKey] = this.currentFilters[groupKey].filter(v => v !== value);
+                    if (this.currentFilters[groupKey].length === 0) {
+                        delete this.currentFilters[groupKey];
+                    }
+                }
+                
+                this.updateFilterCount();
+            }
+            
+            updateDateRangeFilter(groupKey, dateRange) {
+                if (dateRange.start || dateRange.end) {
+                    this.currentFilters[groupKey] = dateRange;
+                } else {
+                    delete this.currentFilters[groupKey];
+                }
+                this.updateFilterCount();
+            }
+            
+            updateFilterCount() {
+                const count = Object.keys(this.currentFilters).length;
+                this.filterCount.textContent = count;
+            }
+            
+            resetFilters() {
+                this.currentFilters = {};
+                
+                // 重設所有輸入元素
+                this.filterContent.querySelectorAll('input').forEach(input => {
+                    if (input.type === 'checkbox' || input.type === 'radio') {
+                        input.checked = false;
+                    } else {
+                        input.value = input.type === 'range' ? input.min : '';
+                    }
+                });
+                
+                // 重設標籤
+                this.filterContent.querySelectorAll('.filter-tag').forEach(tag => {
+                    tag.classList.remove('active');
+                });
+                
+                this.updateFilterCount();
+                
+                if (this.onReset) this.onReset();
+            }
+            
+            applyFilters() {
+                this.hide();
+                if (this.onApply) this.onApply(this.currentFilters);
+            }
+        }
+        
+        // 初始化篩選器表單
+        const filterModal = new FilterModal();
+        
+        // 顯示篩選結果
+        function showFilterResults(filters) {
+            const resultsDiv = document.getElementById('filterResults');
+            const activeFiltersDiv = document.getElementById('activeFilters');
+            
+            if (Object.keys(filters).length === 0) {
+                resultsDiv.classList.add('hidden');
+                return;
+            }
+            
+            activeFiltersDiv.innerHTML = '';
+            
+            Object.entries(filters).forEach(([key, value]) => {
+                const tag = document.createElement('span');
+                tag.className = 'px-2 py-1 bg-primary bg-opacity-10 text-primary text-xs rounded-full';
+                
+                if (Array.isArray(value)) {
+                    tag.textContent = `${key}: ${value.join(', ')}`;
+                } else if (typeof value === 'object' && value.min !== undefined) {
+                    tag.textContent = `${key}: ${value.min}-${value.max}`;
+                } else if (typeof value === 'object' && value.start !== undefined) {
+                    tag.textContent = `${key}: ${value.start || '...'} ~ ${value.end || '...'}`;
+                } else {
+                    tag.textContent = `${key}: ${value}`;
+                }
+                
+                activeFiltersDiv.appendChild(tag);
+            });
+            
+            resultsDiv.classList.remove('hidden');
+        }
+        
+        // 示例用法
+        document.getElementById('recordingFilterBtn').addEventListener('click', () => {
+            filterModal.show({
+                title: '錄音篩選設定',
+                filterGroups: [
+                    {
+                        title: '錄音狀態',
+                        type: 'radio',
+                        key: 'status',
+                        clearable: true,
+                        options: [
+                            { label: '全部', value: 'all' },
+                            { label: '已分析', value: 'analyzed' },
+                            { label: '分析中', value: 'analyzing' },
+                            { label: '待分析', value: 'pending' }
+                        ]
+                    },
+                    {
+                        title: '錄音時長',
+                        type: 'range',
+                        key: 'duration',
+                        min: 0,
+                        max: 120,
+                        step: 5
+                    },
+                    {
+                        title: '錄音日期',
+                        type: 'dateRange',
+                        key: 'dateRange'
+                    }
+                ],
+                onApply: (filters) => {
+                    showFilterResults(filters);
+                    alert('錄音篩選已套用！');
+                }
+            });
+        });
+        
+        document.getElementById('caseFilterBtn').addEventListener('click', () => {
+            filterModal.show({
+                title: 'CASE 篩選設定',
+                filterGroups: [
+                    {
+                        title: 'CASE 狀態',
+                        type: 'checkbox',
+                        key: 'caseStatus',
+                        clearable: true,
+                        options: [
+                            { label: '進行中', value: 'active', count: 15 },
+                            { label: '已成交', value: 'closed', count: 8 },
+                            { label: '暫停', value: 'paused', count: 3 }
+                        ]
+                    },
+                    {
+                        title: '產品類型',
+                        type: 'tags',
+                        key: 'productType',
+                        options: [
+                            { label: '壽險', value: 'life' },
+                            { label: '醫療險', value: 'medical' },
+                            { label: '意外險', value: 'accident' },
+                            { label: '儲蓄險', value: 'savings' }
+                        ]
+                    },
+                    {
+                        title: '評分範圍',
+                        type: 'range',
+                        key: 'scoreRange',
+                        min: 0,
+                        max: 10,
+                        step: 0.5
+                    }
+                ],
+                onApply: (filters) => {
+                    showFilterResults(filters);
+                    alert('CASE 篩選已套用！');
+                }
+            });
+        });
+        
+        document.getElementById('performanceFilterBtn').addEventListener('click', () => {
+            filterModal.show({
+                title: '績效篩選設定',
+                filterGroups: [
+                    {
+                        title: '團隊成員',
+                        type: 'checkbox',
+                        key: 'members',
+                        clearable: true,
+                        options: [
+                            { label: '王小明', value: 'wang', count: 12 },
+                            { label: '李美華', value: 'li', count: 18 },
+                            { label: '陳大文', value: 'chen', count: 9 }
+                        ]
+                    },
+                    {
+                        title: '績效等級',
+                        type: 'tags',
+                        key: 'performanceLevel',
+                        options: [
+                            { label: '優秀', value: 'excellent' },
+                            { label: '良好', value: 'good' },
+                            { label: '普通', value: 'average' },
+                            { label: '需改進', value: 'poor' }
+                        ]
+                    }
+                ],
+                onApply: (filters) => {
+                    showFilterResults(filters);
+                    alert('績效篩選已套用！');
+                }
+            });
+        });
+        
+        document.getElementById('customerFilterBtn').addEventListener('click', () => {
+            filterModal.show({
+                title: '客戶篩選設定',
+                filterGroups: [
+                    {
+                        title: '客戶年齡',
+                        type: 'range',
+                        key: 'age',
+                        min: 20,
+                        max: 80,
+                        step: 1
+                    },
+                    {
+                        title: '地區',
+                        type: 'checkbox',
+                        key: 'region',
+                        clearable: true,
+                        options: [
+                            { label: '台北市', value: 'taipei', count: 25 },
+                            { label: '新北市', value: 'newTaipei', count: 18 },
+                            { label: '桃園市', value: 'taoyuan', count: 12 },
+                            { label: '台中市', value: 'taichung', count: 15 }
+                        ]
+                    },
+                    {
+                        title: '職業類別',
+                        type: 'tags',
+                        key: 'occupation',
+                        options: [
+                            { label: '金融業', value: 'finance' },
+                            { label: '科技業', value: 'tech' },
+                            { label: '製造業', value: 'manufacturing' },
+                            { label: '服務業', value: 'service' },
+                            { label: '其他', value: 'others' }
+                        ]
+                    }
+                ],
+                onApply: (filters) => {
+                    showFilterResults(filters);
+                    alert('客戶篩選已套用！');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

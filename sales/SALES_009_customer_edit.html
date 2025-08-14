@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalesAI - 客戶資訊編輯</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#2E5BFF',
+                        'secondary': '#00C6AE',
+                        'success': '#00D563',
+                        'warning': '#FFB800',
+                        'error': '#FF4757',
+                        'text-primary': '#1A1A1A',
+                        'text-secondary': '#666666',
+                        'text-tertiary': '#999999'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 font-sans">
+    <header class="bg-white shadow-sm px-4 py-3 sticky top-0 z-10">
+        <div class="flex items-center justify-between">
+            <button onclick="history.back()" class="text-text-secondary">
+                <i class="fas fa-arrow-left text-lg"></i>
+            </button>
+            <h1 class="text-lg font-semibold text-text-primary">編輯客戶資訊</h1>
+            <div class="flex items-center space-x-4">
+                <div class="relative cursor-pointer" onclick="location.href='../common/COMMON_008_notification_center.html'">
+                    <i class="fas fa-bell text-text-secondary text-lg"></i>
+                    <span class="absolute -top-2 -right-2 bg-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
+                </div>
+                <button onclick="location.href='../common/COMMON_001_settings.html'" class="text-text-secondary">
+                    <i class="fas fa-cog text-lg"></i>
+                </button>
+                <button onclick="saveCustomer()" class="text-primary font-medium">儲存</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="px-4 py-6 pb-24">
+        <form class="space-y-6">
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h3 class="font-semibold text-text-primary mb-4">基本資訊</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-text-secondary mb-2">姓名 *</label>
+                        <input type="text" value="張先生" class="w-full border border-gray-200 rounded-lg px-4 py-2">
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-text-secondary mb-2">年齡</label>
+                            <input type="number" value="35" class="w-full border border-gray-200 rounded-lg px-4 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-text-secondary mb-2">性別</label>
+                            <select class="w-full border border-gray-200 rounded-lg px-4 py-2">
+                                <option value="男" selected>男</option>
+                                <option value="女">女</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-text-secondary mb-2">職業</label>
+                        <input type="text" value="工程師" class="w-full border border-gray-200 rounded-lg px-4 py-2">
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h3 class="font-semibold text-text-primary mb-4">聯絡資訊</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-text-secondary mb-2">手機號碼</label>
+                        <input type="tel" value="0912-345-678" class="w-full border border-gray-200 rounded-lg px-4 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-text-secondary mb-2">電子信箱</label>
+                        <input type="email" value="zhang@email.com" class="w-full border border-gray-200 rounded-lg px-4 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-text-secondary mb-2">地址</label>
+                        <textarea class="w-full border border-gray-200 rounded-lg px-4 py-2 h-20">台北市信義區応南路101號</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h3 class="font-semibold text-text-primary mb-4">家庭狀況</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-text-secondary mb-2">婚姻狀況</label>
+                        <select class="w-full border border-gray-200 rounded-lg px-4 py-2">
+                            <option value="已婚" selected>已婚</option>
+                            <option value="未婚">未婚</option>
+                            <option value="離婚">離婚</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-text-secondary mb-2">子女數</label>
+                        <input type="number" value="2" class="w-full border border-gray-200 rounded-lg px-4 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-text-secondary mb-2">年收入範圍</label>
+                        <select class="w-full border border-gray-200 rounded-lg px-4 py-2">
+                            <option value="50萬以下">50萬以下</option>
+                            <option value="50-100萬" selected>50-100萬</option>
+                            <option value="100-200萬">100-200萬</option>
+                            <option value="200萬以上">200萬以上</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h3 class="font-semibold text-text-primary mb-4">備註</h3>
+                <textarea class="w-full border border-gray-200 rounded-lg px-4 py-2 h-24" placeholder="其他重要資訊...">重視保障，有房貸壓力，積極規劃未來</textarea>
+            </div>
+        </form>
+    </main>
+
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
+        <div class="flex space-x-3">
+            <button onclick="history.back()" class="flex-1 bg-gray-200 text-text-secondary py-3 rounded-lg font-medium">取消</button>
+            <button onclick="saveCustomer()" class="flex-1 bg-primary text-white py-3 rounded-lg font-medium">儲存更新</button>
+        </div>
+    </div>
+
+    <script>
+        function saveCustomer() {
+            alert('客戶資訊已更新！');
+            history.back();
+        }
+    </script>
+</body>
+</html>

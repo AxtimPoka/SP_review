@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalesAI - 改進建議</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#2E5BFF',
+                        'secondary': '#00C6AE',
+                        'success': '#00D563',
+                        'warning': '#FFB800',
+                        'error': '#FF4757',
+                        'text-primary': '#1A1A1A',
+                        'text-secondary': '#666666',
+                        'text-tertiary': '#999999'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 font-sans">
+    <header class="bg-white shadow-sm px-4 py-3 sticky top-0 z-10">
+        <div class="flex items-center justify-between">
+            <button onclick="history.back()" class="text-text-secondary">
+                <i class="fas fa-arrow-left text-lg"></i>
+            </button>
+            <h1 class="text-lg font-semibold text-text-primary">改進建議</h1>
+            <div class="flex items-center space-x-4">
+                <div class="relative cursor-pointer" onclick="location.href='../common/COMMON_008_notification_center.html'">
+                    <i class="fas fa-bell text-text-secondary text-lg"></i>
+                    <span class="absolute -top-2 -right-2 bg-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
+                </div>
+                <button onclick="location.href='../common/COMMON_001_settings.html'" class="text-text-secondary">
+                    <i class="fas fa-cog text-lg"></i>
+                </button>
+                <button onclick="saveProgress()" class="text-text-secondary">
+                    <i class="fas fa-bookmark text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="px-4 py-6 pb-24">
+        <!-- Priority Improvements -->
+        <section class="mb-6">
+            <h3 class="font-semibold text-text-primary mb-4">優先改進項目</h3>
+            <div class="space-y-4">
+                <div class="bg-white rounded-xl p-4 shadow-sm border-l-4 border-error">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-text-primary mb-1">異議處理技巧</h4>
+                            <p class="text-sm text-text-secondary mb-2">分數: 5.9/10 - 需要立即改進</p>
+                        </div>
+                        <span class="bg-error text-white px-2 py-1 rounded text-xs">高優先</span>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="bg-error/10 rounded-lg p-3">
+                            <h5 class="font-medium text-error mb-1">問題點:</h5>
+                            <p class="text-sm text-text-secondary">面對客戶異議時常被動回應，缺乏主動引導和系統性的處理方法</p>
+                        </div>
+                        <div class="bg-primary/10 rounded-lg p-3">
+                            <h5 class="font-medium text-primary mb-1">改進建議:</h5>
+                            <ul class="text-sm text-text-secondary space-y-1">
+                                <li>• 學習「FEEL-FELT-FOUND」方法</li>
+                                <li>• 練習「肯定-理解-引導」三步驟</li>
+                                <li>• 準備常見異議的回應話術</li>
+                            </ul>
+                        </div>
+                        <button class="w-full bg-primary text-white py-2 rounded-lg text-sm" onclick="startLearning('異議處理')">
+                            開始學習 →
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-4 shadow-sm border-l-4 border-warning">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-text-primary mb-1">價值塑造能力</h4>
+                            <p class="text-sm text-text-secondary mb-2">分數: 6.8/10 - 有待提升</p>
+                        </div>
+                        <span class="bg-warning text-white px-2 py-1 rounded text-xs">中優先</span>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="bg-warning/10 rounded-lg p-3">
+                            <h5 class="font-medium text-warning mb-1">問題點:</h5>
+                            <p class="text-sm text-text-secondary">產品介紹過於理性，缺乏情感連結和故事化表達</p>
+                        </div>
+                        <div class="bg-primary/10 rounded-lg p-3">
+                            <h5 class="font-medium text-primary mb-1">改進建議:</h5>
+                            <ul class="text-sm text-text-secondary space-y-1">
+                                <li>• 多使用「如果....那麼...」的情境描述</li>
+                                <li>• 引用真實案例和數據支持</li>
+                                <li>• 強化風險後果的具體化描述</li>
+                            </ul>
+                        </div>
+                        <button class="w-full bg-warning text-white py-2 rounded-lg text-sm" onclick="startLearning('價值塑造')">
+                            開始學習 →
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- General Suggestions -->
+        <section class="mb-6">
+            <h3 class="font-semibold text-text-primary mb-4">一般建議</h3>
+            <div class="space-y-3">
+                <div class="bg-white rounded-lg p-4">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-clock text-secondary"></i>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-text-primary">時間掌控技巧</h4>
+                            <p class="text-sm text-text-secondary">建議每個階段設定時間目標，管理對話節奏</p>
+                        </div>
+                        <button class="text-primary text-sm">學習</button>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg p-4">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-handshake text-success"></i>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-text-primary">成交信號捕捉</h4>
+                            <p class="text-sm text-text-secondary">學習識別客戶的購買信號，適時推進成交</p>
+                        </div>
+                        <button class="text-primary text-sm">學習</button>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg p-4">
+                    <div class="flex items-center space-x-3">
+                        <i class="fas fa-users text-primary"></i>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-text-primary">關係建立技巧</h4>
+                            <p class="text-sm text-text-secondary">加強初期的信任關係建立，提升客戶開放度</p>
+                        </div>
+                        <button class="text-primary text-sm">學習</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Progress Tracking -->
+        <section>
+            <h3 class="font-semibold text-text-primary mb-4">進度追蹤</h3>
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <div class="mb-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-text-primary">整體改進進度</span>
+                        <span class="text-sm text-primary font-bold">35%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-primary h-2 rounded-full" style="width: 35%"></div>
+                    </div>
+                </div>
+                
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-text-secondary">已完成建議</span>
+                        <span class="text-sm font-medium">3/8</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-text-secondary">學習時間</span>
+                        <span class="text-sm font-medium">2.5 小時</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-text-secondary">預估完成時間</span>
+                        <span class="text-sm font-medium">1 週</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function startLearning(topic) {
+            alert('開始學習: ' + topic);
+            location.href = 'SALES_014_excellent_cases.html?topic=' + encodeURIComponent(topic);
+        }
+
+        function saveProgress() {
+            alert('學習進度已儲存');
+        }
+    </script>
+</body>
+</html>

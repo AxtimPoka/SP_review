@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>隱私設定 - SalesAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE', 
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'gray-dark': '#1A1A1A',
+                        'gray-medium': '#666666',
+                        'gray-light': '#999999',
+                        'background-gray': '#F8F9FA',
+                        'border-gray': '#E5E5E5'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        .toggle-switch {
+            appearance: none;
+            width: 52px;
+            height: 28px;
+            background: #E5E5E5;
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-switch:checked {
+            background: #2E5BFF;
+        }
+        
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .toggle-switch:checked::before {
+            transform: translateX(24px);
+        }
+        
+        .privacy-item {
+            transition: all 0.2s ease;
+        }
+        
+        .privacy-item:hover {
+            background-color: #F8F9FA;
+        }
+        
+        .icon-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .security-level {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .security-high {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .security-medium {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .security-low {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .data-usage-bar {
+            height: 6px;
+            background: #E5E5E5;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .data-usage-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00D563 0%, #FFB800 70%, #FF4757 100%);
+            transition: width 0.3s ease;
+        }
+
+        .permission-card {
+            border: 1px solid #E5E5E5;
+            transition: all 0.2s ease;
+        }
+
+        .permission-card:hover {
+            border-color: #2E5BFF;
+            box-shadow: 0 2px 8px rgba(46, 91, 255, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-background-gray min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center">
+                <button onclick="goBack()" class="mr-4 p-2 -ml-2 rounded-lg hover:bg-gray-100 transition-colors">
+                    <svg class="w-6 h-6 text-gray-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <h1 class="text-xl font-semibold text-gray-dark">隱私設定</h1>
+            </div>
+            <button onclick="saveSettings()" class="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                儲存
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-md mx-auto px-4 pb-safe">
+        <!-- Privacy Overview -->
+        <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 mb-4 mt-4">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-dark">隱私保護狀態</h3>
+                    <p class="text-sm text-gray-medium">您的資料安全等級</p>
+                </div>
+                <div class="security-level security-high">
+                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                    </svg>
+                    高度保護
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-success">85%</div>
+                    <div class="text-xs text-gray-medium">隱私分數</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-2xl font-bold text-primary">12</div>
+                    <div class="text-xs text-gray-medium">權限項目</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Management -->
+        <div class="bg-white rounded-xl overflow-hidden mb-4">
+            <div class="px-4 py-3 border-b border-border-gray">
+                <h3 class="text-sm font-medium text-gray-medium">資料管理</h3>
+            </div>
+            
+            <div class="divide-y divide-border-gray">
+                <div class="privacy-item px-4 py-4 flex items-center justify-between">
+                    <div class="flex items-center flex-1">
+                        <div class="icon-container bg-blue-100 mr-3">
+                            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-base font-medium text-gray-dark">錄音資料存取</h4>
+                            <p class="text-sm text-gray-light">允許主管查看去識別化的逐字稿</p>
+                        </div>
+                    </div>
+                    <input type="checkbox" class="toggle-switch" data-setting="recording_access" checked>
+                </div>
+
+                <div class="privacy-item px-4 py-4 flex items-center justify-between">
+                    <div class="flex items-center flex-1">
+                        <div class="icon-container bg-green-100 mr-3">
+                            <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-base font-medium text-gray-dark">績效資料分享</h4>
+                            <p class="text-sm text-gray-light">同意分享匿名績效數據供系統改善</p>
+                        </div>
+                    </div>
+                    <input type="checkbox" class="toggle-switch" data-setting="performance_sharing" checked>
+                </div>
+
+                <div class="privacy-item px-4 py-4 flex items-center justify-between">
+                    <div class="flex items-center flex-1">
+                        <div class="icon-container bg-purple-100 mr-3">
+                            <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-base font-medium text-gray-dark">客戶資料加密</h4>
+                            <p class="text-sm text-gray-light">所有客戶敏感資訊自動加密處理</p>
+                        </div>
+                    </div>
+                    <input type="checkbox" class="toggle-switch" data-setting="data_encryption" checked disabled>
+                </div>
+            </div>
+        </div>
+
+        <!-- App Permissions -->
+        <div class="bg-white rounded-xl overflow-hidden mb-4">
+            <div class="px-4 py-3 border-b border-border-gray">
+                <h3 class="text-sm font-medium text-gray-medium">應用程式權限</h3>
+            </div>
+            
+            <div class="divide-y divide-border-gray">
+                <div class="privacy-item px-4 py-4 flex items-center justify-between">
+                    <div class="flex items-center flex-1">
+                        <div class="icon-container bg-red-100 mr-3">
+                            <svg class="w-5 h-5 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-base font-medium text-gray-dark">麥克風存取</h4>
+                            <p class="text-sm text-gray-light">錄音功能所需的必要權限</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-xs text-success mr-2">已允許</span>
+                        <button onclick="managePermission('microphone')" class="text-primary text-sm font-medium">
+                            管理
+                        </button>
+                    </div>
+                </div>
+
+                <div class="privacy-item px-4 py-4 flex items-center justify-between">
+                    <div class="flex items-center flex-1">
+                        <div class="icon-container bg-yellow-100 mr-3">
+                            <svg class="w-5 h-5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-base font-medium text-gray-dark">位置資訊</h4>
+                            <p class="text-sm text-gray-light">用於外訪記錄和工作軌跡分析</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-xs text-gray-light mr-2">未設定</span>
+                        <button onclick="managePermission('location')" class="text-primary text-sm font-medium">
+                            管理
+                        </button>
+                    </div>
+                </div>
+
+                <div class="privacy-item px-4 py-4 flex items-center justify-between">
+                    <div class="flex items-center flex-1">
+                        <div class="icon-container bg-blue-100 mr-3">
+                            <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19H6.5A2.5 2.5 0 014 16.5v-9A2.5 2.5 0 016.5 5h11A2.5 2.5 0 0120 7.5v3.5"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-base font-medium text-gray-dark">推播通知</h4>
+                            <p class="text-sm text-gray-light">接收系統通知和提醒</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-xs text-success mr-2">已允許</span>
+                        <button onclick="managePermission('notifications')" class="text-primary text-sm font-medium">
+                            管理
+                        </button>
+                    </div>
+                </div>
+
+                <div class="privacy-item px-4 py-4 flex items-center justify-between">
+                    <div class="flex items-center flex-1">
+                        <div class="icon-container bg-green-100 mr-3">
+                            <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"></path>
+                            </svg>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="text-base font-medium text-gray-dark">檔案存取</h4>
+                            <p class="text-sm text-gray-light">存取錄音檔案和分析報告</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="text-xs text-success mr-2">已允許</span>
+                        <button onclick="managePermission('files')" class="text-primary text-sm font-medium">
+                            管理
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Usage Analytics -->
+        <div class="bg-white rounded-xl p-6 mb-4">
+            <h3 class="text-lg font-semibold text-gray-dark mb-4">資料使用統計</h3>
+            
+            <div class="space-y-4">
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-medium text-gray-dark">錄音資料</span>
+                        <span class="text-sm text-gray-medium">2.3 GB / 5 GB</span>
+                    </div>
+                    <div class="data-usage-bar">
+                        <div class="data-usage-fill" style="width: 46%"></div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-medium text-gray-dark">分析報告</span>
+                        <span class="text-sm text-gray-medium">485 MB / 1 GB</span>
+                    </div>
+                    <div class="data-usage-bar">
+                        <div class="data-usage-fill" style="width: 48.5%"></div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-sm font-medium text-gray-dark">快取資料</span>
+                        <span class="text-sm text-gray-medium">156 MB / 500 MB</span>
+                    </div>
+                    <div class="data-usage-bar">
+                        <div class="data-usage-fill" style="width: 31.2%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <button onclick="manageDataUsage()" class="w-full mt-4 px-4 py-2 border border-primary text-primary rounded-lg font-medium hover:bg-primary hover:text-white transition-colors">
+                管理資料使用
+            </button>
+        </div>
+
+        <!-- Data Control Actions -->
+        <div class="bg-white rounded-xl overflow-hidden mb-4">
+            <div class="px-4 py-3 border-b border-border-gray">
+                <h3 class="text-sm font-medium text-gray-medium">資料控制</h3>
+            </div>
+            
+            <div class="divide-y divide-border-gray">
+                <button onclick="exportData()" class="privacy-item w-full px-4 py-4 flex items-center text-left hover:bg-gray-50 transition-colors">
+                    <div class="icon-container bg-blue-100 mr-3">
+                        <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-base font-medium text-gray-dark">匯出我的資料</h4>
+                        <p class="text-sm text-gray-light">下載您的所有個人資料副本</p>
+                    </div>
+                    <svg class="w-5 h-5 text-gray-light ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+
+                <button onclick="clearCache()" class="privacy-item w-full px-4 py-4 flex items-center text-left hover:bg-gray-50 transition-colors">
+                    <div class="icon-container bg-yellow-100 mr-3">
+                        <svg class="w-5 h-5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-base font-medium text-gray-dark">清除快取資料</h4>
+                        <p class="text-sm text-gray-light">移除暫存檔案釋放儲存空間</p>
+                    </div>
+                    <svg class="w-5 h-5 text-gray-light ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+
+                <button onclick="requestDataDeletion()" class="privacy-item w-full px-4 py-4 flex items-center text-left hover:bg-red-50 transition-colors text-error">
+                    <div class="icon-container bg-red-100 mr-3">
+                        <svg class="w-5 h-5 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="text-base font-medium text-error">申請刪除資料</h4>
+                        <p class="text-sm text-gray-light">永久刪除您的所有個人資料</p>
+                    </div>
+                    <svg class="w-5 h-5 text-gray-light ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Privacy Policy -->
+        <div class="bg-white rounded-xl p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-dark mb-4">隱私政策</h3>
+            <div class="space-y-3">
+                <button onclick="viewPrivacyPolicy()" class="w-full px-4 py-3 border border-border-gray rounded-lg text-left hover:border-primary transition-colors">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="text-base font-medium text-gray-dark">隱私政策</h4>
+                            <p class="text-sm text-gray-light">了解我們如何保護您的隱私</p>
+                        </div>
+                        <svg class="w-5 h-5 text-gray-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        </svg>
+                    </div>
+                </button>
+                
+                <button onclick="viewTermsOfService()" class="w-full px-4 py-3 border border-border-gray rounded-lg text-left hover:border-primary transition-colors">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h4 class="text-base font-medium text-gray-dark">服務條款</h4>
+                            <p class="text-sm text-gray-light">使用條款和服務協議</p>
+                        </div>
+                        <svg class="w-5 h-5 text-gray-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                        </svg>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function goBack() {
+            // 智能返回邏輯：根據用戶角色返回對應的首頁
+            const userRole = localStorage.getItem('userRole');
+            
+            if (userRole === 'manager') {
+                window.location.href = '../manager/MGR_001_dashboard.html';
+            } else if (userRole === 'sales') {
+                window.location.href = '../sales/SALES_001_home.html';
+            } else {
+                // 預設使用瀏覽器歷史記錄返回
+                window.history.back();
+            }
+        }
+
+        function saveSettings() {
+            const settings = {};
+            
+            // 收集所有隱私設定
+            document.querySelectorAll('[data-setting]').forEach(element => {
+                if (element.type === 'checkbox') {
+                    settings[element.dataset.setting] = element.checked;
+                }
+            });
+            
+            // 儲存到 localStorage
+            localStorage.setItem('privacySettings', JSON.stringify(settings));
+            
+            showToast('隱私設定已儲存', 'success');
+        }
+
+        function managePermission(type) {
+            const permissionMessages = {
+                microphone: '麥克風權限是錄音功能的必要權限。如要管理此權限，請前往瀏覽器設定 > 隱私權與安全性 > 網站設定。',
+                location: '位置權限可幫助記錄外訪地點。您可以在瀏覽器設定中允許或拒絕此權限。',
+                notifications: '通知權限讓您即時收到分析結果。可在瀏覽器設定中管理此權限。',
+                files: '檔案存取權限用於下載報告和匯出資料。可在瀏覽器設定中管理此權限。'
+            };
+            
+            if (permissionMessages[type]) {
+                showModal('權限管理', permissionMessages[type], [
+                    { text: '瞭解', action: () => {} },
+                    { text: '開啟設定', action: () => openBrowserSettings() }
+                ]);
+            }
+        }
+
+        function openBrowserSettings() {
+            // 嘗試開啟瀏覽器設定（實際上瀏覽器可能會阻止這個操作）
+            try {
+                window.open('chrome://settings/content', '_blank');
+            } catch (e) {
+                showToast('請手動開啟瀏覽器設定頁面', 'info');
+            }
+        }
+
+        function manageDataUsage() {
+            showModal('資料使用管理', '您可以檢視和管理各類資料的使用情況。是否要清除部分資料以釋放空間？', [
+                { text: '取消', action: () => {} },
+                { text: '清除舊資料', action: () => clearOldData() }
+            ]);
+        }
+
+        function clearOldData() {
+            showToast('正在清除舊資料...', 'info');
+            
+            // 模擬清除過程
+            setTimeout(() => {
+                updateDataUsage();
+                showToast('已清除 500MB 的舊資料', 'success');
+            }, 2000);
+        }
+
+        function updateDataUsage() {
+            // 更新資料使用量顯示
+            const usageBars = document.querySelectorAll('.data-usage-fill');
+            usageBars[0].style.width = '35%'; // 錄音資料
+            usageBars[1].style.width = '30%'; // 分析報告
+            usageBars[2].style.width = '15%'; // 快取資料
+            
+            // 更新文字顯示
+            const usageTexts = document.querySelectorAll('.data-usage-bar + div .text-gray-medium');
+            if (usageTexts.length >= 3) {
+                usageTexts[0].textContent = '1.8 GB / 5 GB';
+                usageTexts[1].textContent = '300 MB / 1 GB';
+                usageTexts[2].textContent = '75 MB / 500 MB';
+            }
+        }
+
+        function exportData() {
+            showModal('匯出資料', '這將創建一個包含您所有個人資料的檔案。處理可能需要幾分鐘時間。', [
+                { text: '取消', action: () => {} },
+                { text: '開始匯出', action: () => startExport() }
+            ]);
+        }
+
+        function startExport() {
+            showToast('正在準備您的資料匯出...', 'info');
+            
+            // 模擬匯出過程
+            setTimeout(() => {
+                // 創建一個模擬的下載連結
+                const element = document.createElement('a');
+                const file = new Blob(['模擬的個人資料匯出檔案'], {type: 'text/plain'});
+                element.href = URL.createObjectURL(file);
+                element.download = 'SalesAI_個人資料_' + new Date().toISOString().split('T')[0] + '.txt';
+                document.body.appendChild(element);
+                element.click();
+                document.body.removeChild(element);
+                
+                showToast('資料匯出完成', 'success');
+            }, 3000);
+        }
+
+        function clearCache() {
+            showModal('清除快取', '這將清除所有暫存檔案，可能會讓應用程式載入變慢。確定要繼續嗎？', [
+                { text: '取消', action: () => {} },
+                { text: '清除', action: () => performClearCache() }
+            ]);
+        }
+
+        function performClearCache() {
+            showToast('正在清除快取...', 'info');
+            
+            // 清除瀏覽器快取
+            if ('caches' in window) {
+                caches.keys().then(cacheNames => {
+                    cacheNames.forEach(cacheName => {
+                        caches.delete(cacheName);
+                    });
+                });
+            }
+            
+            // 清除 localStorage 中的非必要資料
+            const keysToKeep = ['userToken', 'userInfo', 'privacySettings', 'notificationSettings'];
+            Object.keys(localStorage).forEach(key => {
+                if (!keysToKeep.includes(key)) {
+                    localStorage.removeItem(key);
+                }
+            });
+            
+            setTimeout(() => {
+                updateDataUsage();
+                showToast('快取已清除', 'success');
+            }, 1500);
+        }
+
+        function requestDataDeletion() {
+            showModal('申請刪除資料', '⚠️ 這是不可逆的操作！\n\n刪除後您將失去：\n• 所有錄音記錄\n• 歷史分析報告\n• 個人設定\n• 學習進度\n\n確定要申請刪除嗎？', [
+                { text: '取消', action: () => {} },
+                { text: '確定申請', action: () => submitDeletionRequest(), danger: true }
+            ]);
+        }
+
+        function submitDeletionRequest() {
+            showToast('資料刪除申請已提交', 'warning');
+            showToast('客服將在 48 小時內聯絡您確認', 'info');
+        }
+
+        function viewPrivacyPolicy() {
+            // 在實際應用中，這裡會開啟隱私政策頁面
+            window.open('https://example.com/privacy-policy', '_blank');
+        }
+
+        function viewTermsOfService() {
+            // 在實際應用中，這裡會開啟服務條款頁面
+            window.open('https://example.com/terms-of-service', '_blank');
+        }
+
+        function showModal(title, message, buttons) {
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+            
+            const buttonHtml = buttons.map(button => 
+                `<button onclick="${button.action.toString()}; document.body.removeChild(this.closest('.fixed'))" 
+                 class="px-4 py-2 rounded-lg font-medium transition-colors ${
+                     button.danger ? 'bg-error text-white hover:bg-red-600' : 
+                     button.text === '取消' ? 'border border-border-gray text-gray-medium hover:bg-gray-50' :
+                     'bg-primary text-white hover:bg-blue-600'
+                 }">${button.text}</button>`
+            ).join('');
+            
+            modal.innerHTML = `
+                <div class="bg-white rounded-xl p-6 max-w-sm mx-auto">
+                    <h3 class="text-lg font-semibold text-gray-dark mb-3">${title}</h3>
+                    <p class="text-sm text-gray-medium mb-6 whitespace-pre-line">${message}</p>
+                    <div class="flex space-x-3 justify-end">
+                        ${buttonHtml}
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-20 left-1/2 transform -translate-x-1/2 px-4 py-3 rounded-lg text-white z-50 transition-all duration-300 ${
+                type === 'success' ? 'bg-success' : 
+                type === 'error' ? 'bg-error' : 
+                type === 'warning' ? 'bg-warning' : 'bg-primary'
+            }`;
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => {
+                    if (document.body.contains(toast)) {
+                        document.body.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // 載入已儲存的設定
+        function loadSettings() {
+            const savedSettings = localStorage.getItem('privacySettings');
+            if (savedSettings) {
+                const settings = JSON.parse(savedSettings);
+                
+                Object.keys(settings).forEach(key => {
+                    const element = document.querySelector(`[data-setting="${key}"]`);
+                    if (element && element.type === 'checkbox') {
+                        element.checked = settings[key];
+                    }
+                });
+            }
+        }
+
+        // 頁面載入時初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSettings();
+        });
+    </script>
+</body>
+</html>

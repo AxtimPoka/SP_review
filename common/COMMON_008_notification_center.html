@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>通知中心 - SalesAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE', 
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'gray-dark': '#1A1A1A',
+                        'gray-medium': '#666666',
+                        'gray-light': '#999999',
+                        'background-gray': '#F8F9FA',
+                        'border-gray': '#E5E5E5'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+        
+        .notification-item {
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        
+        .notification-item:hover {
+            background-color: #F8F9FA;
+        }
+        
+        .notification-item.unread {
+            background-color: #F0F7FF;
+            border-left: 4px solid #2E5BFF;
+        }
+        
+        .notification-item.unread:hover {
+            background-color: #E6F2FF;
+        }
+        
+        .icon-container {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .filter-chip {
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid #E5E5E5;
+            background: white;
+            color: #666666;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .filter-chip:hover {
+            border-color: #2E5BFF;
+            color: #2E5BFF;
+        }
+
+        .filter-chip.active {
+            background: #2E5BFF;
+            color: white;
+            border-color: #2E5BFF;
+        }
+
+        .notification-dot {
+            width: 8px;
+            height: 8px;
+            background: #2E5BFF;
+            border-radius: 50%;
+            position: absolute;
+            top: 8px;
+            right: 8px;
+        }
+
+        .time-divider {
+            position: sticky;
+            top: 64px;
+            background: rgba(248, 249, 250, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 5;
+            font-size: 12px;
+            font-weight: 600;
+            color: #666666;
+            padding: 8px 16px;
+            margin: 0 -16px;
+        }
+
+        .notification-actions {
+            opacity: 0;
+            transform: translateX(10px);
+            transition: all 0.2s ease;
+        }
+
+        .notification-item:hover .notification-actions {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .empty-state {
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .slide-enter {
+            animation: slideInRight 0.3s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .fade-out {
+            animation: fadeOut 0.3s ease-out forwards;
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+        }
+    </style>
+</head>
+<body class="bg-background-gray min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center">
+                <button onclick="goBack()" class="mr-4 p-2 -ml-2 rounded-lg hover:bg-gray-100 transition-colors">
+                    <svg class="w-6 h-6 text-gray-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <h1 class="text-xl font-semibold text-gray-dark">通知中心</h1>
+                <span id="unreadCount" class="ml-2 px-2 py-1 bg-error text-white text-xs rounded-full">5</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button onclick="markAllAsRead()" class="text-sm text-primary font-medium hover:text-blue-600 transition-colors">
+                    全部已讀
+                </button>
+                <button onclick="showFilterMenu()" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                    <svg class="w-5 h-5 text-gray-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Filter Chips -->
+    <div class="max-w-md mx-auto px-4 py-3 bg-white border-b border-border-gray">
+        <div class="flex space-x-2 overflow-x-auto scrollbar-hide">
+            <div class="filter-chip active" data-filter="all" onclick="filterNotifications('all')">
+                全部 (<span id="countAll">8</span>)
+            </div>
+            <div class="filter-chip" data-filter="unread" onclick="filterNotifications('unread')">
+                未讀 (<span id="countUnread">5</span>)
+            </div>
+            <div class="filter-chip" data-filter="analysis" onclick="filterNotifications('analysis')">
+                分析報告 (<span id="countAnalysis">3</span>)
+            </div>
+            <div class="filter-chip" data-filter="system" onclick="filterNotifications('system')">
+                系統通知 (<span id="countSystem">2</span>)
+            </div>
+            <div class="filter-chip" data-filter="team" onclick="filterNotifications('team')">
+                團隊動態 (<span id="countTeam">3</span>)
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-md mx-auto">
+        <!-- Notifications List -->
+        <div id="notificationsList">
+            <!-- Today -->
+            <div class="time-divider">今天</div>
+            
+            <!-- Analysis Complete Notification -->
+            <div class="notification-item unread cursor-pointer" data-category="analysis" data-id="1" onclick="openNotification(1)">
+                <div class="flex items-start p-4">
+                    <div class="icon-container bg-green-100 mr-3">
+                        <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-base font-medium text-gray-dark mb-1">錄音分析完成</h4>
+                        <p class="text-sm text-gray-medium mb-2">您的錄音「張先生_壽險諮詢」分析已完成，整體評分 8.2 分。</p>
+                        <div class="flex items-center text-xs text-gray-light">
+                            <span>10:30</span>
+                            <span class="mx-2">•</span>
+                            <span>AI 分析</span>
+                        </div>
+                    </div>
+                    <div class="notification-actions flex items-center space-x-2">
+                        <button onclick="markAsRead(1, event)" class="p-1 text-gray-light hover:text-primary transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </button>
+                        <button onclick="deleteNotification(1, event)" class="p-1 text-gray-light hover:text-error transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="notification-dot"></div>
+                </div>
+            </div>
+
+            <!-- Team Success Case -->
+            <div class="notification-item unread cursor-pointer" data-category="team" data-id="2" onclick="openNotification(2)">
+                <div class="flex items-start p-4">
+                    <div class="icon-container bg-blue-100 mr-3">
+                        <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-base font-medium text-gray-dark mb-1">新成功案例</h4>
+                        <p class="text-sm text-gray-medium mb-2">李美華分享了「增額壽險成交案例」，保額 1000 萬，值得學習！</p>
+                        <div class="flex items-center text-xs text-gray-light">
+                            <span>09:15</span>
+                            <span class="mx-2">•</span>
+                            <span>團隊動態</span>
+                        </div>
+                    </div>
+                    <div class="notification-actions flex items-center space-x-2">
+                        <button onclick="markAsRead(2, event)" class="p-1 text-gray-light hover:text-primary transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </button>
+                        <button onclick="deleteNotification(2, event)" class="p-1 text-gray-light hover:text-error transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="notification-dot"></div>
+                </div>
+            </div>
+
+            <!-- System Update -->
+            <div class="notification-item unread cursor-pointer" data-category="system" data-id="3" onclick="openNotification(3)">
+                <div class="flex items-start p-4">
+                    <div class="icon-container bg-purple-100 mr-3">
+                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-base font-medium text-gray-dark mb-1">系統更新</h4>
+                        <p class="text-sm text-gray-medium mb-2">SalesAI v2.1.0 已發佈，新增七大維度分析功能。</p>
+                        <div class="flex items-center text-xs text-gray-light">
+                            <span>08:00</span>
+                            <span class="mx-2">•</span>
+                            <span>系統通知</span>
+                        </div>
+                    </div>
+                    <div class="notification-actions flex items-center space-x-2">
+                        <button onclick="markAsRead(3, event)" class="p-1 text-gray-light hover:text-primary transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </button>
+                        <button onclick="deleteNotification(3, event)" class="p-1 text-gray-light hover:text-error transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="notification-dot"></div>
+                </div>
+            </div>
+
+            <!-- Yesterday -->
+            <div class="time-divider">昨天</div>
+
+            <!-- Performance Report -->
+            <div class="notification-item cursor-pointer" data-category="analysis" data-id="4" onclick="openNotification(4)">
+                <div class="flex items-start p-4">
+                    <div class="icon-container bg-yellow-100 mr-3">
+                        <svg class="w-5 h-5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-base font-medium text-gray-dark mb-1">週報已生成</h4>
+                        <p class="text-sm text-gray-medium mb-2">本週團隊表現優異，平均評分提升至 8.1 分。</p>
+                        <div class="flex items-center text-xs text-gray-light">
+                            <span>18:30</span>
+                            <span class="mx-2">•</span>
+                            <span>績效報告</span>
+                        </div>
+                    </div>
+                    <div class="notification-actions flex items-center space-x-2">
+                        <button onclick="markAsRead(4, event)" class="p-1 text-gray-light hover:text-primary transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </button>
+                        <button onclick="deleteNotification(4, event)" class="p-1 text-gray-light hover:text-error transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Manager Message -->
+            <div class="notification-item unread cursor-pointer" data-category="team" data-id="5" onclick="openNotification(5)">
+                <div class="flex items-start p-4">
+                    <div class="icon-container bg-orange-100 mr-3">
+                        <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-base font-medium text-gray-dark mb-1">主管訊息</h4>
+                        <p class="text-sm text-gray-medium mb-2">下週將舉辦銷售技巧研習，請準時參加。</p>
+                        <div class="flex items-center text-xs text-gray-light">
+                            <span>15:20</span>
+                            <span class="mx-2">•</span>
+                            <span>陳主管</span>
+                        </div>
+                    </div>
+                    <div class="notification-actions flex items-center space-x-2">
+                        <button onclick="markAsRead(5, event)" class="p-1 text-gray-light hover:text-primary transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </button>
+                        <button onclick="deleteNotification(5, event)" class="p-1 text-gray-light hover:text-error transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="notification-dot"></div>
+                </div>
+            </div>
+
+            <!-- Analysis Complete 2 -->
+            <div class="notification-item cursor-pointer" data-category="analysis" data-id="6" onclick="openNotification(6)">
+                <div class="flex items-start p-4">
+                    <div class="icon-container bg-green-100 mr-3">
+                        <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-base font-medium text-gray-dark mb-1">錄音分析完成</h4>
+                        <p class="text-sm text-gray-medium mb-2">「李太太_醫療險」分析完成，評分 7.5 分。</p>
+                        <div class="flex items-center text-xs text-gray-light">
+                            <span>14:45</span>
+                            <span class="mx-2">•</span>
+                            <span>AI 分析</span>
+                        </div>
+                    </div>
+                    <div class="notification-actions flex items-center space-x-2">
+                        <button onclick="markAsRead(6, event)" class="p-1 text-gray-light hover:text-primary transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </button>
+                        <button onclick="deleteNotification(6, event)" class="p-1 text-gray-light hover:text-error transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- This Week -->
+            <div class="time-divider">本週</div>
+
+            <!-- Team Achievement -->
+            <div class="notification-item cursor-pointer" data-category="team" data-id="7" onclick="openNotification(7)">
+                <div class="flex items-start p-4">
+                    <div class="icon-container bg-success bg-opacity-20 mr-3">
+                        <svg class="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-base font-medium text-gray-dark mb-1">團隊成就達成</h4>
+                        <p class="text-sm text-gray-medium mb-2">恭喜！團隊本月成交目標已達成 120%。</p>
+                        <div class="flex items-center text-xs text-gray-light">
+                            <span>3天前</span>
+                            <span class="mx-2">•</span>
+                            <span>團隊動態</span>
+                        </div>
+                    </div>
+                    <div class="notification-actions flex items-center space-x-2">
+                        <button onclick="markAsRead(7, event)" class="p-1 text-gray-light hover:text-primary transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </button>
+                        <button onclick="deleteNotification(7, event)" class="p-1 text-gray-light hover:text-error transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Maintenance -->
+            <div class="notification-item unread cursor-pointer" data-category="system" data-id="8" onclick="openNotification(8)">
+                <div class="flex items-start p-4">
+                    <div class="icon-container bg-red-100 mr-3">
+                        <svg class="w-5 h-5 text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <h4 class="text-base font-medium text-gray-dark mb-1">系統維護通知</h4>
+                        <p class="text-sm text-gray-medium mb-2">系統將於 8/16 凌晨 2:00-4:00 進行維護。</p>
+                        <div class="flex items-center text-xs text-gray-light">
+                            <span>5天前</span>
+                            <span class="mx-2">•</span>
+                            <span>系統通知</span>
+                        </div>
+                    </div>
+                    <div class="notification-actions flex items-center space-x-2">
+                        <button onclick="markAsRead(8, event)" class="p-1 text-gray-light hover:text-primary transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </button>
+                        <button onclick="deleteNotification(8, event)" class="p-1 text-gray-light hover:text-error transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="notification-dot"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="hidden">
+            <div class="empty-state">
+                <svg class="w-16 h-16 text-gray-light mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-5 5v-5z"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19H6.5A2.5 2.5 0 014 16.5v-9A2.5 2.5 0 016.5 5h11A2.5 2.5 0 0120 7.5v3.5"></path>
+                </svg>
+                <p class="text-gray-medium mb-2">目前沒有通知</p>
+                <p class="text-sm text-gray-light">所有通知都已查看完畢</p>
+            </div>
+        </div>
+
+        <!-- Load More -->
+        <div id="loadMore" class="p-4 text-center">
+            <button onclick="loadMoreNotifications()" class="text-primary font-medium hover:text-blue-600 transition-colors">
+                載入更多通知
+            </button>
+        </div>
+    </main>
+
+    <!-- Filter Menu Modal -->
+    <div id="filterModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-end z-50">
+        <div class="bg-white rounded-t-xl w-full max-w-md mx-auto">
+            <div class="p-4 border-b border-border-gray">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-dark">篩選與排序</h3>
+                    <button onclick="hideFilterMenu()" class="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                        <svg class="w-5 h-5 text-gray-medium" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="p-4">
+                <div class="space-y-4">
+                    <!-- Sort Options -->
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-dark mb-3">排序方式</h4>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="radio" name="sort" value="time" checked class="mr-3">
+                                <span class="text-sm text-gray-medium">按時間排序（最新優先）</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="sort" value="importance" class="mr-3">
+                                <span class="text-sm text-gray-medium">按重要性排序</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="sort" value="category" class="mr-3">
+                                <span class="text-sm text-gray-medium">按類別排序</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Time Range -->
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-dark mb-3">時間範圍</h4>
+                        <div class="space-y-2">
+                            <label class="flex items-center">
+                                <input type="radio" name="timeRange" value="all" checked class="mr-3">
+                                <span class="text-sm text-gray-medium">全部時間</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="timeRange" value="today" class="mr-3">
+                                <span class="text-sm text-gray-medium">今天</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="timeRange" value="week" class="mr-3">
+                                <span class="text-sm text-gray-medium">本週</span>
+                            </label>
+                            <label class="flex items-center">
+                                <input type="radio" name="timeRange" value="month" class="mr-3">
+                                <span class="text-sm text-gray-medium">本月</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-3 mt-6">
+                    <button onclick="hideFilterMenu()" class="flex-1 px-4 py-2 border border-border-gray text-gray-medium rounded-lg font-medium hover:bg-gray-50 transition-colors">
+                        取消
+                    </button>
+                    <button onclick="applyFilters()" class="flex-1 px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                        套用
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 通知數據
+        const notifications = [
+            { id: 1, category: 'analysis', unread: true, title: '錄音分析完成', content: '您的錄音「張先生_壽險諮詢」分析已完成，整體評分 8.2 分。', time: '10:30', timeGroup: 'today' },
+            { id: 2, category: 'team', unread: true, title: '新成功案例', content: '李美華分享了「增額壽險成交案例」，保額 1000 萬，值得學習！', time: '09:15', timeGroup: 'today' },
+            { id: 3, category: 'system', unread: true, title: '系統更新', content: 'SalesAI v2.1.0 已發佈，新增七大維度分析功能。', time: '08:00', timeGroup: 'today' },
+            { id: 4, category: 'analysis', unread: false, title: '週報已生成', content: '本週團隊表現優異，平均評分提升至 8.1 分。', time: '18:30', timeGroup: 'yesterday' },
+            { id: 5, category: 'team', unread: true, title: '主管訊息', content: '下週將舉辦銷售技巧研習，請準時參加。', time: '15:20', timeGroup: 'yesterday' },
+            { id: 6, category: 'analysis', unread: false, title: '錄音分析完成', content: '「李太太_醫療險」分析完成，評分 7.5 分。', time: '14:45', timeGroup: 'yesterday' },
+            { id: 7, category: 'team', unread: false, title: '團隊成就達成', content: '恭喜！團隊本月成交目標已達成 120%。', time: '3天前', timeGroup: 'week' },
+            { id: 8, category: 'system', unread: true, title: '系統維護通知', content: '系統將於 8/16 凌晨 2:00-4:00 進行維護。', time: '5天前', timeGroup: 'week' }
+        ];
+
+        let currentFilter = 'all';
+
+        function goBack() {
+            // 智能返回邏輯：根據用戶角色返回對應的首頁
+            const userRole = localStorage.getItem('userRole');
+            
+            if (userRole === 'manager') {
+                window.location.href = '../manager/MGR_001_dashboard.html';
+            } else if (userRole === 'sales') {
+                window.location.href = '../sales/SALES_001_home.html';
+            } else {
+                // 預設使用瀏覽器歷史記錄返回
+                window.history.back();
+            }
+        }
+
+        function filterNotifications(filter) {
+            currentFilter = filter;
+            
+            // 更新篩選器樣式
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.classList.remove('active');
+            });
+            document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+            
+            // 篩選通知
+            const notificationItems = document.querySelectorAll('.notification-item');
+            let visibleCount = 0;
+            
+            notificationItems.forEach(item => {
+                const category = item.dataset.category;
+                const isUnread = item.classList.contains('unread');
+                
+                let shouldShow = false;
+                
+                switch(filter) {
+                    case 'all':
+                        shouldShow = true;
+                        break;
+                    case 'unread':
+                        shouldShow = isUnread;
+                        break;
+                    default:
+                        shouldShow = category === filter;
+                }
+                
+                if (shouldShow) {
+                    item.style.display = 'block';
+                    item.classList.add('slide-enter');
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // 更新空狀態
+            const emptyState = document.getElementById('emptyState');
+            const notificationsList = document.getElementById('notificationsList');
+            
+            if (visibleCount === 0) {
+                notificationsList.style.display = 'none';
+                emptyState.classList.remove('hidden');
+            } else {
+                notificationsList.style.display = 'block';
+                emptyState.classList.add('hidden');
+            }
+            
+            updateCounts();
+        }
+
+        function markAsRead(id, event) {
+            event.stopPropagation();
+            
+            const item = document.querySelector(`[data-id="${id}"]`);
+            if (item && item.classList.contains('unread')) {
+                item.classList.remove('unread');
+                const dot = item.querySelector('.notification-dot');
+                if (dot) {
+                    dot.remove();
+                }
+                
+                updateCounts();
+                showToast('已標記為已讀', 'success');
+            }
+        }
+
+        function markAllAsRead() {
+            const unreadItems = document.querySelectorAll('.notification-item.unread');
+            
+            unreadItems.forEach(item => {
+                item.classList.remove('unread');
+                const dot = item.querySelector('.notification-dot');
+                if (dot) {
+                    dot.remove();
+                }
+            });
+            
+            updateCounts();
+            showToast('所有通知已標記為已讀', 'success');
+        }
+
+        function deleteNotification(id, event) {
+            event.stopPropagation();
+            
+            const item = document.querySelector(`[data-id="${id}"]`);
+            if (item) {
+                item.classList.add('fade-out');
+                
+                setTimeout(() => {
+                    item.remove();
+                    updateCounts();
+                    
+                    // 檢查是否需要顯示空狀態
+                    const remainingItems = document.querySelectorAll('.notification-item').length;
+                    if (remainingItems === 0) {
+                        document.getElementById('notificationsList').style.display = 'none';
+                        document.getElementById('emptyState').classList.remove('hidden');
+                    }
+                }, 300);
+                
+                showToast('通知已刪除', 'info');
+            }
+        }
+
+        function openNotification(id) {
+            // 標記為已讀
+            const item = document.querySelector(`[data-id="${id}"]`);
+            if (item && item.classList.contains('unread')) {
+                item.classList.remove('unread');
+                const dot = item.querySelector('.notification-dot');
+                if (dot) {
+                    dot.remove();
+                }
+                updateCounts();
+            }
+            
+            // 導向通知詳情頁面
+            window.location.href = `./COMMON_009_notification_detail.html?id=${id}`;
+        }
+
+        function updateCounts() {
+            const allItems = document.querySelectorAll('.notification-item');
+            const unreadItems = document.querySelectorAll('.notification-item.unread');
+            const analysisItems = document.querySelectorAll('.notification-item[data-category="analysis"]');
+            const systemItems = document.querySelectorAll('.notification-item[data-category="system"]');
+            const teamItems = document.querySelectorAll('.notification-item[data-category="team"]');
+            
+            document.getElementById('countAll').textContent = allItems.length;
+            document.getElementById('countUnread').textContent = unreadItems.length;
+            document.getElementById('countAnalysis').textContent = analysisItems.length;
+            document.getElementById('countSystem').textContent = systemItems.length;
+            document.getElementById('countTeam').textContent = teamItems.length;
+            document.getElementById('unreadCount').textContent = unreadItems.length;
+            
+            // 隱藏未讀數量徽章如果沒有未讀通知
+            const unreadBadge = document.getElementById('unreadCount');
+            if (unreadItems.length === 0) {
+                unreadBadge.style.display = 'none';
+            } else {
+                unreadBadge.style.display = 'inline-block';
+            }
+        }
+
+        function showFilterMenu() {
+            document.getElementById('filterModal').classList.remove('hidden');
+        }
+
+        function hideFilterMenu() {
+            document.getElementById('filterModal').classList.add('hidden');
+        }
+
+        function applyFilters() {
+            // 取得選擇的篩選條件
+            const sortBy = document.querySelector('input[name="sort"]:checked').value;
+            const timeRange = document.querySelector('input[name="timeRange"]:checked').value;
+            
+            // 在實際應用中，這裡會重新排序和篩選通知
+            showToast('篩選條件已套用', 'success');
+            hideFilterMenu();
+        }
+
+        function loadMoreNotifications() {
+            showToast('載入更多通知...', 'info');
+            
+            // 模擬載入更多通知
+            setTimeout(() => {
+                showToast('沒有更多通知了', 'info');
+                document.getElementById('loadMore').style.display = 'none';
+            }, 1500);
+        }
+
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `fixed top-20 left-1/2 transform -translate-x-1/2 px-4 py-3 rounded-lg text-white z-50 transition-all duration-300 ${
+                type === 'success' ? 'bg-success' : 
+                type === 'error' ? 'bg-error' : 
+                type === 'warning' ? 'bg-warning' : 'bg-primary'
+            }`;
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => {
+                    if (document.body.contains(toast)) {
+                        document.body.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        // 頁面載入時初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCounts();
+            
+            // 點擊模態框背景關閉
+            document.getElementById('filterModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    hideFilterMenu();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>績效儀表板 - SalesAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE',
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'gray-dark': '#1A1A1A',
+                        'gray-medium': '#666666',
+                        'gray-light': '#999999',
+                        'gray-bg': '#F8F9FA',
+                        'gray-border': '#E5E5E5'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-bg h-full">
+    <div class="min-h-full pb-20">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-border">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center">
+                        <button onclick="history.back()" class="p-2 text-gray-medium hover:text-gray-dark transition-colors mr-2">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <h1 class="text-xl font-bold text-gray-dark">績效儀表板</h1>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <a href="MGR_010_data_filter.html" class="p-2 text-gray-medium hover:text-gray-dark transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
+                            </svg>
+                        </a>
+                        <button class="p-2 text-gray-medium hover:text-gray-dark transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <!-- Time Period Selector -->
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-border mb-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div class="flex space-x-2">
+                        <button class="px-4 py-2 text-sm font-medium text-gray-medium border border-gray-border rounded-lg hover:bg-gray-50 transition-colors">今天</button>
+                        <button class="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg">本週</button>
+                        <button class="px-4 py-2 text-sm font-medium text-gray-medium border border-gray-border rounded-lg hover:bg-gray-50 transition-colors">本月</button>
+                        <button class="px-4 py-2 text-sm font-medium text-gray-medium border border-gray-border rounded-lg hover:bg-gray-50 transition-colors">本季</button>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <input type="date" value="2024-08-01" class="px-3 py-2 text-sm border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20">
+                        <span class="text-gray-medium">至</span>
+                        <input type="date" value="2024-08-13" class="px-3 py-2 text-sm border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Overview Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="bg-gradient-to-br from-primary to-primary/80 rounded-xl p-6 text-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold">15</div>
+                            <div class="text-sm opacity-80">總人數</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-sm opacity-90">
+                        <span>活躍成員</span>
+                        <span>13/15</span>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-success to-success/80 rounded-xl p-6 text-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold">87</div>
+                            <div class="text-sm opacity-80">成交筆數</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-sm opacity-90">
+                        <span>轉換率</span>
+                        <span>73%</span>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-warning to-warning/80 rounded-xl p-6 text-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+                                <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold">8.2</div>
+                            <div class="text-sm opacity-80">平均評分</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-sm opacity-90">
+                        <span>最高分</span>
+                        <span>9.5</span>
+                    </div>
+                </div>
+
+                <div class="bg-gradient-to-br from-secondary to-secondary/80 rounded-xl p-6 text-white">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold">156</div>
+                            <div class="text-sm opacity-80">總錄音數</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between text-sm opacity-90">
+                        <span>已分析</span>
+                        <span>142</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Performance Trends Chart -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border mb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-gray-dark">績效趋勢分析</h2>
+                    <div class="flex space-x-2">
+                        <button class="px-3 py-1 text-sm bg-primary text-white rounded-lg">整體</button>
+                        <button class="px-3 py-1 text-sm text-gray-medium border border-gray-border rounded-lg hover:bg-gray-50">個人</button>
+                    </div>
+                </div>
+                <canvas id="performanceTrendsChart" width="800" height="400"></canvas>
+            </div>
+
+            <!-- Team Comparison -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border mb-8">
+                <h2 class="text-xl font-bold text-gray-dark mb-6">團隊比較分析</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Team Rankings -->
+                    <div>
+                        <h3 class="font-semibold text-gray-dark mb-4">團隊排名</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 bg-gradient-to-r from-yellow-50 to-yellow-100 border border-yellow-200 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-yellow-400 text-white rounded-full flex items-center justify-center mr-3">
+                                        <span class="font-bold text-sm">1</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-dark">團隊A</h4>
+                                        <p class="text-sm text-gray-medium">8.7 平均評分</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-lg font-bold text-yellow-600">92%</div>
+                                    <div class="text-xs text-gray-medium">整體表現</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-100 border border-gray-200 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-gray-400 text-white rounded-full flex items-center justify-center mr-3">
+                                        <span class="font-bold text-sm">2</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-dark">團隊B</h4>
+                                        <p class="text-sm text-gray-medium">7.8 平均評分</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-lg font-bold text-gray-600">78%</div>
+                                    <div class="text-xs text-gray-medium">整體表現</div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-between p-4 bg-gradient-to-r from-orange-50 to-orange-100 border border-orange-200 rounded-lg">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-orange-400 text-white rounded-full flex items-center justify-center mr-3">
+                                        <span class="font-bold text-sm">3</span>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-dark">團隊C</h4>
+                                        <p class="text-sm text-gray-medium">6.5 平均評分</p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-lg font-bold text-orange-600">65%</div>
+                                    <div class="text-xs text-gray-medium">整體表現</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Radar Chart -->
+                    <div>
+                        <h3 class="font-semibold text-gray-dark mb-4">三大維度比較</h3>
+                        <canvas id="radarChart" width="300" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Performers -->
+            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-border mb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-bold text-gray-dark">顧佳表現者</h2>
+                    <a href="MGR_011_individual_performance.html" class="text-primary hover:text-primary/80 transition-colors text-sm font-medium">查看全部</a>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Top Performer 1 -->
+                    <div class="p-4 bg-gradient-to-br from-primary/5 to-primary/10 border border-primary/20 rounded-lg">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold">李</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-dark">李美華</h4>
+                                <p class="text-sm text-gray-medium">資深銷售</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-center">
+                            <div>
+                                <div class="text-lg font-bold text-primary">9.2</div>
+                                <div class="text-xs text-gray-medium">整體評分</div>
+                            </div>
+                            <div>
+                                <div class="text-lg font-bold text-success">8</div>
+                                <div class="text-xs text-gray-medium">月成交</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top Performer 2 -->
+                    <div class="p-4 bg-gradient-to-br from-secondary/5 to-secondary/10 border border-secondary/20 rounded-lg">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-secondary to-secondary/80 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold">王</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-dark">王小明</h4>
+                                <p class="text-sm text-gray-medium">銷售專員</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-center">
+                            <div>
+                                <div class="text-lg font-bold text-secondary">8.5</div>
+                                <div class="text-xs text-gray-medium">整體評分</div>
+                            </div>
+                            <div>
+                                <div class="text-lg font-bold text-success">5</div>
+                                <div class="text-xs text-gray-medium">月成交</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top Performer 3 -->
+                    <div class="p-4 bg-gradient-to-br from-warning/5 to-warning/10 border border-warning/20 rounded-lg">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-warning to-warning/80 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold">陳</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-dark">陳志明</h4>
+                                <p class="text-sm text-gray-medium">銷售專員</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-center">
+                            <div>
+                                <div class="text-lg font-bold text-warning">8.1</div>
+                                <div class="text-xs text-gray-medium">整體評分</div>
+                            </div>
+                            <div>
+                                <div class="text-lg font-bold text-success">6</div>
+                                <div class="text-xs text-gray-medium">月成交</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="MGR_009_custom_dashboard.html" class="px-8 py-3 bg-secondary text-white rounded-xl font-semibold hover:bg-secondary/90 transition-colors text-center">
+                    自定義儀表板
+                </a>
+                <button class="px-8 py-3 bg-primary text-white rounded-xl font-semibold hover:bg-primary/90 transition-colors">
+                    匯出報表
+                </button>
+            </div>
+        </main>
+
+        <!-- Bottom Tab Bar -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-border">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex justify-around py-2">
+                    <!-- Dashboard -->
+                    <a href="MGR_001_dashboard.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        <span class="text-xs mt-1">儀表板</span>
+                    </a>
+                    <!-- Team -->
+                    <a href="MGR_002_team_list.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <span class="text-xs mt-1">團隊</span>
+                    </a>
+                    <!-- Scoring Settings -->
+                    <a href="MGR_005_scoring_settings.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        <span class="text-xs mt-1">評分設定</span>
+                    </a>
+                    <!-- Ask AI -->
+                    <a href="MGR_012_ask_ai.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                        <span class="text-xs mt-1">Ask AI</span>
+                    </a>
+                    <!-- Notifications -->
+                    <a href="#" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors relative">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-4-4V6a5 5 0 00-10 0v7l-4 4h5m4 0a2 2 0 01-4 0"></path>
+                        </svg>
+                        <span class="text-xs mt-1">通知</span>
+                        <span class="absolute -top-1 -right-1 bg-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        // Performance Trends Chart
+        const trendsCtx = document.getElementById('performanceTrendsChart').getContext('2d');
+        new Chart(trendsCtx, {
+            type: 'line',
+            data: {
+                labels: ['週一', '週二', '週三', '週四', '週五', '週六', '週日'],
+                datasets: [
+                    {
+                        label: '整體評分',
+                        data: [7.8, 8.1, 8.3, 8.0, 8.2, 8.4, 8.2],
+                        borderColor: '#2E5BFF',
+                        backgroundColor: '#2E5BFF20',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: '成交數量',
+                        data: [12, 15, 18, 14, 16, 20, 17],
+                        borderColor: '#00D563',
+                        backgroundColor: '#00D56320',
+                        tension: 0.4,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        max: 10,
+                        grid: {
+                            color: '#E5E5E5'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                    },
+                    x: {
+                        grid: {
+                            color: '#E5E5E5'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Radar Chart
+        const radarCtx = document.getElementById('radarChart').getContext('2d');
+        new Chart(radarCtx, {
+            type: 'radar',
+            data: {
+                labels: ['流程遵守度', '銷售技巧', '溝通能力'],
+                datasets: [{
+                    label: '團隊A',
+                    data: [92, 88, 85],
+                    borderColor: '#2E5BFF',
+                    backgroundColor: '#2E5BFF20',
+                    pointBackgroundColor: '#2E5BFF'
+                }, {
+                    label: '團隊B',
+                    data: [78, 82, 75],
+                    borderColor: '#FFB800',
+                    backgroundColor: '#FFB80020',
+                    pointBackgroundColor: '#FFB800'
+                }, {
+                    label: '團隊C',
+                    data: [65, 70, 68],
+                    borderColor: '#FF4757',
+                    backgroundColor: '#FF475720',
+                    pointBackgroundColor: '#FF4757'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                },
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        grid: {
+                            color: '#E5E5E5'
+                        },
+                        pointLabels: {
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

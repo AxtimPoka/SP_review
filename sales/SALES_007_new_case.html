@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalesAI - 新建CASE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#2E5BFF',
+                        'secondary': '#00C6AE',
+                        'success': '#00D563',
+                        'warning': '#FFB800',
+                        'error': '#FF4757',
+                        'text-primary': '#1A1A1A',
+                        'text-secondary': '#666666',
+                        'text-tertiary': '#999999'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 font-sans">
+    <header class="bg-white shadow-sm px-4 py-3 sticky top-0 z-10">
+        <div class="flex items-center justify-between">
+            <button onclick="history.back()" class="text-text-secondary">
+                <i class="fas fa-arrow-left text-lg"></i>
+            </button>
+            <h1 class="text-lg font-semibold text-text-primary">新建CASE</h1>
+            <div class="flex items-center space-x-4">
+                <div class="relative cursor-pointer" onclick="location.href='../common/COMMON_008_notification_center.html'">
+                    <i class="fas fa-bell text-text-secondary text-lg"></i>
+                    <span class="absolute -top-2 -right-2 bg-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">2</span>
+                </div>
+                <button onclick="location.href='../common/COMMON_001_settings.html'" class="text-text-secondary">
+                    <i class="fas fa-cog text-lg"></i>
+                </button>
+                <button onclick="saveCase()" class="text-primary font-medium">儲存</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="px-4 py-6 pb-24">
+        <form id="newCaseForm" class="space-y-6">
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h3 class="font-semibold text-text-primary mb-4">基本資訊</h3>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-text-secondary mb-2">CASE名稱 *</label>
+                        <input type="text" required class="w-full border border-gray-200 rounded-lg px-4 py-2" placeholder="例：壽險規劃、醫療險諮詢">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-text-secondary mb-2">客戶 *</label>
+                        <select required class="w-full border border-gray-200 rounded-lg px-4 py-2">
+                            <option value="">選擇客戶</option>
+                            <option value="張先生">張先生</option>
+                            <option value="李太太">李太太</option>
+                            <option value="陳小姐">陳小姐</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-text-secondary mb-2">產品類型</label>
+                        <select class="w-full border border-gray-200 rounded-lg px-4 py-2">
+                            <option value="">選擇產品類型</option>
+                            <option value="壽險">壽險</option>
+                            <option value="醫療險">醫療險</option>
+                            <option value="意外險">意外險</option>
+                            <option value="儲蓄險">儲蓄險</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h3 class="font-semibold text-text-primary mb-4">CASE描述</h3>
+                <textarea class="w-full border border-gray-200 rounded-lg px-4 py-2 h-24" placeholder="描述客戶需求、背景或特殊狀況..."></textarea>
+            </div>
+
+            <div class="bg-white rounded-xl p-4 shadow-sm">
+                <h3 class="font-semibold text-text-primary mb-4">優先級</h3>
+                <div class="grid grid-cols-3 gap-3">
+                    <button type="button" class="priority-btn border-2 border-gray-200 rounded-lg p-3 text-center" data-priority="low">
+                        <i class="fas fa-arrow-down text-success text-lg mb-1"></i>
+                        <p class="text-sm">低</p>
+                    </button>
+                    <button type="button" class="priority-btn border-2 border-primary bg-primary/10 rounded-lg p-3 text-center" data-priority="medium">
+                        <i class="fas fa-minus text-primary text-lg mb-1"></i>
+                        <p class="text-sm">中</p>
+                    </button>
+                    <button type="button" class="priority-btn border-2 border-gray-200 rounded-lg p-3 text-center" data-priority="high">
+                        <i class="fas fa-arrow-up text-error text-lg mb-1"></i>
+                        <p class="text-sm">高</p>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </main>
+
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
+        <div class="flex space-x-3">
+            <button onclick="history.back()" class="flex-1 bg-gray-200 text-text-secondary py-3 rounded-lg font-medium">取消</button>
+            <button onclick="saveCase()" class="flex-1 bg-primary text-white py-3 rounded-lg font-medium">建立CASE</button>
+        </div>
+    </div>
+
+    <script>
+        let selectedPriority = 'medium';
+
+        document.querySelectorAll('.priority-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.priority-btn').forEach(b => {
+                    b.classList.remove('border-primary', 'bg-primary/10', 'border-success', 'bg-success/10', 'border-error', 'bg-error/10');
+                    b.classList.add('border-gray-200');
+                });
+                
+                const priority = this.dataset.priority;
+                selectedPriority = priority;
+                
+                if (priority === 'low') {
+                    this.classList.add('border-success', 'bg-success/10');
+                } else if (priority === 'medium') {
+                    this.classList.add('border-primary', 'bg-primary/10');
+                } else {
+                    this.classList.add('border-error', 'bg-error/10');
+                }
+            });
+        });
+
+        function saveCase() {
+            const form = document.getElementById('newCaseForm');
+            const formData = new FormData(form);
+            
+            // Validate required fields
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+            
+            // Show success message
+            alert('CASE建立成功！');
+            history.back();
+        }
+    </script>
+</body>
+</html>

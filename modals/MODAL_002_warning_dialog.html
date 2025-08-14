@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODAL_002 - 警告對話框</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE',
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'text-primary': '#1A1A1A',
+                        'text-secondary': '#666666',
+                        'text-tertiary': '#999999'
+                    },
+                    boxShadow: {
+                        'level-4': '0px 8px 24px rgba(0,0,0,0.15)'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .modal-backdrop {
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-enter {
+            animation: modalEnter 0.3s ease-out;
+        }
+        
+        .modal-exit {
+            animation: modalExit 0.2s ease-in;
+        }
+        
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes modalEnter {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        @keyframes modalExit {
+            from {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: scale(0.95) translateY(20px);
+            }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        @keyframes pulse-warning {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .pulse-warning {
+            animation: pulse-warning 2s infinite;
+        }
+        
+        /* 防止背景滾動 */
+        .no-scroll {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex items-center justify-center p-4">
+    <!-- 示例觸發按鈕 -->
+    <div class="max-w-sm mx-auto space-y-4">
+        <h1 class="text-2xl font-bold text-text-primary text-center mb-8">MODAL_002 - 警告對話框</h1>
+        
+        <div class="space-y-4">
+            <button id="lowStorageBtn" class="w-full bg-warning text-white py-3 px-6 rounded-lg font-medium">
+                儲存空間不足警告
+            </button>
+            
+            <button id="unsavedChangesBtn" class="w-full bg-warning text-white py-3 px-6 rounded-lg font-medium">
+                未儲存變更警告
+            </button>
+            
+            <button id="networkWarningBtn" class="w-full bg-warning text-white py-3 px-6 rounded-lg font-medium">
+                網路連線警告
+            </button>
+            
+            <button id="permissionWarningBtn" class="w-full bg-warning text-white py-3 px-6 rounded-lg font-medium">
+                權限警告
+            </button>
+        </div>
+        
+        <div class="mt-8 p-4 bg-white rounded-lg shadow">
+            <h3 class="font-semibold text-text-primary mb-2">組件說明：</h3>
+            <ul class="text-sm text-text-secondary space-y-1">
+                <li>• 警告類型對話框，用於重要提醒</li>
+                <li>• 支援多種警告級別</li>
+                <li>• 具備脈動動畫效果</li>
+                <li>• 支援自動關閉倒數計時</li>
+                <li>• 支援ESC鍵關閉</li>
+                <li>• 可配置不同的警告圖標</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 警告對話框模態框 -->
+    <div id="warningModal" class="fixed inset-0 z-50 hidden">
+        <!-- 背景遮罩 -->
+        <div class="modal-backdrop fixed inset-0 bg-black bg-opacity-60 transition-opacity duration-300"></div>
+        
+        <!-- 模態框內容 -->
+        <div class="fixed inset-0 flex items-center justify-center p-4">
+            <div class="modal-enter bg-white rounded-xl shadow-level-4 w-full max-w-sm mx-auto">
+                <!-- 模態框頭部 -->
+                <div class="p-6 border-b border-gray-100">
+                    <div class="flex items-center justify-center mb-4">
+                        <div id="warningIcon" class="w-16 h-16 rounded-full bg-warning bg-opacity-20 flex items-center justify-center pulse-warning">
+                            <svg class="w-8 h-8 text-warning" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3 id="warningTitle" class="text-xl font-bold text-text-primary text-center">
+                        警告
+                    </h3>
+                </div>
+                
+                <!-- 模態框內容 -->
+                <div class="p-6">
+                    <p id="warningMessage" class="text-text-secondary text-center leading-relaxed mb-4">
+                        請注意以下問題
+                    </p>
+                    
+                    <!-- 警告詳細信息 -->
+                    <div id="warningDetails" class="hidden bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+                        <ul id="warningList" class="text-sm text-text-secondary space-y-1">
+                            <!-- 動態插入警告詳情 -->
+                        </ul>
+                    </div>
+                    
+                    <!-- 倒數計時 -->
+                    <div id="countdown" class="hidden text-center text-sm text-text-tertiary">
+                        <span id="countdownText">自動關閉倒數：</span>
+                        <span id="countdownTimer" class="font-medium text-warning">5</span>
+                        <span>秒</span>
+                    </div>
+                </div>
+                
+                <!-- 模態框按鈕 -->
+                <div class="p-6 pt-0 flex gap-3">
+                    <button id="dismissBtn" class="flex-1 bg-gray-100 text-text-secondary py-3 px-4 rounded-lg font-medium hover:bg-gray-200 transition-colors">
+                        暫時關閉
+                    </button>
+                    <button id="actionBtn" class="flex-1 bg-warning text-white py-3 px-4 rounded-lg font-medium hover:bg-yellow-600 transition-colors">
+                        立即處理
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 警告對話框類
+        class WarningModal {
+            constructor() {
+                this.modal = document.getElementById('warningModal');
+                this.warningIcon = document.getElementById('warningIcon');
+                this.warningTitle = document.getElementById('warningTitle');
+                this.warningMessage = document.getElementById('warningMessage');
+                this.warningDetails = document.getElementById('warningDetails');
+                this.warningList = document.getElementById('warningList');
+                this.countdown = document.getElementById('countdown');
+                this.countdownTimer = document.getElementById('countdownTimer');
+                this.dismissBtn = document.getElementById('dismissBtn');
+                this.actionBtn = document.getElementById('actionBtn');
+                this.backdrop = this.modal.querySelector('.modal-backdrop');
+                this.modalContent = this.modal.querySelector('.modal-enter');
+                
+                this.onAction = null;
+                this.onDismiss = null;
+                this.countdownInterval = null;
+                this.autoCloseTimer = null;
+                
+                this.init();
+            }
+            
+            init() {
+                // ESC鍵關閉
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && !this.modal.classList.contains('hidden')) {
+                        this.hide();
+                    }
+                });
+                
+                // 背景點擊關閉
+                this.backdrop.addEventListener('click', () => {
+                    this.hide();
+                });
+                
+                // 暫時關閉按鈕
+                this.dismissBtn.addEventListener('click', () => {
+                    this.hide();
+                    if (this.onDismiss) this.onDismiss();
+                });
+                
+                // 立即處理按鈕
+                this.actionBtn.addEventListener('click', () => {
+                    this.hide();
+                    if (this.onAction) this.onAction();
+                });
+            }
+            
+            show(options = {}) {
+                const {
+                    title = '警告',
+                    message = '請注意以下問題',
+                    details = null,
+                    actionText = '立即處理',
+                    dismissText = '暫時關閉',
+                    severity = 'warning', // warning, error, info
+                    autoClose = false,
+                    autoCloseDelay = 5,
+                    onAction = null,
+                    onDismiss = null
+                } = options;
+                
+                // 設置內容
+                this.warningTitle.textContent = title;
+                this.warningMessage.textContent = message;
+                this.actionBtn.textContent = actionText;
+                this.dismissBtn.textContent = dismissText;
+                
+                // 設置警告級別
+                this.setSeverity(severity);
+                
+                // 設置詳細信息
+                if (details && Array.isArray(details)) {
+                    this.warningList.innerHTML = details.map(detail => `<li>• ${detail}</li>`).join('');
+                    this.warningDetails.classList.remove('hidden');
+                } else {
+                    this.warningDetails.classList.add('hidden');
+                }
+                
+                // 設置回調函數
+                this.onAction = onAction;
+                this.onDismiss = onDismiss;
+                
+                // 設置自動關閉
+                if (autoClose) {
+                    this.startCountdown(autoCloseDelay);
+                } else {
+                    this.countdown.classList.add('hidden');
+                }
+                
+                // 防止背景滾動
+                document.body.classList.add('no-scroll');
+                
+                // 顯示模態框
+                this.modal.classList.remove('hidden');
+                this.modalContent.classList.remove('modal-exit');
+                this.modalContent.classList.add('modal-enter');
+                
+                // 聚焦到立即處理按鈕
+                setTimeout(() => {
+                    this.actionBtn.focus();
+                }, 100);
+            }
+            
+            hide() {
+                // 清除倒數計時
+                if (this.countdownInterval) {
+                    clearInterval(this.countdownInterval);
+                    this.countdownInterval = null;
+                }
+                
+                if (this.autoCloseTimer) {
+                    clearTimeout(this.autoCloseTimer);
+                    this.autoCloseTimer = null;
+                }
+                
+                this.modalContent.classList.remove('modal-enter');
+                this.modalContent.classList.add('modal-exit');
+                
+                setTimeout(() => {
+                    this.modal.classList.add('hidden');
+                    document.body.classList.remove('no-scroll');
+                }, 200);
+            }
+            
+            setSeverity(severity) {
+                // 重設圖標樣式
+                this.warningIcon.className = 'w-16 h-16 rounded-full flex items-center justify-center pulse-warning';
+                this.actionBtn.className = 'flex-1 py-3 px-4 rounded-lg font-medium transition-colors';
+                
+                switch (severity) {
+                    case 'error':
+                        this.warningIcon.classList.add('bg-error', 'bg-opacity-20');
+                        this.warningIcon.innerHTML = '<svg class="w-8 h-8 text-error" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>';
+                        this.actionBtn.classList.add('bg-error', 'text-white', 'hover:bg-red-600');
+                        break;
+                        
+                    case 'info':
+                        this.warningIcon.classList.add('bg-primary', 'bg-opacity-20');
+                        this.warningIcon.innerHTML = '<svg class="w-8 h-8 text-primary" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>';
+                        this.actionBtn.classList.add('bg-primary', 'text-white', 'hover:bg-blue-600');
+                        break;
+                        
+                    default: // warning
+                        this.warningIcon.classList.add('bg-warning', 'bg-opacity-20');
+                        this.warningIcon.innerHTML = '<svg class="w-8 h-8 text-warning" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>';
+                        this.actionBtn.classList.add('bg-warning', 'text-white', 'hover:bg-yellow-600');
+                        break;
+                }
+            }
+            
+            startCountdown(delay) {
+                this.countdown.classList.remove('hidden');
+                let timeLeft = delay;
+                this.countdownTimer.textContent = timeLeft;
+                
+                this.countdownInterval = setInterval(() => {
+                    timeLeft--;
+                    this.countdownTimer.textContent = timeLeft;
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(this.countdownInterval);
+                        this.hide();
+                        if (this.onDismiss) this.onDismiss();
+                    }
+                }, 1000);
+            }
+            
+            shake() {
+                this.modalContent.classList.add('shake');
+                setTimeout(() => {
+                    this.modalContent.classList.remove('shake');
+                }, 500);
+            }
+        }
+        
+        // 初始化警告對話框
+        const warningModal = new WarningModal();
+        
+        // 示例用法
+        document.getElementById('lowStorageBtn').addEventListener('click', () => {
+            warningModal.show({
+                title: '儲存空間不足',
+                message: '您的設備儲存空間即將用盡，這可能影響錄音功能的正常使用。',
+                details: [
+                    '剩餘空間：128 MB',
+                    '建議清理：至少需要 500 MB',
+                    '受影響功能：錄音、檔案同步'
+                ],
+                severity: 'warning',
+                actionText: '清理空間',
+                dismissText: '稍後處理',
+                onAction: () => {
+                    alert('正在開啟儲存空間管理...');
+                }
+            });
+        });
+        
+        document.getElementById('unsavedChangesBtn').addEventListener('click', () => {
+            warningModal.show({
+                title: '未儲存的變更',
+                message: '您有未儲存的變更，離開此頁面將會遺失這些內容。',
+                severity: 'warning',
+                actionText: '儲存變更',
+                dismissText: '放棄變更',
+                onAction: () => {
+                    alert('正在儲存變更...');
+                },
+                onDismiss: () => {
+                    alert('已放棄變更');
+                }
+            });
+        });
+        
+        document.getElementById('networkWarningBtn').addEventListener('click', () => {
+            warningModal.show({
+                title: '網路連線不穩定',
+                message: '偵測到網路連線不穩定，可能影響資料同步。',
+                details: [
+                    '信號強度：弱',
+                    '上次同步：2分鐘前',
+                    '建議：移動到信號較強的位置'
+                ],
+                severity: 'error',
+                actionText: '重新連線',
+                dismissText: '離線使用',
+                autoClose: true,
+                autoCloseDelay: 8,
+                onAction: () => {
+                    alert('正在重新連線...');
+                }
+            });
+        });
+        
+        document.getElementById('permissionWarningBtn').addEventListener('click', () => {
+            warningModal.show({
+                title: '權限提醒',
+                message: '需要麥克風權限才能使用錄音功能。',
+                details: [
+                    '目前狀態：已拒絕',
+                    '需要權限：麥克風存取',
+                    '影響功能：無法進行錄音'
+                ],
+                severity: 'info',
+                actionText: '開啟設定',
+                dismissText: '稍後設定',
+                onAction: () => {
+                    alert('正在開啟系統設定...');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

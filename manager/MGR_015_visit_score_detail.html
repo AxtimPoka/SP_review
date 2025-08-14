@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>拜訪評分詳細 - SalesAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE',
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'gray-dark': '#1A1A1A',
+                        'gray-medium': '#666666',
+                        'gray-light': '#999999',
+                        'gray-bg': '#F8F9FA',
+                        'gray-border': '#E5E5E5'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-bg h-full">
+    <div class="min-h-full pb-20">
+        <!-- Header -->
+        <header class="bg-white shadow-sm border-b border-gray-border">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex items-center justify-between h-16">
+                    <div class="flex items-center">
+                        <button onclick="history.back()" class="p-2 text-gray-medium hover:text-gray-dark transition-colors mr-2">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
+                        </button>
+                        <h1 class="text-xl font-bold text-gray-dark">王先生 拜訪評分</h1>
+                        <span class="ml-3 px-3 py-1 bg-warning text-white text-lg font-bold rounded-lg">95</span>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <!-- Notification Icon -->
+                        <div class="relative">
+                            <button onclick="location.href='../common/COMMON_008_notification_center.html'" class="p-2 text-gray-medium hover:text-gray-dark transition-colors">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-4-4V6a5 5 0 00-10 0v7l-4 4h5m4 0a2 2 0 01-4 0"></path>
+                                </svg>
+                            </button>
+                            <span class="absolute -top-1 -right-1 bg-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                        </div>
+                        <!-- Settings Icon -->
+                        <button onclick="location.href='../common/COMMON_001_settings.html'" class="p-2 text-gray-medium hover:text-gray-dark transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <!-- Overview Cards -->
+            <div class="grid grid-cols-3 gap-4 mb-6">
+                <!-- Process Adherence -->
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-border">
+                    <div class="text-center">
+                        <h3 class="text-sm font-medium text-gray-medium mb-2">流程遵守度</h3>
+                        <div class="text-3xl font-bold text-success mb-1">95</div>
+                        <div class="text-xs text-gray-light">5題 / 100分</div>
+                    </div>
+                    <div class="mt-3 w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-success h-2 rounded-full transition-all duration-300" style="width: 95%"></div>
+                    </div>
+                </div>
+
+                <!-- Sales Skills -->
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-border">
+                    <div class="text-center">
+                        <h3 class="text-sm font-medium text-gray-medium mb-2">銷售技巧</h3>
+                        <div class="text-3xl font-bold text-success mb-1">93</div>
+                        <div class="text-xs text-gray-light">6題 / 100分</div>
+                    </div>
+                    <div class="mt-3 w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-success h-2 rounded-full transition-all duration-300" style="width: 93%"></div>
+                    </div>
+                </div>
+
+                <!-- Communication Skills -->
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-border">
+                    <div class="text-center">
+                        <h3 class="text-sm font-medium text-gray-medium mb-2">溝通能力</h3>
+                        <div class="text-3xl font-bold text-success mb-1">97</div>
+                        <div class="text-xs text-gray-light">6題 / 100分</div>
+                    </div>
+                    <div class="mt-3 w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-success h-2 rounded-full transition-all duration-300" style="width: 97%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Scoring Accordion -->
+            <div class="space-y-4">
+                <!-- Process Adherence Section -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-border overflow-hidden">
+                    <div class="p-4 border-b border-gray-border">
+                        <button onclick="toggleSection('process-section')" 
+                                class="w-full flex items-center justify-between text-left hover:bg-gray-50 transition-colors rounded-lg p-2">
+                            <h3 class="text-lg font-bold text-gray-dark">流程遵守度 - 詳細評分</h3>
+                            <svg id="process-chevron" class="w-6 h-6 text-gray-medium transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="process-section" class="hidden">
+                        <div class="space-y-1">
+                            <div onclick="openDetailModal('1.1', '銷售流程完整性', '93', '銷售流程按照標準步驟執行，開場、需求診斷、解決方案、異議處理、成交促進等環節完整。', '業務員：王先生您好，我是XX保險的小李，今天想跟您聊聊保險規劃的事情...<br>客戶：好的，您說。<br>業務員：首先想了解一下您目前的家庭狀況和保障需求...')" 
+                                 class="px-6 py-4 border-b border-gray-border hover:bg-gray-50 cursor-pointer transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-warning font-medium text-sm mr-3">1.1</span>
+                                        <span class="text-gray-dark font-medium">銷售流程完整性</span>
+                                    </div>
+                                    <span class="text-gray-dark font-bold text-lg">93</span>
+                                </div>
+                            </div>
+                            <div onclick="openDetailModal('1.2', '需求診斷流程', '96', '七大需求診斷全面完整，成功識別客戶急迫性（第二個孩子出生）並量化保障缺口。', '業務員：您提到最近在考慮保險，是什麼原因讓您開始有這個想法呢？<br>客戶：主要是因為去年底我們迎來了第二個小孩，覺得責任更重了...<br>業務員：恭喜您！確實，家庭成員增加後，保障需求也會跟著改變。您有算過如果發生風險，家庭需要多少資金維持生活嗎？<br>客戶：這個...房貸還有800萬，兩個孩子到大學畢業至少要500萬吧。')" 
+                                 class="px-6 py-4 border-b border-gray-border hover:bg-gray-50 cursor-pointer transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-warning font-medium text-sm mr-3">1.2</span>
+                                        <span class="text-gray-dark font-medium">需求診斷流程</span>
+                                    </div>
+                                    <span class="text-gray-dark font-bold text-lg">96</span>
+                                </div>
+                            </div>
+                            <div onclick="openDetailModal('1.3', '時間節奏掌控', '95', '通話節奏適中，適時總結要點，引導客戶思考，時間運用效率高。', '業務員：我們剛剛談到您的保障缺口大概是1300萬，讓我幫您整理一下重點...<br>客戶：好的。<br>業務員：以您目前的收入狀況，建議可以這樣規劃保障...')" 
+                                 class="px-6 py-4 border-b border-gray-border hover:bg-gray-50 cursor-pointer transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-warning font-medium text-sm mr-3">1.3</span>
+                                        <span class="text-gray-dark font-medium">時間節奏掌控</span>
+                                    </div>
+                                    <span class="text-gray-dark font-bold text-lg">95</span>
+                                </div>
+                            </div>
+                            <div onclick="openDetailModal('1.4', '合規與文件管理', '100', '所有保險條款說明清楚，風險揭露充分，符合法規要求。', '業務員：這邊需要特別說明的是，這個保險有等待期的限制...<br>客戶：什麼是等待期？<br>業務員：就是投保後90天內，如果是疾病導致的理賠，保險公司不會賠付...')" 
+                                 class="px-6 py-4 border-b border-gray-border hover:bg-gray-50 cursor-pointer transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-warning font-medium text-sm mr-3">1.4</span>
+                                        <span class="text-gray-dark font-medium">合規與文件管理</span>
+                                    </div>
+                                    <span class="text-gray-dark font-bold text-lg">100</span>
+                                </div>
+                            </div>
+                            <div onclick="openDetailModal('1.5', 'SPIN問句運用檢核', '90', 'SPIN問句運用良好，但在Pain問句部分可以更深入探討客戶痛點。', '業務員：如果您不幸發生意外，您最擔心的是什麼？<br>客戶：當然是家人的生活保障啊。<br>業務員：您覺得沒有足夠保障會對家人造成什麼影響？<br>客戶：可能就沒辦法維持現在的生活水準了。')" 
+                                 class="px-6 py-4 hover:bg-gray-50 cursor-pointer transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-warning font-medium text-sm mr-3">1.5</span>
+                                        <span class="text-gray-dark font-medium">SPIN問句運用檢核</span>
+                                    </div>
+                                    <span class="text-gray-dark font-bold text-lg">90</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sales Skills Section -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-border overflow-hidden">
+                    <div class="p-4 border-b border-gray-border">
+                        <button onclick="toggleSection('sales-section')" 
+                                class="w-full flex items-center justify-between text-left hover:bg-gray-50 transition-colors rounded-lg p-2">
+                            <h3 class="text-lg font-bold text-gray-dark">銷售技巧 - 詳細評分</h3>
+                            <svg id="sales-chevron" class="w-6 h-6 text-gray-medium transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="sales-section" class="hidden">
+                        <div class="space-y-1">
+                            <div onclick="openDetailModal('2.1', '需求診斷深度', '96', '深入挖掘客戶需求，成功識別客戶真正的保障需求和財務狀況。', '業務員：您剛才提到房貸800萬，能告訴我您每個月的支出大概是多少嗎？<br>客戶：房貸5萬，生活費大概8萬，還有小孩的學費...')" 
+                                 class="px-6 py-4 border-b border-gray-border hover:bg-gray-50 cursor-pointer transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-warning font-medium text-sm mr-3">2.1</span>
+                                        <span class="text-gray-dark font-medium">需求診斷深度</span>
+                                    </div>
+                                    <span class="text-gray-dark font-bold text-lg">96</span>
+                                </div>
+                            </div>
+                            <div onclick="openDetailModal('2.2', '七大需求掌握度', '92', '對客戶七大需求（生存、醫療、意外、退休、投資、稅務、傳承）掌握度良好。', '業務員：從您的狀況來看，您需要考慮的不只是基本保障，還有醫療、意外、以及未來退休的準備...')" 
+                                 class="px-6 py-4 border-b border-gray-border hover:bg-gray-50 cursor-pointer transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-warning font-medium text-sm mr-3">2.2</span>
+                                        <span class="text-gray-dark font-medium">七大需求掌握度</span>
+                                    </div>
+                                    <span class="text-gray-dark font-bold text-lg">92</span>
+                                </div>
+                            </div>
+                            <div onclick="openDetailModal('2.3', '解決方案設計', '95', '根據客戶需求量身訂做保障方案，搭配合理，符合客戶預算。', '業務員：根據您的需求，我建議這樣搭配：定期壽險500萬、醫療險實支實付、意外險200萬...')" 
+                                 class="px-6 py-4 border-b border-gray-border hover:bg-gray-50 cursor-pointer transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-warning font-medium text-sm mr-3">2.3</span>
+                                        <span class="text-gray-dark font-medium">解決方案設計</span>
+                                    </div>
+                                    <span class="text-gray-dark font-bold text-lg">95</span>
+                                </div>
+                            </div>
+                            <div onclick="openDetailModal('2.4', '異議處理能力', '93', '面對客戶疑慮能夠耐心解釋，提供合理的解決方案。', '客戶：保費會不會太貴了？<br>業務員：我理解您的考量，我們可以調整一下配置，先把最重要的保障做足...')" 
+                                 class="px-6 py-4 border-b border-gray-border hover:bg-gray-50 cursor-pointer transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-warning font-medium text-sm mr-3">2.4</span>
+                                        <span class="text-gray-dark font-medium">異議處理能力</span>
+                                    </div>
+                                    <span class="text-gray-dark font-bold text-lg">93</span>
+                                </div>
+                            </div>
+                            <div onclick="openDetailModal('2.5', '競爭分析與應對', '80', '對競爭商品了解一般，可以更深入比較優勢差異。', '客戶：我有看到其他家的商品好像比較便宜？<br>業務員：每家公司的商品設計不同，我們的優勢在於理賠服務和保障範圍...')" 
+                                 class="px-6 py-4 border-b border-gray-border hover:bg-gray-50 cursor-pointer transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-warning font-medium text-sm mr-3">2.5</span>
+                                        <span class="text-gray-dark font-medium">競爭分析與應對</span>
+                                    </div>
+                                    <span class="text-gray-dark font-bold text-lg">80</span>
+                                </div>
+                            </div>
+                            <div onclick="openDetailModal('2.6', '成交促進技巧', '100', '運用urgency和scarcity技巧，成功促成客戶當場簽約。', '業務員：王先生，這個專案優惠只到月底，而且您現在的年紀保費最划算，建議您盡快決定。<br>客戶：好，那我今天就簽約吧！')" 
+                                 class="px-6 py-4 hover:bg-gray-50 cursor-pointer transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-warning font-medium text-sm mr-3">2.6</span>
+                                        <span class="text-gray-dark font-medium">成交促進技巧</span>
+                                    </div>
+                                    <span class="text-gray-dark font-bold text-lg">100</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Communication Skills Section -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-border overflow-hidden">
+                    <div class="p-4 border-b border-gray-border">
+                        <button onclick="toggleSection('communication-section')" 
+                                class="w-full flex items-center justify-between text-left hover:bg-gray-50 transition-colors rounded-lg p-2">
+                            <h3 class="text-lg font-bold text-gray-dark">溝通能力 - 詳細評分</h3>
+                            <svg id="communication-chevron" class="w-6 h-6 text-gray-medium transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="communication-section" class="hidden">
+                        <div class="space-y-1">
+                            <div onclick="openDetailModal('3.1', 'SPIN問句質量分析', '100', 'SPIN問句運用精準，成功引導客戶思考，發現真實需求。', '業務員：您目前有什麼保障嗎？（Situation）<br>業務員：如果發生風險，您最擔心什麼？（Problem）<br>業務員：這樣的狀況會對家人造成什麼影響？（Implication）<br>業務員：如果有足夠保障，您覺得會有什麼好處？（Need-payoff）')" 
+                                 class="px-6 py-4 border-b border-gray-border hover:bg-gray-50 cursor-pointer transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-warning font-medium text-sm mr-3">3.1</span>
+                                        <span class="text-gray-dark font-medium">SPIN問句質量分析</span>
+                                    </div>
+                                    <span class="text-gray-dark font-bold text-lg">100</span>
+                                </div>
+                            </div>
+                            <div onclick="openDetailModal('3.2', '需求確認語言精準度', '95', '語言表達清晰，準確復述客戶需求，確保雙方理解一致。', '業務員：讓我確認一下，您的主要考量是孩子的教育金和家庭責任保障，對嗎？<br>客戶：對的，就是這樣。')" 
+                                 class="px-6 py-4 border-b border-gray-border hover:bg-gray-50 cursor-pointer transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-warning font-medium text-sm mr-3">3.2</span>
+                                        <span class="text-gray-dark font-medium">需求確認語言精準度</span>
+                                    </div>
+                                    <span class="text-gray-dark font-bold text-lg">95</span>
+                                </div>
+                            </div>
+                            <div onclick="openDetailModal('3.3', '情感共鳴與同理心', '95', '能夠理解客戶情感，適時表達關懷，建立良好關係。', '業務員：我完全理解您的擔心，作為兩個孩子的父親，責任確實很重。<br>客戶：是啊，壓力真的很大。<br>業務員：這也是為什麼我們要提前規劃保障的原因。')" 
+                                 class="px-6 py-4 border-b border-gray-border hover:bg-gray-50 cursor-pointer transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-warning font-medium text-sm mr-3">3.3</span>
+                                        <span class="text-gray-dark font-medium">情感共鳴與同理心</span>
+                                    </div>
+                                    <span class="text-gray-dark font-bold text-lg">95</span>
+                                </div>
+                            </div>
+                            <div onclick="openDetailModal('3.4', '關鍵資訊獲取效率', '93', '快速獲取客戶關鍵資訊，為後續方案設計奠定基礎。', '業務員：能否告訴我您的年收入和固定支出？<br>客戶：年收入大概150萬，每月固定支出13萬左右。<br>業務員：了解，那您希望保費控制在什麼範圍內？')" 
+                                 class="px-6 py-4 border-b border-gray-border hover:bg-gray-50 cursor-pointer transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-warning font-medium text-sm mr-3">3.4</span>
+                                        <span class="text-gray-dark font-medium">關鍵資訊獲取效率</span>
+                                    </div>
+                                    <span class="text-gray-dark font-bold text-lg">93</span>
+                                </div>
+                            </div>
+                            <div onclick="openDetailModal('3.5', '對話控制與引導', '100', '對話節奏控制良好，能夠引導客戶思考並做出決定。', '業務員：我們剛剛討論了您的需求，現在讓我為您介紹最適合的解決方案...<br>客戶：好的。<br>業務員：首先，我們要解決的是家庭責任保障的問題...')" 
+                                 class="px-6 py-4 border-b border-gray-border hover:bg-gray-50 cursor-pointer transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-warning font-medium text-sm mr-3">3.5</span>
+                                        <span class="text-gray-dark font-medium">對話控制與引導</span>
+                                    </div>
+                                    <span class="text-gray-dark font-bold text-lg">100</span>
+                                </div>
+                            </div>
+                            <div onclick="openDetailModal('3.6', '說服力語言運用', '100', '運用邏輯性語言和情感訴求，成功說服客戶接受建議。', '業務員：想像一下，如果您有了充足的保障，是不是就不用再擔心萬一發生什麼事情，家人的生活會受到影響？<br>客戶：確實是這樣，心裡踏實多了。')" 
+                                 class="px-6 py-4 hover:bg-gray-50 cursor-pointer transition-colors">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-warning font-medium text-sm mr-3">3.6</span>
+                                        <span class="text-gray-dark font-medium">說服力語言運用</span>
+                                    </div>
+                                    <span class="text-gray-dark font-bold text-lg">100</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Bottom Tab Bar -->
+        <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-border">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex justify-around py-2">
+                    <!-- Dashboard -->
+                    <a href="MGR_001_dashboard.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        <span class="text-xs mt-1">儀表板</span>
+                    </a>
+                    <!-- Team -->
+                    <a href="MGR_002_team_list.html" class="flex flex-col items-center py-2 px-3 text-primary">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path>
+                        </svg>
+                        <span class="text-xs mt-1 font-medium">團隊</span>
+                    </a>
+                    <!-- Scoring Settings -->
+                    <a href="MGR_005_scoring_settings.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                        <span class="text-xs mt-1">評分設定</span>
+                    </a>
+                    <!-- Ask AI -->
+                    <a href="MGR_012_ask_ai.html" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                        <span class="text-xs mt-1">Ask AI</span>
+                    </a>
+                    <!-- Notifications -->
+                    <a href="#" class="flex flex-col items-center py-2 px-3 text-gray-medium hover:text-primary transition-colors relative">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-4-4V6a5 5 0 00-10 0v7l-4 4h5m4 0a2 2 0 01-4 0"></path>
+                        </svg>
+                        <span class="text-xs mt-1">通知</span>
+                        <span class="absolute -top-1 -right-1 bg-error text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- Detail Modal -->
+    <div id="detailModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+        <div class="fixed inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 id="modalTitle" class="text-xl font-bold text-warning"></h2>
+                        <button onclick="closeDetailModal()" class="p-2 text-gray-medium hover:text-gray-dark transition-colors">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <h3 class="text-lg font-bold text-warning mb-2">摘要</h3>
+                            <p id="modalSummary" class="text-gray-dark leading-relaxed"></p>
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-lg font-bold text-warning mb-3">逐字稿片段</h3>
+                            <div id="modalTranscript" class="bg-gray-dark text-white p-4 rounded-lg border-l-4 border-warning leading-relaxed"></div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center pt-4">
+                            <span class="text-gray-medium">得分</span>
+                            <span id="modalScore" class="text-3xl font-bold text-warning"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle accordion sections
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const chevron = document.getElementById(sectionId.replace('-section', '-chevron'));
+            
+            if (section.classList.contains('hidden')) {
+                section.classList.remove('hidden');
+                chevron.style.transform = 'rotate(180deg)';
+            } else {
+                section.classList.add('hidden');
+                chevron.style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Open detail modal
+        function openDetailModal(id, title, score, summary, transcript) {
+            const modal = document.getElementById('detailModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalSummary = document.getElementById('modalSummary');
+            const modalTranscript = document.getElementById('modalTranscript');
+            const modalScore = document.getElementById('modalScore');
+            
+            modalTitle.textContent = title;
+            modalSummary.textContent = summary;
+            modalTranscript.innerHTML = transcript;
+            modalScore.textContent = score;
+            
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close detail modal
+        function closeDetailModal() {
+            const modal = document.getElementById('detailModal');
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('detailModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDetailModal();
+            }
+        });
+
+        // Escape key to close modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeDetailModal();
+            }
+        });
+    </script>
+</body>
+</html>

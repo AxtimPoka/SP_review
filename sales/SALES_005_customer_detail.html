@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalesAI - 客戶詳情</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#2E5BFF',
+                        'secondary': '#00C6AE',
+                        'success': '#00D563',
+                        'warning': '#FFB800',
+                        'error': '#FF4757',
+                        'text-primary': '#1A1A1A',
+                        'text-secondary': '#666666',
+                        'text-tertiary': '#999999'
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm px-4 py-3 sticky top-0 z-10">
+        <div class="flex items-center justify-between">
+            <button onclick="history.back()" class="text-text-secondary">
+                <i class="fas fa-arrow-left text-lg"></i>
+            </button>
+            <h1 class="text-lg font-semibold text-text-primary" id="customerName">張先生</h1>
+            <div class="flex items-center space-x-3">
+                <button onclick="editCustomer()" class="text-text-secondary">
+                    <i class="fas fa-edit text-lg"></i>
+                </button>
+                <button onclick="showMenu()" class="text-text-secondary">
+                    <i class="fas fa-ellipsis-v text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="px-4 py-6 pb-24">
+        <!-- Customer Info -->
+        <section class="mb-6">
+            <div class="bg-white rounded-xl p-6 shadow-sm">
+                <div class="flex items-center space-x-4 mb-4">
+                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                        <span class="text-2xl font-bold text-primary">張</span>
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="text-xl font-bold text-text-primary">張先生</h2>
+                        <p class="text-text-secondary">35歲 | 工程師</p>
+                        <p class="text-text-tertiary text-sm">已婚，2小孩</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">VIP客戶</span>
+                    </div>
+                </div>
+                
+                <!-- Customer Stats -->
+                <div class="grid grid-cols-3 gap-4 pt-4 border-t border-gray-100">
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-text-primary">2</p>
+                        <p class="text-xs text-text-tertiary">CASE數</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-text-primary">5</p>
+                        <p class="text-xs text-text-tertiary">錄音數</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-2xl font-bold text-primary">7.8</p>
+                        <p class="text-xs text-text-tertiary">平均評分</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Case List -->
+        <section>
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-text-primary">CASE列表</h3>
+                <button onclick="location.href='SALES_007_new_case.html?customer=張先生'" class="text-primary font-medium">
+                    <i class="fas fa-plus text-sm mr-1"></i>新增CASE
+                </button>
+            </div>
+            
+            <!-- Case Cards -->
+            <div class="space-y-4">
+                <!-- Case 1 -->
+                <div class="bg-white rounded-xl p-4 shadow-sm" onclick="location.href='SALES_006_case_detail.html?case=壽險規劃'">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <h4 class="font-semibold text-text-primary">壽險規劃</h4>
+                                <span class="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full">進行中</span>
+                            </div>
+                            <p class="text-sm text-text-secondary mb-2">建立: 2024/08/10</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-text-tertiary"></i>
+                    </div>
+                    
+                    <!-- Case Stats -->
+                    <div class="grid grid-cols-3 gap-4 mb-3">
+                        <div class="text-center">
+                            <p class="text-lg font-bold text-text-primary">3</p>
+                            <p class="text-xs text-text-tertiary">錄音</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-lg font-bold text-primary">7.8</p>
+                            <p class="text-xs text-text-tertiary">平均分</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-lg font-bold text-warning">高</p>
+                            <p class="text-xs text-text-tertiary">急迫性</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Latest Analysis -->
+                    <div class="bg-gray-50 rounded-lg p-3">
+                        <p class="text-xs text-text-tertiary mb-1">最新分析</p>
+                        <p class="text-sm text-text-secondary">客戶對保險需求明確，建議加強價值塑造...</p>
+                    </div>
+                </div>
+
+                <!-- Case 2 -->
+                <div class="bg-white rounded-xl p-4 shadow-sm" onclick="location.href='SALES_006_case_detail.html?case=意外險諮詢'">
+                    <div class="flex items-start justify-between mb-3">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-2 mb-2">
+                                <h4 class="font-semibold text-text-primary">意外險諮詢</h4>
+                                <span class="text-xs bg-success/10 text-success px-2 py-1 rounded-full">已成交</span>
+                            </div>
+                            <p class="text-sm text-text-secondary mb-2">建立: 2024/07/15</p>
+                        </div>
+                        <i class="fas fa-chevron-right text-text-tertiary"></i>
+                    </div>
+                    
+                    <!-- Case Stats -->
+                    <div class="grid grid-cols-3 gap-4 mb-3">
+                        <div class="text-center">
+                            <p class="text-lg font-bold text-text-primary">2</p>
+                            <p class="text-xs text-text-tertiary">錄音</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-lg font-bold text-success">8.5</p>
+                            <p class="text-xs text-text-tertiary">平均分</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-lg font-bold text-success">成交</p>
+                            <p class="text-xs text-text-tertiary">狀態</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Contract Info -->
+                    <div class="bg-success/10 rounded-lg p-3">
+                        <p class="text-xs text-success mb-1">保單資訊</p>
+                        <p class="text-sm text-text-secondary">AH-2024-0715 | 意外險 500萬</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Bottom Tab Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+        <div class="grid grid-cols-5 py-2">
+            <button class="flex flex-col items-center py-2 text-primary" onclick="location.href='SALES_001_home.html'">
+                <i class="fas fa-home text-lg mb-1"></i>
+                <span class="text-xs">首頁</span>
+            </button>
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='SALES_010_success_cases.html'">
+                <i class="fas fa-trophy text-lg mb-1"></i>
+                <span class="text-xs">案例</span>
+            </button>
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='SALES_002_recording.html'">
+                <i class="fas fa-microphone text-lg mb-1"></i>
+                <span class="text-xs">錄音</span>
+            </button>
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='../manager/MGR_012_ask_ai.html'">
+                <i class="fas fa-robot text-lg mb-1"></i>
+                <span class="text-xs">Ask AI</span>
+            </button>
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='../common/COMMON_008_notification_center.html'">
+                <i class="fas fa-bell text-lg mb-1"></i>
+                <span class="text-xs">通知</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        function editCustomer() {
+            location.href = 'SALES_009_customer_edit.html?customer=張先生';
+        }
+
+        function showMenu() {
+            // Show action menu
+            const actions = [
+                '編輯客戶資訊',
+                '查看通話記錄',
+                '匯出客戶資料',
+                '刪除客戶'
+            ];
+            
+            // This would typically show a modal or action sheet
+            alert('客戶操作選單:\n' + actions.map((a, i) => `${i+1}. ${a}`).join('\n'));
+        }
+
+        // Load customer data based on URL parameter
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const customer = urlParams.get('customer');
+            if (customer) {
+                document.getElementById('customerName').textContent = customer;
+                document.title = `SalesAI - ${customer}`;
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,417 @@
+<!-- Modal Components Collection -->
+<!-- 這個文件包含所有可重用的Modal組件 -->
+
+<!-- MODAL_001 - 確認對話框 -->
+<div id="confirmModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full shadow-xl transform transition-all duration-300 scale-95 opacity-0">
+            <div class="p-6">
+                <div class="w-12 h-12 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center">
+                    <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9.293a5 5 0 11-7.072 0m12.728-2.122a4 4 0 11-5.656 0m11.314-2.828a3 3 0 11-4.242 0"></path>
+                    </svg>
+                </div>
+                <h3 id="confirmTitle" class="text-lg font-bold text-gray-dark text-center mb-2">確認操作</h3>
+                <p id="confirmMessage" class="text-gray-medium text-center text-sm mb-6">您確定要執行此操作嗎？</p>
+                <div class="flex space-x-3">
+                    <button id="confirmBtn" class="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+                        確認
+                    </button>
+                    <button id="cancelBtn" class="flex-1 px-4 py-2 bg-gray-200 text-gray-dark rounded-lg hover:bg-gray-300 transition-colors">
+                        取消
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL_002 - 警告對話框 -->
+<div id="warningModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full shadow-xl transform transition-all duration-300 scale-95 opacity-0">
+            <div class="p-6">
+                <div class="w-12 h-12 mx-auto mb-4 bg-warning/10 rounded-full flex items-center justify-center">
+                    <svg class="w-6 h-6 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                </div>
+                <h3 id="warningTitle" class="text-lg font-bold text-gray-dark text-center mb-2">警告</h3>
+                <p id="warningMessage" class="text-gray-medium text-center text-sm mb-6">請注意此操作可能造成的影響</p>
+                <button id="warningConfirmBtn" class="w-full px-4 py-2 bg-warning text-white rounded-lg hover:bg-warning/90 transition-colors">
+                    我瞭解了
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL_003 - 操作選擇表單 -->
+<div id="actionSheetModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/50" onclick="hideActionSheet()"></div>
+    <div class="absolute bottom-0 left-0 right-0">
+        <div id="actionSheetContent" class="bg-white rounded-t-2xl transform transition-transform duration-300 translate-y-full">
+            <div class="py-3 px-6 border-b border-gray-border">
+                <h3 id="actionSheetTitle" class="text-sm text-gray-medium text-center">選擇操作</h3>
+            </div>
+            <div id="actionSheetOptions" class="divide-y divide-gray-border">
+                <!-- 動態插入選項 -->
+            </div>
+            <div class="border-t-8 border-gray-bg">
+                <button onclick="hideActionSheet()" class="w-full py-4 text-center text-primary font-medium hover:bg-gray-50">
+                    取消
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL_010 - 載入中指示器 -->
+<div id="loadingModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/30 backdrop-blur-sm"></div>
+    <div class="absolute inset-0 flex items-center justify-center">
+        <div class="bg-white rounded-2xl p-8 shadow-xl">
+            <div class="relative w-16 h-16 mx-auto mb-4">
+                <div class="absolute inset-0 border-4 border-primary/20 rounded-full"></div>
+                <div class="absolute inset-0 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+            </div>
+            <p id="loadingMessage" class="text-gray-dark font-medium text-center">載入中...</p>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL_007/008 - 錄音/麥克風權限請求 -->
+<div id="recordingPermissionModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-sm w-full shadow-xl transform transition-all duration-300 scale-95 opacity-0">
+            <div class="pt-8 pb-4 px-6">
+                <div class="w-24 h-24 mx-auto mb-4 relative">
+                    <div class="absolute inset-0 bg-primary/10 rounded-full flex items-center justify-center animate-pulse">
+                        <svg class="w-12 h-12 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                </div>
+                
+                <h3 class="text-xl font-bold text-gray-dark text-center mb-2">需要錄音權限</h3>
+                <p class="text-gray-medium text-sm text-center leading-relaxed mb-4">
+                    為了錄製您的銷售對話並進行AI分析，我們需要您的麥克風權限。
+                </p>
+                
+                <div class="bg-gray-bg rounded-lg p-3 mb-4">
+                    <div class="space-y-2 text-left">
+                        <div class="flex items-start space-x-2">
+                            <svg class="w-4 h-4 text-success flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-xs text-gray-medium">錄音僅在您主動開啟時進行</span>
+                        </div>
+                        <div class="flex items-start space-x-2">
+                            <svg class="w-4 h-4 text-success flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-xs text-gray-medium">您的錄音資料會安全加密儲存</span>
+                        </div>
+                        <div class="flex items-start space-x-2">
+                            <svg class="w-4 h-4 text-success flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span class="text-xs text-gray-medium">可隨時在設定中關閉權限</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="px-6 pb-6 space-y-2">
+                <button onclick="requestMicrophonePermission()" class="w-full px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium">
+                    允許使用麥克風
+                </button>
+                <button onclick="hideRecordingPermission()" class="w-full px-4 py-3 text-gray-medium hover:bg-gray-bg rounded-lg transition-colors">
+                    稍後再說
+                </button>
+            </div>
+            
+            <div class="border-t border-gray-border px-6 py-3 text-center">
+                <button onclick="showPermissionHelp()" class="text-xs text-primary hover:underline">
+                    無法啟用？查看幫助
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL_011 - CASE成交確認 (簡化版) -->
+<div id="caseSuccessModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full shadow-xl transform transition-all duration-300 scale-95 opacity-0">
+            <div class="p-6">
+                <div class="w-20 h-20 mx-auto mb-4 bg-success/10 rounded-full flex items-center justify-center">
+                    <svg class="w-10 h-10 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-dark text-center mb-2">恭喜成交！🎉</h3>
+                <p class="text-gray-medium text-center text-sm mb-6">太棒了！請填寫保單資訊以完成記錄</p>
+                
+                <form id="caseSuccessForm">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-dark mb-2">保單名稱 *</label>
+                        <select id="policyName" class="w-full px-3 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required>
+                            <option value="">請選擇保單類型</option>
+                            <option value="term-life">定期壽險</option>
+                            <option value="whole-life">終身壽險</option>
+                            <option value="endowment">增額終身壽險</option>
+                            <option value="medical">醫療險</option>
+                            <option value="accident">意外險</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-dark mb-2">保額 *</label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-medium">NT$</span>
+                            <input type="number" id="premiumAmount" placeholder="1,000,000" class="w-full pl-12 pr-3 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20" required>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button type="submit" class="flex-1 px-4 py-2 bg-success text-white rounded-lg hover:bg-success/90 transition-colors">
+                            確認提交
+                        </button>
+                        <button type="button" onclick="hideCaseSuccess()" class="flex-1 px-4 py-2 bg-gray-200 text-gray-dark rounded-lg hover:bg-gray-300 transition-colors">
+                            稍後再填
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal控制腳本 -->
+<script>
+// 確認對話框
+function showConfirm(options = {}) {
+    const modal = document.getElementById('confirmModal');
+    const content = modal.querySelector('.bg-white');
+    
+    document.getElementById('confirmTitle').textContent = options.title || '確認操作';
+    document.getElementById('confirmMessage').textContent = options.message || '您確定要執行此操作嗎？';
+    
+    document.getElementById('confirmBtn').onclick = function() {
+        hideConfirm();
+        if (options.onConfirm) options.onConfirm();
+    };
+    
+    document.getElementById('cancelBtn').onclick = function() {
+        hideConfirm();
+        if (options.onCancel) options.onCancel();
+    };
+    
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        content.classList.remove('scale-95', 'opacity-0');
+        content.classList.add('scale-100', 'opacity-100');
+    }, 10);
+}
+
+function hideConfirm() {
+    const modal = document.getElementById('confirmModal');
+    const content = modal.querySelector('.bg-white');
+    content.classList.remove('scale-100', 'opacity-100');
+    content.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => modal.classList.add('hidden'), 300);
+}
+
+// 警告對話框
+function showWarning(options = {}) {
+    const modal = document.getElementById('warningModal');
+    const content = modal.querySelector('.bg-white');
+    
+    document.getElementById('warningTitle').textContent = options.title || '警告';
+    document.getElementById('warningMessage').textContent = options.message || '請注意此操作可能造成的影響';
+    
+    document.getElementById('warningConfirmBtn').onclick = function() {
+        hideWarning();
+        if (options.onConfirm) options.onConfirm();
+    };
+    
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        content.classList.remove('scale-95', 'opacity-0');
+        content.classList.add('scale-100', 'opacity-100');
+    }, 10);
+}
+
+function hideWarning() {
+    const modal = document.getElementById('warningModal');
+    const content = modal.querySelector('.bg-white');
+    content.classList.remove('scale-100', 'opacity-100');
+    content.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => modal.classList.add('hidden'), 300);
+}
+
+// 操作選單
+function showActionSheet(options = {}) {
+    const modal = document.getElementById('actionSheetModal');
+    const content = document.getElementById('actionSheetContent');
+    const optionsContainer = document.getElementById('actionSheetOptions');
+    
+    document.getElementById('actionSheetTitle').textContent = options.title || '選擇操作';
+    
+    // 清空並重新生成選項
+    optionsContainer.innerHTML = '';
+    if (options.actions) {
+        options.actions.forEach(action => {
+            const button = document.createElement('button');
+            button.className = `w-full py-4 text-left px-6 hover:bg-gray-50 transition-colors ${action.destructive ? 'text-error' : 'text-gray-dark'}`;
+            button.textContent = action.text;
+            button.onclick = function() {
+                hideActionSheet();
+                if (action.handler) action.handler();
+            };
+            optionsContainer.appendChild(button);
+        });
+    }
+    
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        content.classList.remove('translate-y-full');
+        content.classList.add('translate-y-0');
+    }, 10);
+}
+
+function hideActionSheet() {
+    const modal = document.getElementById('actionSheetModal');
+    const content = document.getElementById('actionSheetContent');
+    content.classList.remove('translate-y-0');
+    content.classList.add('translate-y-full');
+    setTimeout(() => modal.classList.add('hidden'), 300);
+}
+
+// 載入指示器
+function showLoading(message = '載入中...') {
+    const modal = document.getElementById('loadingModal');
+    document.getElementById('loadingMessage').textContent = message;
+    modal.classList.remove('hidden');
+}
+
+function hideLoading() {
+    document.getElementById('loadingModal').classList.add('hidden');
+}
+
+// CASE成交確認
+function showCaseSuccess(options = {}) {
+    const modal = document.getElementById('caseSuccessModal');
+    const content = modal.querySelector('.bg-white');
+    
+    document.getElementById('caseSuccessForm').onsubmit = function(e) {
+        e.preventDefault();
+        const data = {
+            policyName: document.getElementById('policyName').value,
+            premiumAmount: document.getElementById('premiumAmount').value
+        };
+        hideCaseSuccess();
+        if (options.onSubmit) options.onSubmit(data);
+    };
+    
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        content.classList.remove('scale-95', 'opacity-0');
+        content.classList.add('scale-100', 'opacity-100');
+    }, 10);
+}
+
+function hideCaseSuccess() {
+    const modal = document.getElementById('caseSuccessModal');
+    const content = modal.querySelector('.bg-white');
+    content.classList.remove('scale-100', 'opacity-100');
+    content.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => modal.classList.add('hidden'), 300);
+}
+
+// 錄音權限請求
+function showRecordingPermission() {
+    const modal = document.getElementById('recordingPermissionModal');
+    const content = modal.querySelector('.bg-white');
+    
+    modal.classList.remove('hidden');
+    setTimeout(() => {
+        content.classList.remove('scale-95', 'opacity-0');
+        content.classList.add('scale-100', 'opacity-100');
+    }, 10);
+}
+
+function hideRecordingPermission() {
+    const modal = document.getElementById('recordingPermissionModal');
+    const content = modal.querySelector('.bg-white');
+    content.classList.remove('scale-100', 'opacity-100');
+    content.classList.add('scale-95', 'opacity-0');
+    setTimeout(() => modal.classList.add('hidden'), 300);
+}
+
+function requestMicrophonePermission() {
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ audio: true })
+            .then(function(stream) {
+                console.log('Microphone permission granted');
+                stream.getTracks().forEach(track => track.stop());
+                hideRecordingPermission();
+                showWarning({
+                    title: '權限已授予',
+                    message: '您現在可以開始錄音了！',
+                    onConfirm: () => {}
+                });
+            })
+            .catch(function(err) {
+                console.log('Microphone permission denied:', err);
+                showWarning({
+                    title: '權限被拒絕',
+                    message: '請在瀏覽器設定中允許麥克風權限',
+                    onConfirm: () => {}
+                });
+            });
+    }
+}
+
+function showPermissionHelp() {
+    hideRecordingPermission();
+    showWarning({
+        title: '如何啟用麥克風',
+        message: '請點擊網址列的鎖頭圖標，找到「麥克風」權限並選擇「允許」，然後重新整理頁面。'
+    });
+}
+
+// ESC鍵關閉Modal
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        hideConfirm();
+        hideWarning();
+        hideActionSheet();
+        hideLoading();
+        hideCaseSuccess();
+        hideRecordingPermission();
+    }
+});
+</script>
+
+<style>
+/* 確保Tailwind類別正確載入 */
+.text-primary { color: #2E5BFF; }
+.bg-primary { background-color: #2E5BFF; }
+.text-success { color: #00D563; }
+.bg-success { background-color: #00D563; }
+.text-warning { color: #FFB800; }
+.bg-warning { background-color: #FFB800; }
+.text-error { color: #FF4757; }
+.bg-error { background-color: #FF4757; }
+.text-gray-dark { color: #1A1A1A; }
+.text-gray-medium { color: #666666; }
+.text-gray-light { color: #999999; }
+.bg-gray-bg { background-color: #F8F9FA; }
+.border-gray-border { border-color: #E5E5E5; }
+</style>

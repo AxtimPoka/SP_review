@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODAL_011 - CASE成交確認 | SalesAI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Confetti Animation */
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            animation: confetti-fall 3s linear;
+        }
+        
+        @keyframes success-scale {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(10deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        
+        .animate-success {
+            animation: success-scale 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 213, 99, 0.4); }
+            50% { box-shadow: 0 0 0 20px rgba(0, 213, 99, 0); }
+        }
+        
+        .animate-pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2E5BFF',
+                        secondary: '#00C6AE',
+                        success: '#00D563',
+                        warning: '#FFB800',
+                        error: '#FF4757',
+                        'gray-dark': '#1A1A1A',
+                        'gray-medium': '#666666',
+                        'gray-light': '#999999',
+                        'gray-bg': '#F8F9FA',
+                        'gray-border': '#E5E5E5'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-bg">
+    <!-- Demo Container -->
+    <div class="min-h-screen flex flex-col items-center justify-center p-4">
+        <div class="w-full max-w-md bg-white rounded-xl shadow-lg p-6">
+            <h1 class="text-2xl font-bold text-gray-dark mb-2">MODAL_011</h1>
+            <h2 class="text-lg text-gray-medium mb-6">CASE成交確認</h2>
+            
+            <div class="space-y-4">
+                <button onclick="caseSuccess.show()" 
+                        class="w-full px-6 py-3 bg-success text-white rounded-lg hover:bg-success/90 transition-colors">
+                    觸發成交確認
+                </button>
+                
+                <button onclick="caseSuccess.show({quickMode: true})" 
+                        class="w-full px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">
+                    快速成交確認
+                </button>
+            </div>
+            
+            <div class="mt-6 p-4 bg-gray-bg rounded-lg">
+                <h3 class="font-bold text-gray-dark mb-2">組件說明：</h3>
+                <ul class="text-sm text-gray-medium space-y-1">
+                    <li>• CASE成交確認彈窗</li>
+                    <li>• 成功動畫與彩帶效果</li>
+                    <li>• 保單資訊填寫</li>
+                    <li>• 分享至團隊功能</li>
+                    <li>• 表單驗證</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- CASE Success Modal -->
+    <div id="caseSuccessModal" class="fixed inset-0 z-50 hidden">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300"></div>
+        
+        <!-- Confetti Container -->
+        <div id="confettiContainer"></div>
+        
+        <!-- Modal Content -->
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-2xl max-w-md w-full shadow-xl transform transition-all duration-300 scale-95 opacity-0">
+                <!-- Success Animation -->
+                <div class="pt-8 pb-4 px-6">
+                    <div class="w-20 h-20 mx-auto mb-4 relative">
+                        <div class="absolute inset-0 bg-success/10 rounded-full animate-pulse-glow"></div>
+                        <div class="relative w-full h-full bg-success rounded-full flex items-center justify-center animate-success">
+                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-2xl font-bold text-gray-dark text-center mb-2">恭喜成交！🎉</h3>
+                    <p class="text-gray-medium text-center text-sm">
+                        太棒了！請填寫保單資訊以完成記錄
+                    </p>
+                </div>
+                
+                <!-- Form -->
+                <form id="successForm" class="px-6 pb-6">
+                    <!-- Customer Info (Read-only) -->
+                    <div class="bg-gray-bg rounded-lg p-3 mb-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs text-gray-medium">客戶</p>
+                                <p class="font-medium text-gray-dark">張先生</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs text-gray-medium">CASE</p>
+                                <p class="font-medium text-gray-dark">壽險規劃</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Policy Name -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-dark mb-2">
+                            保單名稱 <span class="text-error">*</span>
+                        </label>
+                        <select id="policyName" class="w-full px-3 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                            <option value="">請選擇保單類型</option>
+                            <option value="term-life">定期壽險</option>
+                            <option value="whole-life">終身壽險</option>
+                            <option value="endowment">增額終身壽險</option>
+                            <option value="medical">醫療險</option>
+                            <option value="accident">意外險</option>
+                            <option value="investment">投資型保單</option>
+                            <option value="annuity">年金險</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Policy Number -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-dark mb-2">
+                            保單編號
+                        </label>
+                        <input type="text" 
+                               id="policyNumber" 
+                               placeholder="例：AH-2024-0812"
+                               class="w-full px-3 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                    </div>
+                    
+                    <!-- Premium Amount -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-dark mb-2">
+                            保額 <span class="text-error">*</span>
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-medium">NT$</span>
+                            <input type="number" 
+                                   id="premiumAmount" 
+                                   placeholder="1,000,000"
+                                   class="w-full pl-12 pr-3 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Method -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-dark mb-2">
+                            繳費方式 <span class="text-error">*</span>
+                        </label>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button type="button" 
+                                    onclick="caseSuccess.selectPayment('annual')"
+                                    class="payment-btn px-3 py-2 border border-gray-border rounded-lg text-sm hover:bg-gray-50 transition-colors"
+                                    data-value="annual">
+                                年繳
+                            </button>
+                            <button type="button" 
+                                    onclick="caseSuccess.selectPayment('semi-annual')"
+                                    class="payment-btn px-3 py-2 border border-gray-border rounded-lg text-sm hover:bg-gray-50 transition-colors"
+                                    data-value="semi-annual">
+                                半年繳
+                            </button>
+                            <button type="button" 
+                                    onclick="caseSuccess.selectPayment('quarterly')"
+                                    class="payment-btn px-3 py-2 border border-gray-border rounded-lg text-sm hover:bg-gray-50 transition-colors"
+                                    data-value="quarterly">
+                                季繳
+                            </button>
+                            <button type="button" 
+                                    onclick="caseSuccess.selectPayment('monthly')"
+                                    class="payment-btn px-3 py-2 border border-gray-border rounded-lg text-sm hover:bg-gray-50 transition-colors"
+                                    data-value="monthly">
+                                月繳
+                            </button>
+                            <button type="button" 
+                                    onclick="caseSuccess.selectPayment('single')"
+                                    class="payment-btn px-3 py-2 border border-gray-border rounded-lg text-sm hover:bg-gray-50 transition-colors col-span-2"
+                                    data-value="single">
+                                躉繳
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Share to Team -->
+                    <div class="mb-6">
+                        <label class="flex items-center space-x-3 cursor-pointer">
+                            <input type="checkbox" 
+                                   id="shareToTeam" 
+                                   checked
+                                   class="w-4 h-4 text-primary rounded border-gray-border focus:ring-primary">
+                            <span class="text-sm text-gray-dark">
+                                分享此成功案例給團隊學習
+                            </span>
+                        </label>
+                    </div>
+                    
+                    <!-- Notes -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-dark mb-2">
+                            備註（選填）
+                        </label>
+                        <textarea id="notes" 
+                                  rows="2"
+                                  placeholder="輸入備註..."
+                                  class="w-full px-3 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"></textarea>
+                    </div>
+                    
+                    <!-- Actions -->
+                    <div class="space-y-2">
+                        <button type="submit" 
+                                class="w-full px-4 py-3 bg-success text-white rounded-lg hover:bg-success/90 transition-colors font-medium">
+                            確認提交
+                        </button>
+                        <button type="button" 
+                                onclick="caseSuccess.hide()" 
+                                class="w-full px-4 py-3 text-gray-medium hover:bg-gray-bg rounded-lg transition-colors">
+                            稍後再填
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class CaseSuccessModal {
+            constructor() {
+                this.modal = document.getElementById('caseSuccessModal');
+                this.form = document.getElementById('successForm');
+                this.selectedPayment = null;
+                this.init();
+            }
+            
+            init() {
+                // Form submission
+                this.form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleSubmit();
+                });
+                
+                // Click backdrop to close
+                this.modal.querySelector('.bg-black\\/50').addEventListener('click', () => this.hide());
+                
+                // ESC key to close
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && !this.modal.classList.contains('hidden')) {
+                        this.hide();
+                    }
+                });
+            }
+            
+            show(options = {}) {
+                this.modal.classList.remove('hidden');
+                
+                // Reset form
+                this.form.reset();
+                document.getElementById('shareToTeam').checked = true;
+                this.selectedPayment = null;
+                this.updatePaymentButtons();
+                
+                // Quick mode - pre-fill some data
+                if (options.quickMode) {
+                    document.getElementById('policyName').value = 'endowment';
+                    document.getElementById('premiumAmount').value = '1000000';
+                    this.selectPayment('annual');
+                }
+                
+                // Show animation
+                requestAnimationFrame(() => {
+                    const content = this.modal.querySelector('.bg-white');
+                    content.classList.remove('scale-95', 'opacity-0');
+                    content.classList.add('scale-100', 'opacity-100');
+                    
+                    // Trigger confetti
+                    this.createConfetti();
+                });
+            }
+            
+            hide() {
+                const content = this.modal.querySelector('.bg-white');
+                content.classList.remove('scale-100', 'opacity-100');
+                content.classList.add('scale-95', 'opacity-0');
+                
+                // Clear confetti
+                const confettiContainer = document.getElementById('confettiContainer');
+                confettiContainer.innerHTML = '';
+                
+                setTimeout(() => {
+                    this.modal.classList.add('hidden');
+                }, 300);
+            }
+            
+            createConfetti() {
+                const container = document.getElementById('confettiContainer');
+                const colors = ['#2E5BFF', '#00C6AE', '#00D563', '#FFB800', '#FF4757'];
+                
+                for (let i = 0; i < 50; i++) {
+                    setTimeout(() => {
+                        const confetti = document.createElement('div');
+                        confetti.className = 'confetti';
+                        confetti.style.left = Math.random() * 100 + '%';
+                        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                        confetti.style.animationDelay = Math.random() * 0.5 + 's';
+                        confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                        container.appendChild(confetti);
+                        
+                        // Remove confetti after animation
+                        setTimeout(() => {
+                            confetti.remove();
+                        }, 4000);
+                    }, i * 30);
+                }
+            }
+            
+            selectPayment(method) {
+                this.selectedPayment = method;
+                this.updatePaymentButtons();
+            }
+            
+            updatePaymentButtons() {
+                document.querySelectorAll('.payment-btn').forEach(btn => {
+                    if (btn.dataset.value === this.selectedPayment) {
+                        btn.classList.add('bg-primary', 'text-white', 'border-primary');
+                        btn.classList.remove('border-gray-border', 'hover:bg-gray-50');
+                    } else {
+                        btn.classList.remove('bg-primary', 'text-white', 'border-primary');
+                        btn.classList.add('border-gray-border', 'hover:bg-gray-50');
+                    }
+                });
+            }
+            
+            handleSubmit() {
+                // Validate required fields
+                const policyName = document.getElementById('policyName').value;
+                const premiumAmount = document.getElementById('premiumAmount').value;
+                
+                if (!policyName) {
+                    alert('請選擇保單名稱');
+                    return;
+                }
+                
+                if (!premiumAmount) {
+                    alert('請輸入保額');
+                    return;
+                }
+                
+                if (!this.selectedPayment) {
+                    alert('請選擇繳費方式');
+                    return;
+                }
+                
+                // Collect form data
+                const formData = {
+                    policyName,
+                    policyNumber: document.getElementById('policyNumber').value,
+                    premiumAmount,
+                    paymentMethod: this.selectedPayment,
+                    shareToTeam: document.getElementById('shareToTeam').checked,
+                    notes: document.getElementById('notes').value
+                };
+                
+                // Simulate submission
+                console.log('Submitting:', formData);
+                
+                // Show success message
+                this.hide();
+                setTimeout(() => {
+                    alert('成交資料已成功提交！\n' + 
+                          (formData.shareToTeam ? '案例已分享給團隊學習' : '案例已保存'));
+                }, 500);
+            }
+        }
+        
+        // Initialize
+        const caseSuccess = new CaseSuccessModal();
+    </script>
+</body>
+</html>
