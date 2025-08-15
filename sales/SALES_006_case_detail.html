@@ -140,24 +140,34 @@
         <!-- Recordings Tab -->
         <div id="recordingsTab" class="tab-content hidden">
             <div class="space-y-4">
-                <div class="bg-white rounded-lg p-4">
-                    <div class="flex items-center justify-between mb-2">
-                        <h4 class="font-medium text-text-primary">初次諮詢</h4>
-                        <span class="text-xs bg-success/10 text-success px-2 py-1 rounded-full">已分析</span>
-                    </div>
-                    <p class="text-sm text-text-tertiary mb-2">2024/08/12 14:30 | 28:35</p>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-2">
-                            <button class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                                <i class="fas fa-play text-white text-xs"></i>
-                            </button>
-                            <div class="w-24 h-1 bg-gray-200 rounded">
-                                <div class="w-0 h-1 bg-primary rounded"></div>
-                            </div>
-                        </div>
-                        <span class="text-sm font-medium text-primary">8.2分</span>
+            <div class="bg-white rounded-lg p-4">
+                <div class="flex items-center justify-between mb-2">
+                <h4 class="font-medium text-text-primary">初次諮詢</h4>
+                <span class="text-xs bg-success/10 text-success px-2 py-1 rounded-full">已分析</span>
+                </div>
+                <p class="text-sm text-text-tertiary mb-2">2024/08/12 14:30 | 28:35</p>
+                <!-- 逐字稿摘要 -->
+                <div class="bg-gray-50 p-3 rounded-lg mb-3">
+                <p class="text-sm text-text-secondary line-clamp-3">
+                    "...客戶表示最近有考慮給孩子規劃教育金，但對於保險商品不太了解。我向客戶解釋了儲蓄型保單的優勢及如何配合其家庭規劃需求..."
+                </p>
+                </div>
+                <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <button class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                    <i class="fas fa-play text-white text-xs"></i>
+                    </button>
+                    <div class="w-24 h-1 bg-gray-200 rounded">
+                    <div class="w-0 h-1 bg-primary rounded"></div>
                     </div>
                 </div>
+                <span class="text-sm font-medium text-primary">8.2分</span>
+                </div>
+                <!-- 單次分析按鈕 -->
+                <button class="w-full mt-3 border border-primary text-primary py-2 rounded-lg text-sm" onclick="location.href='SALES_011_ai_analysis.html'">
+                查看單次分析
+                </button>
+            </div>
             </div>
         </div>
 
@@ -196,7 +206,7 @@
                 <i class="fas fa-microphone text-lg mb-1"></i>
                 <span class="text-xs">錄音</span>
             </button>
-            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='../manager/MGR_012_ask_ai.html'">
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='SALES_017_ask_ai.html'">
                 <i class="fas fa-robot text-lg mb-1"></i>
                 <span class="text-xs">Ask AI</span>
             </button>

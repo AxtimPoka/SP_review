@@ -440,11 +440,9 @@
                     if (hasMultipleRoles) {
                         window.location.href = 'role-selection.html';
                     } else if (isManager) {
-                        // Redirect to manager dashboard (not implemented in this demo)
-                        alert('成功登入！將導向主管儀表板');
+                        window.location.href = 'manager/MGR_001_dashboard.html'; 
                     } else {
-                        // Redirect to sales dashboard (not implemented in this demo)  
-                        alert('成功登入！將導向銷售人員主頁');
+                        window.location.href = 'sales/SALES_001_dashboard.html';
                     }
                 }, 1000);
             }
