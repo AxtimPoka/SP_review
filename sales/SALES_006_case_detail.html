@@ -1,318 +1,1863 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SalesAI - CASE詳情</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'primary': '#2E5BFF',
-                        'secondary': '#00C6AE',
-                        'success': '#00D563',
-                        'warning': '#FFB800',
-                        'error': '#FF4757',
-                        'text-primary': '#1A1A1A',
-                        'text-secondary': '#666666',
-                        'text-tertiary': '#999999'
-                    }
-                }
-            }
-        }
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#2E5BFF",
+              secondary: "#00C6AE",
+              success: "#00D563",
+              warning: "#FFB800",
+              error: "#FF4757",
+              "text-primary": "#1A1A1A",
+              "text-secondary": "#666666",
+              "text-tertiary": "#999999",
+            },
+          },
+        },
+      };
     </script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-</head>
-<body class="bg-gray-50 font-sans">
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body class="bg-gray-50 font-sans">
     <!-- Header -->
     <header class="bg-white shadow-sm px-4 py-3 sticky top-0 z-10">
-        <div class="flex items-center justify-between">
-            <button onclick="history.back()" class="text-text-secondary">
-                <i class="fas fa-arrow-left text-lg"></i>
-            </button>
-            <h1 class="text-lg font-semibold text-text-primary">壽險規劃CASE</h1>
-            <div class="flex items-center space-x-3">
-                <button onclick="markComplete()" class="text-success">
-                    <i class="fas fa-check text-lg"></i>
-                </button>
-                <button onclick="showMenu()" class="text-text-secondary">
-                    <i class="fas fa-ellipsis-v text-lg"></i>
-                </button>
-            </div>
+      <div class="flex items-center justify-between">
+        <button onclick="history.back()" class="text-text-secondary">
+          <i class="fas fa-arrow-left text-lg"></i>
+        </button>
+        <h1 class="text-lg font-semibold text-text-primary">壽險規劃CASE</h1>
+        <div class="flex items-center space-x-3">
+          <button onclick="markComplete()" class="text-success">
+            <i class="fas fa-check text-lg"></i>
+          </button>
+          <button onclick="showMenu()" class="text-text-secondary">
+            <i class="fas fa-ellipsis-v text-lg"></i>
+          </button>
         </div>
+      </div>
     </header>
 
     <!-- Tab Navigation -->
     <div class="bg-white border-b border-gray-200">
-        <div class="flex">
-            <button class="tab-button flex-1 py-3 text-center border-b-2 border-primary text-primary font-medium" onclick="showTab('analysis')">
-                分析
-            </button>
-            <button class="tab-button flex-1 py-3 text-center border-b-2 border-transparent text-text-tertiary" onclick="showTab('recordings')">
-                錄音
-            </button>
-            <button class="tab-button flex-1 py-3 text-center border-b-2 border-transparent text-text-tertiary" onclick="showTab('askai')">
-                Ask AI
-            </button>
-        </div>
+      <div class="flex">
+        <button
+          class="tab-button flex-1 py-3 text-center border-b-2 border-primary text-primary font-medium"
+          onclick="showTab('analysis')"
+        >
+          分析
+        </button>
+        <button
+          class="tab-button flex-1 py-3 text-center border-b-2 border-transparent text-text-tertiary"
+          onclick="showTab('recordings')"
+        >
+          錄音
+        </button>
+        <button
+          class="tab-button flex-1 py-3 text-center border-b-2 border-transparent text-text-tertiary"
+          onclick="showTab('askai')"
+        >
+          Ask AI
+        </button>
+      </div>
     </div>
 
     <!-- Main Content -->
     <main class="px-4 py-6 pb-24">
-        <!-- Analysis Tab -->
-        <div id="analysisTab" class="tab-content">
-            <!-- Overall Score -->
-            <section class="mb-6">
-                <div class="bg-white rounded-xl p-6 shadow-sm text-center">
-                    <div class="mb-4">
-                        <div class="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <span class="text-2xl font-bold text-primary">7.8</span>
-                        </div>
-                        <h2 class="text-xl font-bold text-text-primary mb-2">整體評分</h2>
-                        <p class="text-text-secondary">基於 3 次錄音分析</p>
-                    </div>
-                    <button class="w-full bg-primary text-white py-2 rounded-lg" onclick="location.href='SALES_011_ai_analysis.html'">
-                        查看詳細分析 →
-                    </button>
-                </div>
-            </section>
+      <!-- Analysis Tab -->
+      <div id="analysisTab" class="tab-content">
+        <!-- Score Cards -->
+        <div class="score-cards-container flex gap-3 mb-4">
+          <div
+            class="score-card flow active flex-1 rounded-lg p-4 text-white text-center cursor-pointer"
+            onclick="selectDimension('flow', this)"
+          >
+            <div class="score-card-value text-3xl font-bold mb-1">94</div>
+            <div class="score-card-label text-xs opacity-90 mb-2">
+              流程遵守度
+            </div>
+            <button
+              class="detail-btn px-3 py-1 text-xs bg-white/20 backdrop-blur rounded-full"
+              onclick="showBreakdownModal('flow', event)"
+            >
+              詳細
+            </button>
+          </div>
 
-            <!-- Three Dimensions -->
-            <section class="mb-6">
-                <h3 class="text-lg font-semibold text-text-primary mb-4">三維度得分</h3>
-                <div class="space-y-4">
-                    <div class="bg-white rounded-lg p-4">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="font-medium text-text-primary">流程遵守度</span>
-                            <span class="text-primary font-bold">82%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-primary h-2 rounded-full" style="width: 82%"></div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg p-4">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="font-medium text-text-primary">銷售技巧</span>
-                            <span class="text-secondary font-bold">75%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-secondary h-2 rounded-full" style="width: 75%"></div>
-                        </div>
-                    </div>
-                    <div class="bg-white rounded-lg p-4">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="font-medium text-text-primary">溝通能力</span>
-                            <span class="text-success font-bold">80%</span>
-                        </div>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
-                            <div class="bg-success h-2 rounded-full" style="width: 80%"></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+          <div
+            class="score-card skill flex-1 rounded-lg p-4 text-white text-center cursor-pointer"
+            onclick="selectDimension('skill', this)"
+          >
+            <div class="score-card-value text-3xl font-bold mb-1">91</div>
+            <div class="score-card-label text-xs opacity-90 mb-2">銷售技巧</div>
+            <button
+              class="detail-btn px-3 py-1 text-xs bg-white/20 backdrop-blur rounded-full"
+              onclick="showBreakdownModal('skill', event)"
+            >
+              詳細
+            </button>
+          </div>
 
-            <!-- Summary -->
-            <section>
-                <div class="bg-white rounded-xl p-4 shadow-sm">
-                    <h3 class="font-semibold text-text-primary mb-3">AI分析摘要</h3>
-                    <div class="space-y-3">
-                        <div class="bg-success/10 rounded-lg p-3">
-                            <h4 class="text-sm font-medium text-success mb-1">優點</h4>
-                            <ul class="text-sm text-text-secondary space-y-1">
-                                <li>• 需求診斷完整，SPIN流程清晰</li>
-                                <li>• 客戶關係建立良好</li>
-                            </ul>
-                        </div>
-                        <div class="bg-warning/10 rounded-lg p-3">
-                            <h4 class="text-sm font-medium text-warning mb-1">待改善</h4>
-                            <ul class="text-sm text-text-secondary space-y-1">
-                                <li>• 異議處理技巧需加強</li>
-                                <li>• 時間掌控有待改善</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </section>
+          <div
+            class="score-card comm flex-1 rounded-lg p-4 text-white text-center cursor-pointer"
+            onclick="selectDimension('comm', this)"
+          >
+            <div class="score-card-value text-3xl font-bold mb-1">96</div>
+            <div class="score-card-label text-xs opacity-90 mb-2">溝通能力</div>
+            <button
+              class="detail-btn px-3 py-1 text-xs bg-white/20 backdrop-blur rounded-full"
+              onclick="showBreakdownModal('comm', event)"
+            >
+              詳細
+            </button>
+          </div>
         </div>
 
-        <!-- Recordings Tab -->
-        <div id="recordingsTab" class="tab-content hidden">
-            <div class="space-y-4">
-            <div class="bg-white rounded-lg p-4">
-                <div class="flex items-center justify-between mb-2">
-                <h4 class="font-medium text-text-primary">初次諮詢</h4>
-                <span class="text-xs bg-success/10 text-success px-2 py-1 rounded-full">已分析</span>
-                </div>
-                <p class="text-sm text-text-tertiary mb-2">2024/08/12 14:30 | 28:35</p>
-                <!-- 逐字稿摘要 -->
-                <div class="bg-gray-50 p-3 rounded-lg mb-3">
-                <p class="text-sm text-text-secondary line-clamp-3">
-                    "...客戶表示最近有考慮給孩子規劃教育金，但對於保險商品不太了解。我向客戶解釋了儲蓄型保單的優勢及如何配合其家庭規劃需求..."
-                </p>
-                </div>
-                <div class="flex items-center justify-between">
-                <div class="flex items-center space-x-2">
-                    <button class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                    <i class="fas fa-play text-white text-xs"></i>
-                    </button>
-                    <div class="w-24 h-1 bg-gray-200 rounded">
-                    <div class="w-0 h-1 bg-primary rounded"></div>
-                    </div>
-                </div>
-                <span class="text-sm font-medium text-primary">8.2分</span>
-                </div>
-                <!-- 單次分析按鈕 -->
-                <button class="w-full mt-3 border border-primary text-primary py-2 rounded-lg text-sm" onclick="location.href='SALES_011_ai_analysis.html'">
-                查看單次分析
+        <!-- Transcript Highlights -->
+        <div class="transcript-section">
+          <div class="section-header">
+            <div class="section-title">
+              需要關注的片段
+              <button
+                class="attention-indicator"
+                onclick="showInfoTooltip('待改進')"
+              >
+                ⚠️ 待改進
+              </button>
+            </div>
+          </div>
+
+          <div id="highlights-container">
+            <!-- Content will be dynamically inserted -->
+          </div>
+        </div>
+
+
+        <!-- Modal for Score Breakdown -->
+        <div
+          class="modal-overlay fixed inset-0 bg-black/50 hidden z-50"
+          id="breakdown-modal-overlay"
+          onclick="closeBreakdownModal()"
+        >
+          <div
+            class="modal-container bg-white rounded-t-2xl absolute bottom-0 left-0 right-0 max-h-[80vh]"
+            onclick="event.stopPropagation()"
+          >
+            <div
+              class="modal-header flex justify-between items-center p-4 border-b"
+            >
+              <h3 class="modal-title text-lg font-semibold" id="modal-title">
+                詳細評分
+              </h3>
+              <button
+                class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center"
+                onclick="closeBreakdownModal()"
+              >
+                <i class="fas fa-times text-gray-600"></i>
+              </button>
+            </div>
+            <div
+              class="modal-body p-4 overflow-y-auto"
+              id="modal-breakdown-content"
+            >
+              <!-- Content will be dynamically inserted -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal for Highlight Details -->
+        <div
+          class="modal-overlay fixed inset-0 bg-black/50 hidden z-50"
+          id="highlight-modal-overlay"
+          onclick="closeHighlightModal()"
+        >
+          <div
+            class="modal-container bg-white rounded-t-2xl absolute bottom-0 left-0 right-0 h-[80vh]"
+            onclick="event.stopPropagation()"
+          >
+            <div
+              class="modal-header flex justify-between items-center p-4 border-b bg-gray-50"
+            >
+              <h3
+                class="modal-title text-lg font-semibold"
+                id="highlight-modal-title"
+              >
+                對話詳情
+              </h3>
+              <button
+                class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center"
+                onclick="closeHighlightModal()"
+              >
+                <i class="fas fa-times text-gray-600"></i>
+              </button>
+            </div>
+            <div
+              class="modal-body p-4 overflow-y-auto"
+              style="max-height: calc(80vh - 80px)"
+              id="highlight-modal-content"
+            >
+              <!-- Content will be dynamically inserted -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recordings Tab -->
+      <div id="recordingsTab" class="tab-content hidden">
+        <div class="space-y-4">
+          <div class="bg-white rounded-lg p-4">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-medium text-text-primary">初次諮詢</h4>
+              <span
+                class="text-xs bg-success/10 text-success px-2 py-1 rounded-full"
+                >已分析</span
+              >
+            </div>
+            <p class="text-sm text-text-tertiary mb-2">
+              2024/08/12 14:30 | 28:35
+            </p>
+            <!-- 逐字稿摘要 -->
+            <div class="bg-gray-50 p-3 rounded-lg mb-3">
+              <p class="text-sm text-text-secondary line-clamp-3">
+                "...客戶表示最近有考慮給孩子規劃教育金，但對於保險商品不太了解。我向客戶解釋了儲蓄型保單的優勢及如何配合其家庭規劃需求..."
+              </p>
+            </div>
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-2">
+                <button
+                  class="w-8 h-8 bg-primary rounded-full flex items-center justify-center"
+                >
+                  <i class="fas fa-play text-white text-xs"></i>
                 </button>
+                <div class="w-24 h-1 bg-gray-200 rounded">
+                  <div class="w-0 h-1 bg-primary rounded"></div>
+                </div>
+              </div>
+              <span class="text-sm font-medium text-primary">8.2分</span>
             </div>
+            <!-- 單次分析按鈕 -->
+            <button
+              class="w-full mt-3 border border-primary text-primary py-2 rounded-lg text-sm"
+              onclick="location.href='SALES_011_ai_analysis.html'"
+            >
+              查看單次分析
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ask AI Tab -->
+      <div id="askaiTab" class="tab-content hidden">
+        <!-- AI Assistant Section -->
+        <div
+          class="bg-gradient-to-br from-primary/5 to-secondary/5 border border-primary/20 rounded-xl p-4 mb-4"
+        >
+          <div class="flex items-center">
+            <div
+              class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mr-3"
+            >
+              <i class="fas fa-robot text-primary text-lg"></i>
             </div>
+            <div class="flex-1">
+              <h3 class="text-base font-semibold text-text-primary">
+                AI 智能助手
+              </h3>
+              <p class="text-xs text-text-secondary">
+                詢問關於此CASE的任何問題
+              </p>
+            </div>
+          </div>
         </div>
 
-        <!-- Ask AI Tab -->
-        <div id="askaiTab" class="tab-content hidden">
-            <div class="bg-white rounded-xl p-4">
-                <div class="mb-4">
-                    <input type="text" placeholder="詢問關於此CASE的問題..." class="w-full border border-gray-200 rounded-lg px-4 py-2">
+        <!-- Quick Questions -->
+        <div class="bg-white rounded-xl p-4 mb-4">
+          <h4 class="text-sm font-semibold text-text-primary mb-3">快速提問</h4>
+          <div class="space-y-2">
+            <button
+              class="w-full p-3 text-left border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-colors group"
+              onclick="askAIQuestion('分析客戶的主要異議點和擔憂')"
+            >
+              <div class="flex items-center">
+                <i class="fas fa-exclamation-triangle text-warning mr-3"></i>
+                <div class="flex-1">
+                  <div
+                    class="text-sm font-medium text-text-primary group-hover:text-primary"
+                  >
+                    客戶的主要異議是什麼？
+                  </div>
+                  <div class="text-xs text-text-tertiary">
+                    分析對話中的異議點
+                  </div>
                 </div>
-                <div class="space-y-3">
-                    <div class="bg-gray-50 rounded-lg p-3">
-                        <p class="text-sm font-medium text-text-primary mb-1">建議問題:</p>
-                        <ul class="text-sm text-text-secondary space-y-1">
-                            <li>• 客戶的主要痛點是什麼？</li>
-                            <li>• 如何提升成交機率？</li>
-                            <li>• 建議的話術改進？</li>
-                        </ul>
-                    </div>
+              </div>
+            </button>
+
+            <button
+              class="w-full p-3 text-left border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-colors group"
+              onclick="askAIQuestion('提供提升成交率的具體建議')"
+            >
+              <div class="flex items-center">
+                <i class="fas fa-chart-line text-success mr-3"></i>
+                <div class="flex-1">
+                  <div
+                    class="text-sm font-medium text-text-primary group-hover:text-primary"
+                  >
+                    如何提升成交機率？
+                  </div>
+                  <div class="text-xs text-text-tertiary">獲取成交策略建議</div>
                 </div>
-            </div>
+              </div>
+            </button>
+
+            <button
+              class="w-full p-3 text-left border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-colors group"
+              onclick="askAIQuestion('分析SPIN問句的使用情況和改進建議')"
+            >
+              <div class="flex items-center">
+                <i class="fas fa-comments text-primary mr-3"></i>
+                <div class="flex-1">
+                  <div
+                    class="text-sm font-medium text-text-primary group-hover:text-primary"
+                  >
+                    SPIN問句運用分析
+                  </div>
+                  <div class="text-xs text-text-tertiary">評估話術技巧</div>
+                </div>
+              </div>
+            </button>
+
+            <button
+              class="w-full p-3 text-left border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition-colors group"
+              onclick="askAIQuestion('找出錯失的銷售機會點')"
+            >
+              <div class="flex items-center">
+                <i class="fas fa-lightbulb text-warning mr-3"></i>
+                <div class="flex-1">
+                  <div
+                    class="text-sm font-medium text-text-primary group-hover:text-primary"
+                  >
+                    錯失了哪些機會？
+                  </div>
+                  <div class="text-xs text-text-tertiary">識別改善機會</div>
+                </div>
+              </div>
+            </button>
+          </div>
         </div>
+
+        <!-- Query Input -->
+        <div class="bg-white rounded-xl p-4 mb-4">
+          <div class="relative">
+            <textarea
+              id="aiQueryInput"
+              placeholder="輸入您的問題...例如：分析客戶在12:45的保費異議，提供更好的應對方式"
+              rows="3"
+              class="w-full px-3 py-2 pr-20 border border-gray-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors text-sm"
+            ></textarea>
+            <div class="absolute bottom-2 right-2 flex items-center gap-2">
+              <button
+                id="voiceInputBtn"
+                class="p-2 text-text-tertiary hover:text-primary transition-colors"
+              >
+                <i class="fas fa-microphone"></i>
+              </button>
+              <button
+                id="submitAIQuery"
+                class="px-4 py-1.5 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed text-sm"
+                onclick="submitAIQuery()"
+                disabled
+              >
+                發送
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- AI Response Area -->
+        <div id="aiResponseArea" class="hidden">
+          <div class="bg-white rounded-xl p-4">
+            <div class="flex items-start gap-3 mb-3">
+              <div
+                class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center"
+              >
+                <i class="fas fa-robot text-primary text-sm"></i>
+              </div>
+              <div class="flex-1">
+                <div class="text-sm font-semibold text-primary mb-1">
+                  AI 分析結果
+                </div>
+                <div
+                  id="aiResponseContent"
+                  class="text-sm text-text-secondary leading-relaxed"
+                >
+                  <!-- AI response will be inserted here -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div
+              class="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100"
+            >
+              <button
+                class="flex items-center px-3 py-1 text-xs text-text-tertiary hover:text-primary transition-colors"
+              >
+                <i class="fas fa-copy mr-1"></i>
+                複製
+              </button>
+              <button
+                class="flex items-center px-3 py-1 text-xs text-text-tertiary hover:text-primary transition-colors"
+              >
+                <i class="fas fa-share mr-1"></i>
+                分享
+              </button>
+              <button
+                class="flex items-center px-3 py-1 text-xs text-primary hover:text-primary/80 transition-colors"
+              >
+                <i class="fas fa-bookmark mr-1"></i>
+                儲存建議
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </main>
 
     <!-- Bottom Tab Bar -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
-        <div class="grid grid-cols-5 py-2">
-            <button class="flex flex-col items-center py-2 text-primary" onclick="location.href='SALES_001_home.html'">
-                <i class="fas fa-home text-lg mb-1"></i>
-                <span class="text-xs">首頁</span>
-            </button>
-            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='SALES_010_success_cases.html'">
-                <i class="fas fa-trophy text-lg mb-1"></i>
-                <span class="text-xs">案例</span>
-            </button>
-            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='SALES_002_recording.html'">
-                <i class="fas fa-microphone text-lg mb-1"></i>
-                <span class="text-xs">錄音</span>
-            </button>
-            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='SALES_017_ask_ai.html'">
-                <i class="fas fa-robot text-lg mb-1"></i>
-                <span class="text-xs">Ask AI</span>
-            </button>
-            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='../common/COMMON_008_notification_center.html'">
-                <i class="fas fa-bell text-lg mb-1"></i>
-                <span class="text-xs">通知</span>
-            </button>
-        </div>
+    <nav
+      class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200"
+    >
+      <div class="grid grid-cols-5 py-2">
+        <button
+          class="flex flex-col items-center py-2 text-primary"
+          onclick="location.href='SALES_001_home.html'"
+        >
+          <i class="fas fa-home text-lg mb-1"></i>
+          <span class="text-xs">首頁</span>
+        </button>
+        <button
+          class="flex flex-col items-center py-2 text-text-tertiary"
+          onclick="location.href='SALES_010_success_cases.html'"
+        >
+          <i class="fas fa-trophy text-lg mb-1"></i>
+          <span class="text-xs">案例</span>
+        </button>
+        <button
+          class="flex flex-col items-center py-2 text-text-tertiary"
+          onclick="location.href='SALES_002_recording.html'"
+        >
+          <i class="fas fa-microphone text-lg mb-1"></i>
+          <span class="text-xs">錄音</span>
+        </button>
+        <button
+          class="flex flex-col items-center py-2 text-text-tertiary"
+          onclick="location.href='SALES_017_ask_ai.html'"
+        >
+          <i class="fas fa-robot text-lg mb-1"></i>
+          <span class="text-xs">Ask AI</span>
+        </button>
+        <button
+          class="flex flex-col items-center py-2 text-text-tertiary"
+          onclick="location.href='../common/COMMON_008_notification_center.html'"
+        >
+          <i class="fas fa-bell text-lg mb-1"></i>
+          <span class="text-xs">通知</span>
+        </button>
+      </div>
     </nav>
 
+    <style>
+      .score-card.flow {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      .score-card.skill {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      }
+
+      .score-card.comm {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      }
+
+      .score-card.active {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transform: scale(1.02);
+      }
+
+      .score-card {
+        transition: all 0.3s ease;
+      }
+
+      .detail-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .modal-overlay.active {
+        display: flex !important;
+        align-items: flex-end;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .animate-fadeIn {
+        animation: fadeIn 0.3s ease;
+      }
+
+      .modal-container {
+        animation: slideUp 0.3s ease;
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(100%);
+        }
+        to {
+          transform: translateY(0);
+        }
+      }
+
+      /* Transcript Section Styles from SALES_018 */
+      .transcript-section {
+        padding: 16px 0;
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+      }
+
+      .section-title {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1a1a1a;
+      }
+
+      .attention-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        background: rgba(255, 71, 87, 0.15);
+        color: #ff4757;
+        border-radius: 16px;
+        font-size: 12px;
+        margin-left: 8px;
+        font-weight: 500;
+        border: none;
+        cursor: pointer;
+        transition: background 0.2s ease;
+      }
+
+      .attention-indicator:hover {
+        background: rgba(255, 71, 87, 0.25);
+      }
+
+      #highlights-container {
+        transition: opacity 0.3s ease;
+      }
+
+      .highlight-card {
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .highlight-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .dialogue-item {
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+      }
+
+      .dialogue-customer {
+        background: #f0f4ff;
+        border-left: 3px solid #2e5bff;
+      }
+
+      .dialogue-agent {
+        background: #fff4f0;
+        border-left: 3px solid #ff6b00;
+      }
+
+      .ai-insight {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 16px;
+        margin-top: 16px;
+        border: 1px solid #e5e5e5;
+      }
+
+      .case-card {
+        transition: all 0.3s ease;
+      }
+
+      .case-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      }
+
+      .line-clamp-2 {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(100%);
+        }
+        to {
+          transform: translateY(0);
+        }
+      }
+
+      .animate-fadeIn {
+        animation: fadeIn 0.3s ease;
+      }
+
+      .animate-slideUp {
+        animation: slideUp 0.3s ease;
+      }
+
+      .border-l-3 {
+        border-left-width: 3px;
+      }
+    </style>
+
     <script>
-        function showTab(tabName) {
-            // Hide all tab contents
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.add('hidden');
-            });
-            
-            // Remove active styles from all tab buttons
-            document.querySelectorAll('.tab-button').forEach(btn => {
-                btn.classList.remove('border-primary', 'text-primary');
-                btn.classList.add('border-transparent', 'text-text-tertiary');
-            });
-            
-            // Show selected tab content
-            document.getElementById(tabName + 'Tab').classList.remove('hidden');
-            
-            // Add active styles to selected tab button
-            event.target.classList.remove('border-transparent', 'text-text-tertiary');
-            event.target.classList.add('border-primary', 'text-primary');
-        }
+      // 評分細項資料 - 從 SALES_018 複製
+      const scoreBreakdowns = {
+        flow: {
+          name: "流程遵守度",
+          totalScore: 94,
+          items: [
+            { id: "1.1", name: "銷售流程完整性", score: 70 },
+            { id: "1.2", name: "需求診斷流程", score: 96 },
+            { id: "1.3", name: "時間節奏掌控", score: 65 },
+            { id: "1.4", name: "合規與文件管理", score: 100 },
+            { id: "1.5", name: "SPIN問句運用檢核", score: 59 },
+          ],
+        },
+        skill: {
+          name: "銷售技巧",
+          totalScore: 91,
+          items: [
+            { id: "2.1", name: "需求診斷深度", score: 96 },
+            { id: "2.2", name: "七大需求掌握度", score: 32 },
+            { id: "2.3", name: "解決方案設計", score: 85 },
+            { id: "2.4", name: "異議處理能力", score: 63 },
+            { id: "2.5", name: "競爭分析與應對", score: 60 },
+            { id: "2.6", name: "成交促進技巧", score: 100 },
+          ],
+        },
+        comm: {
+          name: "溝通能力",
+          totalScore: 96,
+          items: [
+            { id: "3.1", name: "SPIN問句質量分析", score: 100 },
+            { id: "3.2", name: "需求確認語言精準度", score: 35 },
+            { id: "3.3", name: "情感共鳴與同理心", score: 95 },
+            { id: "3.4", name: "關鍵資訊獲取效率", score: 63 },
+            { id: "3.5", name: "對話控制與引導", score: 90 },
+            { id: "3.6", name: "說服力語言運用", score: 100 },
+          ],
+        },
+      };
 
-        function markComplete() {
-            // Use custom modal instead of confirm
-            showCaseSuccess({
-                onSubmit: (data) => {
-                    console.log('Case marked as complete:', data);
-                    showWarning({
-                        title: '成交成功！',
-                        message: '恭喜！此CASE已標記為成交，資料已提交。',
-                        onConfirm: () => {
-                            location.href = 'SALES_001_home.html';
-                        }
-                    });
-                }
-            });
-        }
+      // Complete highlightData from SALES_018
+      const highlightData = {
+        flow: {
+          highlights: [
+            {
+              time: "08:30",
+              relatedScoreItems: ["1.3"], // 時間節奏掌控
+              scoreImpact: -5,
+              dialogue: [
+                {
+                  speaker: "Customer",
+                  text: "這個終身醫療險看起來不錯，但我需要先跟我太太討論一下...",
+                },
+                { speaker: "Agent", text: "當然，這是很重要的決定。" },
+                {
+                  speaker: "Customer",
+                  text: "她平常管家裡的財務，這種長期繳費的事情一定要她同意。",
+                },
+                { speaker: "Agent", text: "理解，家人的支持很重要。" },
+                {
+                  speaker: "Customer",
+                  text: "而且每個月要繳2萬多，不是小數目。",
+                },
+                {
+                  speaker: "Agent",
+                  text: "好的，那我下次再來拜訪您。您慢慢考慮，有問題再聯絡我。",
+                },
+              ],
+              problem: "未掌握家庭決策流程，錯失推進機會，沒有了解配偶的關注點",
+              suggestion:
+                "應該詢問：太太最關心什麼保障？何時方便三方會談？需要準備什麼資料給太太參考？",
+            },
+            {
+              time: "12:45",
+              relatedScoreItems: ["1.5"], // SPIN問句運用檢核
+              scoreImpact: -10,
+              dialogue: [
+                {
+                  speaker: "Customer",
+                  text: "這個保費真的太貴了，每個月要繳3萬，一年就36萬耶！",
+                },
+                {
+                  speaker: "Agent",
+                  text: "我們的保障很完整，所以保費會高一點。",
+                },
+                {
+                  speaker: "Customer",
+                  text: "可是我一年才賺100萬，這樣佔我收入的三分之一以上了。",
+                },
+                {
+                  speaker: "Agent",
+                  text: "這個是終身保障，繳20年就不用繳了。",
+                },
+                { speaker: "Customer", text: "20年就是720萬，太驚人了！" },
+                { speaker: "Agent", text: "但是您可以保障一輩子。" },
+                { speaker: "Customer", text: "我還是覺得負擔太重..." },
+                { speaker: "Agent", text: "保險就是要趁年輕買比較便宜。" },
+              ],
+              problem:
+                "只強調產品特色，未使用SPIN問句探究保費異議背後的真實擔憂",
+              suggestion:
+                "使用SPIN暗示性問題：如果您發生意外無法工作，家庭每月開銷3萬誰來付？",
+            },
+            {
+              time: "16:20",
+              relatedScoreItems: ["1.1"], // 銷售流程完整性
+              scoreImpact: -7,
+              dialogue: [
+                {
+                  speaker: "Customer",
+                  text: "如果我現在投保，什麼時候會生效？",
+                },
+                { speaker: "Agent", text: "應該很快吧。" },
+                {
+                  speaker: "Customer",
+                  text: "那如果下個月我要開刀，可以理賠嗎？",
+                },
+                { speaker: "Agent", text: "這個...可能要看情況。" },
+                { speaker: "Customer", text: "什麼情況？我不是有繳保費嗎？" },
+                { speaker: "Agent", text: "有些疾病有等待期的規定。" },
+                { speaker: "Customer", text: "等待期是多久？" },
+                { speaker: "Agent", text: "我回去查一下再告訴您。" },
+              ],
+              problem: "銷售流程不完整，對核保和等待期規定不熟悉",
+              suggestion:
+                "應明確說明：疾病等待期30天、癌症90天、核保需3-5工作天",
+            },
+          ],
+        },
+        skill: {
+          highlights: [
+            {
+              time: "10:00",
+              relatedScoreItems: ["2.5"], // 競爭分析與應對
+              scoreImpact: -20,
+              dialogue: [
+                {
+                  speaker: "Customer",
+                  text: "我朋友在XX人壽買的醫療險，保費比你們便宜30%耶！",
+                },
+                {
+                  speaker: "Agent",
+                  text: "嗯...我們公司比較大，理賠比較有保障...",
+                },
+                {
+                  speaker: "Customer",
+                  text: "可是XX人壽也是大公司啊，而且他們還有送健康檢查。",
+                },
+                { speaker: "Agent", text: "我們的保單內容比較好..." },
+                {
+                  speaker: "Customer",
+                  text: "哪裡比較好？看起來保障項目都差不多。",
+                },
+                { speaker: "Agent", text: "我們的服務比較好。" },
+                { speaker: "Customer", text: "怎麼個好法？可以具體說明嗎？" },
+                {
+                  speaker: "Agent",
+                  text: "就是...理賠比較快，服務人員比較專業。",
+                },
+              ],
+              problem: "競品應對薄弱，無法具體說明差異化價值",
+              suggestion:
+                "準備競品比較表：理賠率98% vs 85%、平均3天理賠 vs 14天",
+            },
+            {
+              time: "15:20",
+              relatedScoreItems: ["2.4"], // 異議處理能力
+              scoreImpact: -7,
+              dialogue: [
+                {
+                  speaker: "Customer",
+                  text: "我已經有勞保了，公司也有團保，應該夠了吧？",
+                },
+                { speaker: "Agent", text: "那還是要買商業保險比較好。" },
+                { speaker: "Customer", text: "為什麼？我已經有兩個保險了。" },
+                { speaker: "Agent", text: "因為勞保和團保保障不夠。" },
+                {
+                  speaker: "Customer",
+                  text: "怎麼會不夠？勞保不是什麼都有保嗎？",
+                },
+                { speaker: "Agent", text: "勞保給付很少的。" },
+                { speaker: "Customer", text: "那團保呢？公司說保障很完整。" },
+                { speaker: "Agent", text: "離職就沒有了。" },
+              ],
+              problem: "異議處理缺乏具體數據，說服力不足",
+              suggestion:
+                "具體計算：勞保住院一天1000元，但病房差額3000元；團保離職失效",
+            },
+            {
+              time: "21:00",
+              relatedScoreItems: ["2.2"], // 七大需求掌握度
+              scoreImpact: -8,
+              dialogue: [
+                {
+                  speaker: "Customer",
+                  text: "我還年輕，應該不會那麼快生病吧？",
+                },
+                { speaker: "Agent", text: "對啊，您還年輕。" },
+                { speaker: "Customer", text: "那我過幾年再買應該也可以？" },
+                { speaker: "Agent", text: "也是可以的。" },
+                { speaker: "Customer", text: "反正現在身體健康。" },
+                { speaker: "Agent", text: "健康的時候買比較便宜。" },
+              ],
+              problem: "未能掌握客戶的風險需求，反而認同其僥倖心理",
+              suggestion:
+                "分享年輕人罹病案例、說明等待期風險、強調健康時才能投保",
+            },
+          ],
+        },
+        comm: {
+          highlights: [
+            {
+              time: "03:15",
+              relatedScoreItems: ["3.4"], // 關鍵資訊獲取效率
+              scoreImpact: -7,
+              dialogue: [
+                {
+                  speaker: "Customer",
+                  text: "我們家有兩個小孩，一個讀國中，一個讀高中。",
+                },
+                { speaker: "Agent", text: "好的，那教育金的規劃很重要。" },
+                { speaker: "Customer", text: "對啊，現在補習費就很驚人了。" },
+                { speaker: "Agent", text: "是啊，教育費用越來越高。" },
+                {
+                  speaker: "Customer",
+                  text: "大的想出國唸書，小的成績也不錯。",
+                },
+                { speaker: "Agent", text: "出國唸書要準備很多錢。" },
+                { speaker: "Customer", text: "是啊，壓力很大。" },
+                { speaker: "Agent", text: "所以保險很重要。" },
+              ],
+              problem: "資訊獲取效率低，未深入了解家庭財務狀況",
+              suggestion:
+                "深入追問：目標學校預算？配偶收入？房貸餘額？每月可支配所得？",
+            },
+            {
+              time: "07:40",
+              relatedScoreItems: ["3.2"], // 需求確認語言精準度
+              scoreImpact: -5,
+              dialogue: [
+                {
+                  speaker: "Customer",
+                  text: "重大疾病險的理賠標準是什麼？什麼情況下會賠？",
+                },
+                { speaker: "Agent", text: "就是得了重大疾病就會賠。" },
+                { speaker: "Customer", text: "哪些算重大疾病？" },
+                { speaker: "Agent", text: "就是很嚴重的病。" },
+                {
+                  speaker: "Customer",
+                  text: "可以具體一點嗎？比如糖尿病算嗎？",
+                },
+                { speaker: "Agent", text: "糖尿病應該不算，要更嚴重的。" },
+                { speaker: "Customer", text: "那到底是哪些？" },
+                { speaker: "Agent", text: "癌症之類的吧。" },
+              ],
+              problem: "語言不精準，無法清楚說明理賠條件",
+              suggestion:
+                "明確說明：7項重大疾病包括癌症、急性心肌梗塞、腦中風等",
+            },
+          ],
+        },
+      };
 
-        function showMenu() {
-            showActionSheet({
-                title: 'CASE操作',
-                actions: [
-                    {
-                        text: '編輯CASE',
-                        handler: () => {
-                            location.href = 'SALES_008_edit_case.html';
-                        }
-                    },
-                    {
-                        text: '複製CASE',
-                        handler: () => {
-                            showLoading('正在複製CASE...');
-                            setTimeout(() => {
-                                hideLoading();
-                                showWarning({
-                                    title: '複製成功',
-                                    message: 'CASE已成功複製',
-                                    onConfirm: () => {}
-                                });
-                            }, 1000);
-                        }
-                    },
-                    {
-                        text: '刪除CASE',
-                        destructive: true,
-                        handler: () => {
-                            showConfirm({
-                                title: '刪除CASE',
-                                message: '確定要刪除此CASE嗎？此操作無法復原。',
-                                onConfirm: () => {
-                                    showLoading('正在刪除...');
-                                    setTimeout(() => {
-                                        hideLoading();
-                                        location.href = 'SALES_005_customer_detail.html';
-                                    }, 1000);
-                                }
-                            });
-                        }
-                    }
-                ]
-            });
-        }
-        
-        // Load modal components on page load
-        window.addEventListener('DOMContentLoaded', function() {
-            fetch('../includes/modals-all.html')
-                .then(response => response.text())
-                .then(html => {
-                    const container = document.createElement('div');
-                    container.id = 'modalContainer';
-                    container.innerHTML = html;
-                    document.body.appendChild(container);
-                })
-                .catch(error => {
-                    console.error('Error loading modals:', error);
-                });
+      // 成功案例資料 - 保險業場景（包含優秀對話範例）
+      const casesData = {
+        flow: [
+          {
+            matchReason: "解決「2.5 競爭分析與應對」問題",
+            name: "陳建國",
+            initials: "陳國",
+            score: 95,
+            title: "家庭保單決策術",
+            time: "3天前",
+            description: "客戶說要問太太時，成功約到全家說明會。",
+            improvement:
+              "三個關鍵：1.太太最在意什麼？ 2.孩子的保障她怎麼看？ 3.可否安排家庭說明會？",
+            relatedProblem: "08:30 的問題",
+            excellentDialogue: [
+              {
+                speaker: "優秀業務",
+                text: "我完全理解，這麼重要的決定當然要跟太太商量。請問太太平常最關心家裡哪方面的保障呢？",
+              },
+              { speaker: "客戶", text: "她很注重孩子的教育和健康。" },
+              {
+                speaker: "優秀業務",
+                text: "那她一定是位很有遠見的母親。其實我有個建議，不如我準備一份「家庭保障分析報告」，您可以帶回去跟太太一起看。這份報告會清楚列出您們家現有保障和缺口。",
+              },
+              { speaker: "客戶", text: "這樣不錯，有數據她比較能接受。" },
+              {
+                speaker: "優秀業務",
+                text: "另外，如果方便的話，我也可以安排一個家庭保障說明會，我會準備一些其他家庭的案例，讓太太了解為什麼這個階段的保障規劃這麼重要。您看下週三晚上7點方便嗎？",
+              },
+            ],
+            solution:
+              "準備「家庭保障地圖」，標示每個成員的保障缺口，讓決策透明化。",
+          },
+          {
+            matchReason: "解決「2.4 異議處理能力」問題",
+            name: "王小明",
+            initials: "王明",
+            score: 98,
+            title: "保費價值轉換法",
+            time: "1週前",
+            description: "用SPIN將保費異議轉化為保障需求討論。",
+            improvement:
+              "暗示問題：若發生意外，房貸誰付？孩子教育金哪裡來？醫療費用缺口多少？",
+            relatedProblem: "12:45 的問題",
+            excellentDialogue: [
+              {
+                speaker: "優秀業務",
+                text: "3萬元確實是筆支出，我理解您的考量。不過，讓我們換個角度來看，您現在每個月的家庭必要開銷是多少？",
+              },
+              {
+                speaker: "客戶",
+                text: "房貸3萬、生活費2萬、孩子教育1萬，至少要6萬。",
+              },
+              {
+                speaker: "優秀業務",
+                text: "那如果今天您因為意外或疾病無法工作，這6萬誰來支付？能撐多久？",
+              },
+              {
+                speaker: "客戶",
+                text: "這...可能只能靠太太，但她的薪水不夠...",
+              },
+              {
+                speaker: "優秀業務",
+                text: "所以這3萬不是支出，是在為您每月6萬的家庭責任買個保障。想像一下，萬一發生狀況，保險公司每月給付10萬，是不是反而讓家人更安心？",
+              },
+            ],
+            solution:
+              "準備「家庭收支中斷模擬表」，具體呈現風險發生時的財務缺口。",
+          },
+          {
+            matchReason: "解決「3.2 需求確認語言精準度」問題",
+            name: "林佳蓉",
+            initials: "林蓉",
+            score: 96,
+            title: "核保流程專業說明",
+            time: "5天前",
+            description: "清楚說明核保時程和等待期，消除客戶疑慮。",
+            improvement: "準備核保流程圖、等待期說明表、快速理賠案例",
+            relatedProblem: "16:20 的問題",
+            excellentDialogue: [
+              {
+                speaker: "優秀業務",
+                text: "關於生效時間，讓我詳細說明：今天送件後，核保需要3-5個工作天。如果需要體檢，會再多2-3天。",
+              },
+              { speaker: "客戶", text: "那下個月的手術可以理賠嗎？" },
+              {
+                speaker: "優秀業務",
+                text: "這要看手術原因。如果是意外導致，保單生效當天就有保障。但如果是疾病，有30天等待期；如果是癌症相關，則是90天。您提到的手術是什麼原因呢？",
+              },
+              { speaker: "客戶", text: "是之前就檢查出來的膽結石。" },
+              {
+                speaker: "優秀業務",
+                text: "既往症在核保時就要誠實告知，可能會被除外或加費。但誠實告知對您最有利，避免未來理賠爭議。我建議現在就投保，其他身體部位還是有完整保障。",
+              },
+            ],
+            solution:
+              "使用核保案例說明誠實告知的重要性，並強調其他部位的保障價值。",
+          },
+        ],
+        skill: [
+          {
+            matchReason: "解決「競品比較」弱項",
+            name: "李美玲",
+            initials: "李玲",
+            score: 94,
+            title: "同業競爭優勢術",
+            time: "2天前",
+            description: "面對XX人壽低價競爭，成功以服務品質取勝。",
+            improvement:
+              "不談保費談理賠：理賠率98%、平均3天理賠、專屬理賠顧問、免費健檢服務。",
+            relatedProblem: "10:00 的問題",
+            excellentDialogue: [
+              {
+                speaker: "優秀業務",
+                text: "您朋友買XX人壽，很好啊！他有跟您分享理賠經驗嗎？",
+              },
+              { speaker: "客戶", text: "還沒有理賠過。" },
+              {
+                speaker: "優秀業務",
+                text: "那讓我分享一些數據：我們公司理賠率98%，業界最高；平均理賠時效3天，XX人壽要14天。更重要的是，我們有專屬理賠顧問，從申請到撥款全程協助。",
+              },
+              { speaker: "客戶", text: "但價差30%耶！" },
+              {
+                speaker: "優秀業務",
+                text: "我算給您看：30%差價每年多1萬。但如果發生200萬的醫療費用，我們賠195萬，他們因為除外條款可能只賠150萬，這45萬的差距，值不值得每年多投資1萬來保障？而且我們沒有第二年度等待期，他們有。",
+              },
+            ],
+            solution:
+              "準備「理賠案例集」、「客戶見證影片」、「同業理賠糾紛新聞」。",
+          },
+          {
+            matchReason: "解決「既有保障」問題",
+            name: "張志豪",
+            initials: "張豪",
+            score: 92,
+            title: "保障缺口分析法",
+            time: "5天前",
+            description: "客戶有勞保團保，仍成功銷售500萬醫療險。",
+            improvement:
+              "缺口分析：勞保病房差額？自費項目？收入中斷補償？看護費用？",
+            relatedProblem: "15:20 的問題",
+            excellentDialogue: [
+              {
+                speaker: "優秀業務",
+                text: "太好了！您有勞保和團保，讓我們來檢視一下保障是否足夠。請問您知道勞保的住院日額給付是多少嗎？",
+              },
+              { speaker: "客戶", text: "不太清楚，應該不少吧？" },
+              {
+                speaker: "優秀業務",
+                text: "勞保住院一天只給付約1000元，但現在單人房一天要3000-5000元。如果需要開刀，達文西手臂等自費項目動輒20-30萬，勞保完全不給付。",
+              },
+              { speaker: "客戶", text: "團保應該有吧？" },
+              {
+                speaker: "優秀業務",
+                text: "關鍵問題：如果您離職或退休，團保就沒了。而且團保通常有理賠上限，重大疾病可能不夠。我有個客戶去年離職後一個月就診斷出癌症，還好有商業保險，不然醫療費用會壓垮家庭。",
+              },
+            ],
+            solution: "使用「醫療費用試算表」，實際算出重大手術自費金額。",
+          },
+          {
+            matchReason: "解決「成交猶豫」問題",
+            name: "趙小華",
+            initials: "趙華",
+            score: 96,
+            title: "保險急迫性創造",
+            time: "4天前",
+            description: "客戶想再考慮，當場促成年繳100萬保單。",
+            improvement:
+              "三大急迫性：下個月漲齡多繳5%、體檢正常優勢期、月底前投保送健檢。",
+            relatedProblem: "18:00 的問題",
+            excellentDialogue: [
+              {
+                speaker: "優秀業務",
+                text: "考慮是應該的。不過有三件事想提醒您：第一，您下個月就40歲了吧？",
+              },
+              { speaker: "客戶", text: "對，下個月15號生日。" },
+              {
+                speaker: "優秀業務",
+                text: "40歲是保費級距的分水嶺，保費會增加5-8%。以這個方案來說，每年會多繳1.8萬，20年就是36萬。第二，您上次體檢都正常對吧？",
+              },
+              { speaker: "客戶", text: "對，公司體檢都正常。" },
+              {
+                speaker: "優秀業務",
+                text: "這是您的優勢期！一旦有任何紅字，可能加費或拒保。第三，這個月投保有兩個好處：送全身健檢、保費可以抵稅。您看，要不要先用最低保額投保，之後再視情況調整？",
+              },
+            ],
+            solution: "準備費率表對比、核保變嚴案例、等待期風險故事。",
+          },
+        ],
+        comm: [
+          {
+            matchReason: "解決「家庭需求」問題",
+            name: "黃小芳",
+            initials: "黃芳",
+            score: 98,
+            title: "家庭財務需求挖掘",
+            time: "1天前",
+            description: "從孩子教育談到全家保障規劃，簽下家庭保單。",
+            improvement:
+              "教育金五問：目標學校？留學規劃？才藝補習？私校學費？教育通膨？",
+            relatedProblem: "03:15 的問題",
+            excellentDialogue: [
+              {
+                speaker: "優秀業務",
+                text: "兩個孩子都很優秀！大的想出國，您有概算過需要多少教育金嗎？",
+              },
+              { speaker: "客戶", text: "可能要幾百萬吧..." },
+              {
+                speaker: "優秀業務",
+                text: "我幫您算算：美國大學一年學費加生活費約200萬台幣，四年就是800萬。小的如果也出國，總共需要1600萬。這還不包括現在到大學的補習費用。",
+              },
+              { speaker: "客戶", text: "這麼多！" },
+              {
+                speaker: "優秀業務",
+                text: "所以我們要確保，萬一您或太太發生狀況，孩子的教育不會中斷。除了教育金，您的房貸還有多少？每月家庭總開銷多少？有準備緊急預備金嗎？",
+              },
+            ],
+            solution: "使用「子女教育金規劃表」，計算到大學畢業總需求。",
+          },
+          {
+            matchReason: "解決「專業說明」問題",
+            name: "吳明德",
+            initials: "吳德",
+            score: 95,
+            title: "理賠條款說明術",
+            time: "6天前",
+            description: "清晰的理賠說明，消除客戶疑慮。",
+            improvement: "準備理賠案例、條款對照表、常見Q&A、理賠流程圖。",
+            relatedProblem: "07:40 的問題",
+            excellentDialogue: [
+              {
+                speaker: "優秀業務",
+                text: "重大疾病險涵蓋7項：癌症、急性心肌梗塞、腦中風後殘障、末期腎病變、重大器官移植、冠狀動脈繞道手術、癱瘓。每項都有明確定義。",
+              },
+              { speaker: "客戶", text: "癌症是所有癌症都賠嗎？" },
+              {
+                speaker: "優秀業務",
+                text: "除了原位癌和第一期以下的某些癌症，其他都賠。而且我們是一次給付型，確診就賠200萬，您可以自由運用，不管是治療、生活費或出國就醫都可以。",
+              },
+              { speaker: "客戶", text: "那糖尿病呢？" },
+              {
+                speaker: "優秀業務",
+                text: "單純糖尿病不在重大疾病範圍，但如果惡化到末期腎病變需要洗腎，就符合理賠條件。這就是為什麼我建議您加保「特定傷病險」，涵蓋糖尿病併發症、帕金森氏症等30項疾病。",
+              },
+            ],
+            solution: "用實際理賠案例說明：某客戶確診癌症，3天內理賠200萬。",
+          },
+        ],
+      };
+
+      let currentDimension = "flow";
+
+      function selectDimension(dimension, element) {
+        currentDimension = dimension;
+
+        // Update active state
+        document.querySelectorAll(".score-card").forEach((card) => {
+          card.classList.remove("active");
         });
+        element.classList.add("active");
+
+        // Update content
+        updateContent(dimension);
+      }
+
+      function updateContent(dimension) {
+        const breakdown = scoreBreakdowns[dimension];
+        const highlights = highlightData[dimension];
+        const highlightsContainer = document.getElementById(
+          "highlights-container"
+        );
+
+        highlightsContainer.style.opacity = "0";
+        setTimeout(() => {
+          let highlightsHTML = "";
+          highlights.highlights.forEach((highlight, index) => {
+            // 獲取對應的評分細項名稱
+            let scoreItemTags = "";
+            if (highlight.relatedScoreItems) {
+              highlight.relatedScoreItems.forEach((itemId) => {
+                const item = breakdown.items.find((i) => i.id === itemId);
+                if (item) {
+                  scoreItemTags += `
+                                    <span class="px-2 py-1 bg-yellow-50 text-yellow-700 text-xs rounded-full font-medium mr-2">
+                                        ${itemId} ${item.name}
+                                    </span>
+                                `;
+                }
+              });
+            }
+
+            highlightsHTML += `
+                        <div class="highlight-card bg-white rounded-lg border border-gray-200 p-4 mb-3 cursor-pointer hover:shadow-md transition-all" 
+                             onclick="showHighlightModal('${dimension}', ${index})">
+                             <div class="flex items-center justify-between mb-1">
+                                ${
+                                  scoreItemTags
+                                    ? `<div class="mb-2">${scoreItemTags}</div>`
+                                    : ""
+                                }
+                                <p class="text-xs text-gray-500">${
+                                  highlight.time
+                                }</p>
+                                
+                                </div>
+                                <p class="text-sm text-gray-600 mb-2">${
+                                  highlight.problem
+                                }</p>
+                            <div class="text-xs text-gray-500">
+                                <i class="fas fa-quote-left mr-1"></i>
+                                ${
+                                  highlight.dialogue[0].speaker === "Customer"
+                                    ? "客戶"
+                                    : "業務"
+                                }：
+                                "${highlight.dialogue[0].text.substring(
+                                  0,
+                                  50
+                                )}..."
+                            </div>
+                        </div>
+                    `;
+          });
+          highlightsContainer.innerHTML = highlightsHTML;
+          highlightsContainer.style.opacity = "1";
+        }, 300);
+
+      }
+
+      function showBreakdownModal(dimension, event) {
+        event.stopPropagation();
+
+        const modal = document.getElementById("breakdown-modal-overlay");
+        const breakdown = scoreBreakdowns[dimension];
+        const modalTitle = document.getElementById("modal-title");
+        const modalContent = document.getElementById("modal-breakdown-content");
+
+        // Update modal title
+        modalTitle.textContent = breakdown.name + " - 詳細評分";
+
+        // Update modal content with new structure
+        let breakdownHTML = "";
+        breakdown.items.forEach((item) => {
+          const scorePercent = item.score;
+          const fillColor =
+            item.score >= 95
+              ? "#00D563"
+              : item.score >= 85
+              ? "#FFB800"
+              : "#FF4757";
+          breakdownHTML += `
+                    <div class="breakdown-item mb-4 p-3 hover:bg-gray-50 rounded-lg transition-all">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-semibold text-warning">${item.id}</span>
+                                <span class="text-sm font-medium text-gray-700">${item.name}</span>
+                            </div>
+                            <span class="text-lg font-bold" style="color: ${fillColor}">${item.score}</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div class="h-2 rounded-full transition-all duration-500" 
+                                 style="width: ${scorePercent}%; background: ${fillColor};"></div>
+                        </div>
+                    </div>
+                `;
+        });
+        modalContent.innerHTML = breakdownHTML;
+
+        // Show modal
+        modal.classList.add("active");
+      }
+
+      function closeBreakdownModal() {
+        const modal = document.getElementById("breakdown-modal-overlay");
+        modal.classList.remove("active");
+      }
+
+      // Function to show highlight details modal
+      function showHighlightModal(dimension, index) {
+        const highlight = highlightData[dimension].highlights[index];
+        const modal = document.getElementById("highlight-modal-overlay");
+        const modalTitle = document.getElementById("highlight-modal-title");
+        const modalContent = document.getElementById("highlight-modal-content");
+
+        // Update modal title
+        modalTitle.textContent = `對話詳情 - ${highlight.time}`;
+
+        // Build modal content with score items
+        const breakdown = scoreBreakdowns[dimension];
+        let scoreItemsHTML = "";
+        if (highlight.relatedScoreItems) {
+          highlight.relatedScoreItems.forEach((itemId) => {
+            const item = breakdown.items.find((i) => i.id === itemId);
+            if (item) {
+              scoreItemsHTML += `
+                            <span class="px-3 py-1 bg-yellow-50 text-yellow-700 text-sm rounded-full font-medium">
+                                ${itemId} ${item.name}
+                            </span>
+                        `;
+            }
+          });
+        }
+
+        let contentHTML = `
+                <div class="mb-4">
+                    <div class="flex items-center gap-3 mb-3 flex-wrap">
+                        ${scoreItemsHTML}
+                    </div>
+                    
+                    <h4 class="text-base font-semibold text-gray-800 mb-4">完整對話內容</h4>
+                    
+                    <div class="dialogue-container">
+            `;
+
+        // Add dialogue items
+        highlight.dialogue.forEach((turn) => {
+          const isCustomer = turn.speaker === "Customer";
+          contentHTML += `
+                    <div class="dialogue-item ${
+                      isCustomer ? "dialogue-customer" : "dialogue-agent"
+                    }">
+                        <div class="text-xs font-semibold mb-1 ${
+                          isCustomer ? "text-primary" : "text-orange-600"
+                        }">
+                            ${isCustomer ? "客戶" : "業務員"}
+                        </div>
+                        <div class="text-sm text-gray-700 leading-relaxed">
+                            ${turn.text}
+                        </div>
+                    </div>
+                `;
+        });
+
+        // Add AI insights
+        contentHTML += `
+                    </div>
+                    
+                    <div class="ai-insight">
+                        <div class="flex items-center mb-3">
+                            <span class="text-2xl mr-2">💡</span>
+                            <h4 class="text-base font-semibold text-gray-800">AI 分析建議</h4>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="text-xs font-semibold text-error mb-1">問題分析</div>
+                            <p class="text-sm text-gray-700">${highlight.problem}</p>
+                        </div>
+                        
+                        <div>
+                            <div class="text-xs font-semibold text-success mb-1">改進建議</div>
+                            <p class="text-sm text-gray-700">${highlight.suggestion}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recommended Cases Section -->
+                <div class="cases-section mt-6 -mx-4 px-4 py-4 bg-gray-50">
+                    <div class="cases-header flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-semibold text-text-primary">
+                            針對性改進方案
+                            <button
+                                class="text-xs bg-success/10 text-success px-2 py-1 rounded-full ml-2 hover:bg-success/20 transition-colors"
+                                onclick="showInfoTooltip('精準推薦')"
+                            >
+                                精準推薦
+                            </button>
+                        </h3>
+                    </div>
+                    <div class="cases-carousel flex gap-3 overflow-x-auto pb-2" id="modal-cases-container">
+                        <!-- Cases will be dynamically inserted here -->
+                    </div>
+                </div>
+            `;
+
+        modalContent.innerHTML = contentHTML;
+        
+        // Populate cases in modal
+        const modalCasesContainer = document.getElementById('modal-cases-container');
+        const cases = casesData[dimension];
+        
+        let casesHTML = '';
+        cases.slice(0, 5).forEach((caseItem, idx) => {
+            casesHTML += `
+                <div class="case-card bg-white rounded-lg border-2 border-red-400 min-w-[280px] shadow-sm cursor-pointer hover:shadow-md transition-all" 
+                     onclick="event.stopPropagation(); closeCaseModal(); closeHighlightModal(); showCaseModal('${dimension}', ${idx})">
+                    <div class="case-header p-3 bg-gray-50 border-b">
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="w-9 h-9 rounded-full bg-gradient-to-r from-primary to-purple-600 flex items-center justify-center text-white font-semibold text-xs shadow">
+                                ${caseItem.initials}
+                            </div>
+                            <div class="flex-1">
+                                <div class="text-sm font-semibold text-gray-900">${caseItem.name}</div>
+                                <div class="text-xs text-gray-500">${caseItem.time}</div>
+                            </div>
+                            <div class="px-2 py-1 bg-green-50 text-green-600 text-xs rounded-full font-semibold">
+                                ${caseItem.score}分
+                            </div>
+                        </div>
+                        <div class="text-sm font-semibold text-gray-900">${caseItem.title}</div>
+                    </div>
+                    <div class="p-3">
+                        <p class="text-xs text-gray-600 mb-2 line-clamp-2">${caseItem.description}</p>
+                        <button class="text-primary text-xs font-medium flex items-center gap-1 hover:gap-2 transition-all">
+                            查看詳細
+                            <i class="fas fa-chevron-right text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        });
+        modalCasesContainer.innerHTML = casesHTML;
+
+        // Show modal
+        modal.classList.add("active");
+      }
+
+      function closeHighlightModal() {
+        const modal = document.getElementById("highlight-modal-overlay");
+        modal.classList.remove("active");
+      }
+
+      // Add function to show case modal
+      function showCaseModal(dimension, index) {
+        const caseItem = casesData[dimension][index];
+
+        // Create modal HTML
+        const modalHTML = `
+                <div class="fixed inset-0 bg-black/50 z-50 flex items-end animate-fadeIn" id="case-modal-overlay" onclick="closeCaseModal()">
+                    <div class="bg-white rounded-t-2xl w-full max-h-[85vh] animate-slideUp" onclick="event.stopPropagation()">
+                        <div class="p-4 border-b bg-gray-50 flex justify-between items-center">
+                            <h3 class="text-lg font-semibold text-gray-900">改進方案詳情</h3>
+                            <button onclick="closeCaseModal()" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                                <i class="fas fa-times text-gray-600"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="p-4 overflow-y-auto" style="max-height: calc(85vh - 80px);">
+                            <!-- Case Header -->
+                            <div class="mb-4">
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="w-14 h-14 rounded-full bg-gradient-to-r from-primary to-purple-600 flex items-center justify-center text-white font-semibold text-base shadow-lg">
+                                        ${caseItem.initials}
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="text-lg font-semibold text-gray-900">${
+                                          caseItem.name
+                                        }</h4>
+                                        <p class="text-sm text-gray-500">${
+                                          caseItem.time
+                                        } · ${caseItem.score}分</p>
+                                    </div>
+                                </div>
+                                <h2 class="text-xl font-bold text-gray-900 mb-2">${
+                                  caseItem.title
+                                }</h2>
+                                <p class="text-gray-600">${
+                                  caseItem.description
+                                }</p>
+                            </div>
+                            
+                            <!-- Related Problem -->
+                            ${
+                              caseItem.relatedProblem
+                                ? `
+                                <div class="mb-4 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-link text-yellow-600"></i>
+                                        <span class="text-sm text-yellow-700 font-medium">
+                                            此方案對應您在 ${caseItem.relatedProblem}
+                                        </span>
+                                    </div>
+                                </div>
+                            `
+                                : ""
+                            }
+                            
+                            <!-- Improvement Points -->
+                            <div class="mb-4 p-4 bg-blue-50 rounded-lg">
+                                <h5 class="text-sm font-semibold text-blue-900 mb-2">
+                                    <i class="fas fa-lightbulb mr-1"></i>
+                                    關鍵改進要點
+                                </h5>
+                                <p class="text-sm text-blue-800">${
+                                  caseItem.improvement
+                                }</p>
+                            </div>
+                            
+                            <!-- Excellent Dialogue -->
+                            ${
+                              caseItem.excellentDialogue &&
+                              caseItem.excellentDialogue.length > 0
+                                ? `
+                                <div class="mb-4">
+                                    <h5 class="text-base font-semibold text-gray-900 mb-3 flex items-center">
+                                        <span class="text-xl mr-2">✨</span>
+                                        優秀對話範例
+                                    </h5>
+                                    <div class="bg-gray-50 rounded-lg p-4 space-y-3">
+                                        ${caseItem.excellentDialogue
+                                          .map(
+                                            (turn) => `
+                                            <div class="dialogue-item ${
+                                              turn.speaker === "客戶"
+                                                ? "pl-4 border-l-3 border-blue-500"
+                                                : "pl-4 border-l-3 border-green-500"
+                                            }">
+                                                <div class="text-xs font-semibold mb-1 ${
+                                                  turn.speaker === "客戶"
+                                                    ? "text-blue-600"
+                                                    : "text-green-600"
+                                                }">
+                                                    ${turn.speaker}
+                                                </div>
+                                                <div class="text-sm text-gray-700 leading-relaxed">
+                                                    "${turn.text}"
+                                                </div>
+                                            </div>
+                                        `
+                                          )
+                                          .join("")}
+                                    </div>
+                                </div>
+                            `
+                                : ""
+                            }
+                            
+                            <!-- Solution -->
+                            <div class="p-4 bg-green-50 rounded-lg border border-green-200">
+                                <h5 class="text-sm font-semibold text-green-900 mb-2">
+                                    <i class="fas fa-check-circle mr-1"></i>
+                                    實施方案
+                                </h5>
+                                <p class="text-sm text-green-800">${
+                                  caseItem.solution
+                                }</p>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            `;
+
+        // Add modal to body
+        const modalContainer = document.createElement("div");
+        modalContainer.innerHTML = modalHTML;
+        document.body.appendChild(modalContainer.firstElementChild);
+      }
+
+      function closeCaseModal() {
+        const modal = document.getElementById("case-modal-overlay");
+        if (modal) {
+          modal.remove();
+        }
+      }
+
+      // Initialize content on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        updateContent("flow");
+      });
+
+      function showTab(tabName) {
+        // Hide all tab contents
+        document.querySelectorAll(".tab-content").forEach((tab) => {
+          tab.classList.add("hidden");
+        });
+
+        // Remove active styles from all tab buttons
+        document.querySelectorAll(".tab-button").forEach((btn) => {
+          btn.classList.remove("border-primary", "text-primary");
+          btn.classList.add("border-transparent", "text-text-tertiary");
+        });
+
+        // Show selected tab content
+        document.getElementById(tabName + "Tab").classList.remove("hidden");
+
+        // Add active styles to selected tab button
+        event.target.classList.remove(
+          "border-transparent",
+          "text-text-tertiary"
+        );
+        event.target.classList.add("border-primary", "text-primary");
+      }
+
+      function markComplete() {
+        // Use custom modal instead of confirm
+        showCaseSuccess({
+          onSubmit: (data) => {
+            console.log("Case marked as complete:", data);
+            showWarning({
+              title: "成交成功！",
+              message: "恭喜！此CASE已標記為成交，資料已提交。",
+              onConfirm: () => {
+                location.href = "SALES_001_home.html";
+              },
+            });
+          },
+        });
+      }
+
+      function showMenu() {
+        showActionSheet({
+          title: "CASE操作",
+          actions: [
+            {
+              text: "編輯CASE",
+              handler: () => {
+                location.href = "SALES_008_edit_case.html";
+              },
+            },
+            {
+              text: "複製CASE",
+              handler: () => {
+                showLoading("正在複製CASE...");
+                setTimeout(() => {
+                  hideLoading();
+                  showWarning({
+                    title: "複製成功",
+                    message: "CASE已成功複製",
+                    onConfirm: () => {},
+                  });
+                }, 1000);
+              },
+            },
+            {
+              text: "刪除CASE",
+              destructive: true,
+              handler: () => {
+                showConfirm({
+                  title: "刪除CASE",
+                  message: "確定要刪除此CASE嗎？此操作無法復原。",
+                  onConfirm: () => {
+                    showLoading("正在刪除...");
+                    setTimeout(() => {
+                      hideLoading();
+                      location.href = "SALES_005_customer_detail.html";
+                    }, 1000);
+                  },
+                });
+              },
+            },
+          ],
+        });
+      }
+
+      // Show info tooltip function
+      function showInfoTooltip(type) {
+        let message = "";
+        if (type === "待改進") {
+          message = "系統自動抓取詳細評分中低於70分項目的實際對話片段";
+        } else if (type === "精準推薦") {
+          message = "直接對應您的弱項，提供團隊成員90分以上的實際成功對話案例";
+        }
+
+        // Create and show tooltip
+        const tooltip = document.createElement("div");
+        tooltip.className =
+          "fixed inset-0 z-50 flex items-center justify-center bg-black/30 px-4";
+        tooltip.innerHTML = `
+                <div class="bg-white rounded-lg p-4 max-w-sm w-full shadow-xl animate-fadeIn">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-info text-primary text-sm"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-dark mb-2">${type}</h4>
+                            <p class="text-sm text-gray-medium leading-relaxed">${message}</p>
+                        </div>
+                    </div>
+                    <button onclick="this.closest('.fixed').remove()" 
+                            class="mt-4 w-full py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm">
+                        我知道了
+                    </button>
+                </div>
+            `;
+        document.body.appendChild(tooltip);
+
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+          if (tooltip.parentNode) {
+            tooltip.remove();
+          }
+        }, 5000);
+      }
+
+      // Ask AI Functions
+      function askAIQuestion(question) {
+        const aiQueryInput = document.getElementById("aiQueryInput");
+        const submitBtn = document.getElementById("submitAIQuery");
+
+        aiQueryInput.value = question;
+        submitBtn.disabled = false;
+
+        // Auto-submit the question
+        submitAIQuery();
+      }
+
+      function submitAIQuery() {
+        const aiQueryInput = document.getElementById("aiQueryInput");
+        const query = aiQueryInput.value.trim();
+
+        if (!query) return;
+
+        const submitBtn = document.getElementById("submitAIQuery");
+        const responseArea = document.getElementById("aiResponseArea");
+        const responseContent = document.getElementById("aiResponseContent");
+
+        // Show loading state
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+        // Simulate AI processing
+        setTimeout(() => {
+          // Show response area
+          responseArea.classList.remove("hidden");
+
+          // Generate sample response based on query
+          let response = "";
+
+          if (query.includes("異議")) {
+            response = `
+                        <div class="space-y-3">
+                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                                <h5 class="font-semibold text-yellow-800 mb-2">🎯 主要異議點</h5>
+                                <ul class="text-yellow-700 text-sm space-y-1">
+                                    <li>• 保費價格較預期高出30%</li>
+                                    <li>• 擔心理賠程序複雜</li>
+                                    <li>• 對保障範圍有疑慮</li>
+                                </ul>
+                            </div>
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                <h5 class="font-semibold text-blue-800 mb-2">💡 建議回應</h5>
+                                <p class="text-blue-700 text-sm">運用價值對比法，強調長期保障的投資報酬率，並提供成功理賠案例。</p>
+                            </div>
+                        </div>
+                    `;
+          } else if (query.includes("成交") || query.includes("機率")) {
+            response = `
+                        <div class="space-y-3">
+                            <div class="bg-green-50 border border-green-200 rounded-lg p-3">
+                                <h5 class="font-semibold text-green-800 mb-2">📈 成交機率評估</h5>
+                                <div class="flex items-center mb-2">
+                                    <div class="flex-1 bg-gray-200 rounded-full h-2">
+                                        <div class="bg-green-500 h-2 rounded-full" style="width: 75%"></div>
+                                    </div>
+                                    <span class="ml-2 text-green-700 font-semibold">75%</span>
+                                </div>
+                                <p class="text-green-700 text-sm">客戶有明確需求且預算充足</p>
+                            </div>
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                <h5 class="font-semibold text-blue-800 mb-2">🎯 提升策略</h5>
+                                <ul class="text-blue-700 text-sm space-y-1">
+                                    <li>• 強化家庭保障的必要性</li>
+                                    <li>• 提供分期付款方案</li>
+                                    <li>• 安排家庭決策者共同參與</li>
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+          } else if (query.includes("SPIN")) {
+            response = `
+                        <div class="space-y-3">
+                            <div class="bg-purple-50 border border-purple-200 rounded-lg p-3">
+                                <h5 class="font-semibold text-purple-800 mb-2">📊 SPIN問句分析</h5>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-purple-700 text-sm">情況問句 (S)</span>
+                                        <span class="text-purple-800 font-semibold">8/10</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-purple-700 text-sm">問題問句 (P)</span>
+                                        <span class="text-orange-600 font-semibold">5/10</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-purple-700 text-sm">暗示問句 (I)</span>
+                                        <span class="text-orange-600 font-semibold">4/10</span>
+                                    </div>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-purple-700 text-sm">需求確認 (N)</span>
+                                        <span class="text-purple-800 font-semibold">7/10</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                <h5 class="font-semibold text-blue-800 mb-2">💡 改進建議</h5>
+                                <p class="text-blue-700 text-sm">加強問題問句和暗示問句的運用，深入挖掘客戶痛點。</p>
+                            </div>
+                        </div>
+                    `;
+          } else {
+            response = `
+                        <div class="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                            <p class="text-gray-700 text-sm">根據您的問題「${query}」，我建議您關注以下幾個方面：</p>
+                            <ul class="mt-2 text-gray-600 text-sm space-y-1">
+                                <li>• 深入了解客戶需求</li>
+                                <li>• 運用適當的銷售技巧</li>
+                                <li>• 建立信任關係</li>
+                                <li>• 持續追蹤和服務</li>
+                            </ul>
+                        </div>
+                    `;
+          }
+
+          responseContent.innerHTML = response;
+
+          // Reset button
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = "發送";
+
+          // Clear input
+          aiQueryInput.value = "";
+        }, 1500);
+      }
+
+      // Enable/disable submit button based on input
+      document.addEventListener("DOMContentLoaded", function () {
+        const aiQueryInput = document.getElementById("aiQueryInput");
+        const submitBtn = document.getElementById("submitAIQuery");
+
+        if (aiQueryInput) {
+          aiQueryInput.addEventListener("input", function () {
+            submitBtn.disabled = this.value.trim().length === 0;
+          });
+        }
+      });
+
+      // Load modal components on page load
+      window.addEventListener("DOMContentLoaded", function () {
+        fetch("../includes/modals-all.html")
+          .then((response) => response.text())
+          .then((html) => {
+            const container = document.createElement("div");
+            container.id = "modalContainer";
+            container.innerHTML = html;
+            document.body.appendChild(container);
+          })
+          .catch((error) => {
+            console.error("Error loading modals:", error);
+          });
+      });
     </script>
-</body>
+  </body>
 </html>

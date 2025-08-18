@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI銷售分析系統</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", "Microsoft JhengHei", sans-serif;
+    background: #F8F9FA;
+    min-height: 100vh;
+    color: #1A1A1A;
+}
+
+.mobile-container {
+    max-width: 430px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    min-height: 100vh;
+    position: relative;
+    box-shadow: 0 0 40px rgba(0,0,0,0.1);
+}
+
+/* Header */
+.header {
+    background: #FFFFFF;
+    padding: 50px 16px 16px;
+    border-bottom: 1px solid #E5E5E5;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0px 1px 3px rgba(0,0,0,0.12);
+}
+
+.header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.back-button {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #F8F9FA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.back-button:hover {
+    background: #E5E5E5;
+}
+
+.header-title {
+    font-size: 20px;
+    font-weight: 600;
+    flex: 1;
+    text-align: center;
+    margin: 0 16px;
+    color: #1A1A1A;
+}
+
+.share-button {
+    padding: 8px 16px;
+    background: #2E5BFF;
+    border-radius: 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    color: #FFFFFF;
+    transition: all 0.3s ease;
+}
+
+.share-button:hover {
+    background: #1A47E5;
+    transform: translateY(-1px);
+    box-shadow: 0px 2px 6px rgba(46,91,255,0.3);
+}
+
+/* Active indicator line */
+.score-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 0;
+    background: rgba(255,255,255,0.5);
+    transition: height 0.3s ease;
+}
+
+.score-card.active::after {
+    height: 4px;
+}
+
+/* Detail Button */
+.detail-btn {
+    margin-top: 12px;
+    padding: 6px 16px;
+    background: rgba(255,255,255,0.25);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px;
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(10px);
+}
+
+.detail-btn:hover {
+    background: rgba(255,255,255,0.35);
+    transform: scale(1.05);
+}
+
+/* Modal Styles */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-overlay.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-container {
+    background: #FFFFFF;
+    border-radius: 16px;
+    max-width: 400px;
+    width: 100%;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0px 20px 60px rgba(0,0,0,0.3);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from { 
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #E5E5E5;
+    background: #F8F9FA;
+}
+
+.modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1A1A1A;
+    margin: 0;
+}
+
+.modal-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    color: #666666;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: #E5E5E5;
+    color: #1A1A1A;
+}
+
+.modal-body {
+    padding: 20px;
+    max-height: calc(80vh - 80px);
+    overflow-y: auto;
+}
+
+/* Modal Breakdown Item */
+.modal-breakdown-item {
+    padding: 16px;
+    border-bottom: 1px solid #E5E5E5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s ease;
+}
+
+.modal-breakdown-item:last-child {
+    border-bottom: none;
+}
+
+.modal-breakdown-item:hover {
+    background: #F8F9FA;
+}
+
+.modal-item-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+}
+
+.modal-item-number {
+    color: #FFB800;
+    font-size: 12px;
+    font-weight: 600;
+    min-width: 28px;
+}
+
+.modal-item-name {
+    font-size: 14px;
+    color: #666666;
+    flex: 1;
+}
+
+.modal-item-score {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1A1A1A;
+}
+
+.modal-item-bar {
+    width: 60px;
+    height: 4px;
+    background: #E5E5E5;
+    border-radius: 2px;
+    margin-left: 12px;
+    overflow: hidden;
+}
+
+.modal-item-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.5s ease;
+}
+
+/* Score Cards Container */
+.score-cards-container {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.score-cards-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* Individual Score Card */
+.score-card {
+    flex: 1;
+    min-width: 120px;
+    padding: 20px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    color: white;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.score-card.flow {
+    background: linear-gradient(135deg, #2E5BFF 0%, #8B5CF6 100%);
+}
+
+.score-card.skill {
+    background: linear-gradient(135deg, #00C6AE 0%, #00D563 100%);
+}
+
+.score-card.comm {
+    background: linear-gradient(135deg, #FFB800 0%, #FF6B00 100%);
+}
+
+.score-card.active {
+    transform: scale(1.05);
+    box-shadow: 0px 8px 24px rgba(0,0,0,0.15);
+    border-color: rgba(255,255,255,0.3);
+}
+
+.score-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 8px 24px rgba(0,0,0,0.2);
+}
+
+.score-card.active:hover {
+    transform: scale(1.05) translateY(-4px);
+}
+
+.score-card-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.score-card-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+    opacity: 0.9;
+}
+
+.score-card-label {
+    font-size: 13px;
+    opacity: 0.95;
+    margin-bottom: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.score-card-value {
+    font-size: 42px;
+    font-weight: 700;
+    line-height: 1;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 8px;
+}
+
+.score-card-trend {
+    padding: 4px 8px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    backdrop-filter: blur(10px);
+}
+
+.score-animation {
+    animation: scoreChange 0.5s ease-out;
+}
+
+@keyframes scoreChange {
+    0% { transform: scale(0.8); opacity: 0; }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Remove old breakdown styles as they're now in modal */
+
+/* Transcript Section */
+.transcript-section {
+    padding: 16px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.section-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1A1A1A;
+}
+
+.attention-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: rgba(255, 71, 87, 0.15);
+    color: #FF4757;
+    border-radius: 16px;
+    font-size: 12px;
+    margin-left: 8px;
+    font-weight: 500;
+}
+
+.filter-button {
+    padding: 8px 16px;
+    background: #F8F9FA;
+    border-radius: 8dp;
+    font-size: 14px;
+    color: #666666;
+    cursor: pointer;
+    border: 1px solid #E5E5E5;
+    transition: all 0.2s ease;
+}
+
+.filter-button:hover {
+    background: #E5E5E5;
+    color: #1A1A1A;
+}
+
+/* Highlight Cards */
+.highlight-card {
+    background: #FFFFFF;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    position: relative;
+    transition: all 0.2s;
+    border: 1px solid #E5E5E5;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.08);
+}
+
+.highlight-card:hover {
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
+}
+
+.highlight-card.high-score {
+    border-left: 4px solid #00D563;
+}
+
+.highlight-card.low-score {
+    border-left: 4px solid #FF4757;
+}
+
+.score-item-indicator {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.score-item-tag {
+    padding: 4px 10px;
+    background: rgba(255, 184, 0, 0.15);
+    color: #FFB800;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.highlight-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.highlight-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.tag-high {
+    background: rgba(0, 213, 99, 0.15);
+    color: #00D563;
+}
+
+.tag-low {
+    background: rgba(255, 71, 87, 0.15);
+    color: #FF4757;
+}
+
+.highlight-time {
+    font-size: 12px;
+    color: #999999;
+}
+
+.highlight-content {
+    margin-bottom: 16px;
+}
+
+#highlights-container {
+    transition: opacity 0.3s ease;
+}
+
+.speaker-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #999999;
+    margin-bottom: 4px;
+}
+
+.dialogue-text {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #666666;
+    margin-bottom: 8px;
+}
+
+.ai-insight {
+    padding: 12px;
+    background: #F8F9FA;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #666666;
+    line-height: 1.5;
+    position: relative;
+    padding-left: 36px;
+    border: 1px solid #E5E5E5;
+}
+
+.ai-insight::before {
+    content: "💡";
+    position: absolute;
+    left: 12px;
+    top: 12px;
+}
+
+.related-skills {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.skill-tag {
+    padding: 3px 8px;
+    background: #F8F9FA;
+    border-radius: 16px;
+    font-size: 12px;
+    color: #FFB800;
+    border: 1px solid #E5E5E5;
+}
+
+/* Recommended Cases Section */
+.cases-section {
+    padding: 24px 16px;
+    background: #F8F9FA;
+    margin-top: 24px;
+}
+
+.cases-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.cases-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #1A1A1A;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.targeted-badge {
+    padding: 4px 10px;
+    background: rgba(255, 71, 87, 0.15);
+    color: #FF4757;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.see-all {
+    font-size: 14px;
+    color: #2E5BFF;
+    cursor: pointer;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.see-all:hover {
+    color: #1A47E5;
+    text-decoration: underline;
+}
+
+.cases-carousel {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 16px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+}
+
+.cases-carousel::-webkit-scrollbar {
+    display: none;
+}
+
+.case-card {
+    min-width: 320px;
+    background: #FFFFFF;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid #E5E5E5;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.08);
+}
+
+.case-card:hover {
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.excellent-dialogue {
+    margin: 12px 0;
+    padding: 12px;
+    background: #F8F9FA;
+    border-radius: 8px;
+    border-left: 4px solid #00D563;
+}
+
+.dialogue-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #00D563;
+    margin-bottom: 10px;
+}
+
+.dialogue-content {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.dialogue-turn {
+    margin-bottom: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.dialogue-speaker {
+    font-weight: 600;
+    color: #2E5BFF;
+}
+
+.dialogue-quote {
+    color: #666666;
+}
+
+.case-card.targeted {
+    border: 2px solid #FF4757;
+}
+
+.case-header {
+    padding: 16px;
+    border-bottom: 1px solid #E5E5E5;
+    background: #F8F9FA;
+}
+
+.case-match-reason {
+    padding: 4px 10px;
+    background: rgba(255, 71, 87, 0.15);
+    color: #FF4757;
+    border-radius: 16px;
+    font-size: 12px;
+    margin-bottom: 12px;
+    display: inline-block;
+    font-weight: 500;
+}
+
+.case-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.case-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2E5BFF 0%, #8B5CF6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    box-shadow: 0px 2px 6px rgba(46,91,255,0.2);
+}
+
+.case-user-info {
+    flex: 1;
+}
+
+.case-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1A1A1A;
+}
+
+.case-time {
+    font-size: 12px;
+    color: #999999;
+}
+
+.case-score {
+    padding: 4px 10px;
+    background: rgba(0, 213, 99, 0.15);
+    color: #00D563;
+    border-radius: 16px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.case-title-text {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1A1A1A;
+}
+
+.case-body {
+    padding: 16px;
+}
+
+.case-description {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #666666;
+    margin-bottom: 12px;
+}
+
+.case-improvement {
+    padding: 12px;
+    background: #F8F9FA;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    border: 1px solid #E5E5E5;
+}
+
+.improvement-label {
+    font-size: 12px;
+    color: #FFB800;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.improvement-text {
+    font-size: 14px;
+    color: #666666;
+    line-height: 1.5;
+}
+
+/* Floating Action Button */
+.fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2E5BFF 0%, #8B5CF6 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 4px 12px rgba(46,91,255,0.25);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.fab:hover {
+    transform: scale(1.1);
+    box-shadow: 0px 8px 24px rgba(46,91,255,0.35);
+}
+
+@media (min-width: 768px) {
+    .mobile-container {
+        margin: 20px auto;
+        border-radius: 20px;
+        box-shadow: 0px 8px 24px rgba(0,0,0,0.15);
+    }
+}
+</style>
+</head>
+<body>
+<div class="mobile-container">
+
+    <!-- Score Cards -->
+    <div class="score-cards-container">
+        <div class="score-card flow active" onclick="selectDimension('flow', this)">
+            <div class="score-card-header">
+                <div class="score-card-value">94</div>
+                <div class="score-card-label">流程遵守度</div>
+                <button class="detail-btn" onclick="showBreakdownModal('flow', event)">
+                    詳細
+                </button>
+            </div>
+        </div>
+        
+        <div class="score-card skill" onclick="selectDimension('skill', this)">
+            <div class="score-card-header">
+                <div class="score-card-value">91</div>
+                <div class="score-card-label">銷售技巧</div>
+                <button class="detail-btn" onclick="showBreakdownModal('skill', event)">
+                    詳細
+                </button>
+            </div>
+        </div>
+        
+        <div class="score-card comm" onclick="selectDimension('comm', this)">
+            <div class="score-card-header">
+                <div class="score-card-value">96</div>
+                <div class="score-card-label">溝通能力</div>
+                <button class="detail-btn" onclick="showBreakdownModal('comm', event)">
+                    詳細
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Score Breakdown -->
+    <div class="modal-overlay" id="breakdown-modal-overlay" onclick="closeBreakdownModal()">
+        <div class="modal-container" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">詳細評分</h3>
+                <button class="modal-close" onclick="closeBreakdownModal()">×</button>
+            </div>
+            <div class="modal-body" id="modal-breakdown-content">
+                <!-- Content will be dynamically inserted -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Transcript Highlights -->
+    <div class="transcript-section">
+        <div class="section-header">
+            <div class="section-title">
+                需要關注的片段
+                <span class="attention-indicator">⚠️ 待改進</span>
+            </div>
+        </div>
+
+        <div id="highlights-container">
+            <!-- Content will be dynamically inserted -->
+        </div>
+    </div>
+
+    <!-- Recommended Cases -->
+    <div class="cases-section">
+        <div class="cases-header">
+            <div class="cases-title">
+                針對性改進方案
+                <span class="targeted-badge">精準推薦</span>
+            </div>
+            <div class="see-all">查看全部</div>
+        </div>
+
+        <div class="cases-carousel" id="cases-container">
+            <!-- Content will be dynamically inserted -->
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <div class="fab">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+    </div>
+</div>
+
+<script>
+    // 評分細項資料
+    const scoreBreakdowns = {
+        flow: {
+            name: '流程遵守度',
+            totalScore: 94,
+            items: [
+                { id: '1.1', name: '銷售流程完整性', score: 93 },
+                { id: '1.2', name: '需求診斷流程', score: 96 },
+                { id: '1.3', name: '時間節奏掌控', score: 95 },
+                { id: '1.4', name: '合規與文件管理', score: 100 },
+                { id: '1.5', name: 'SPIN問句運用檢核', score: 90 }
+            ]
+        },
+        skill: {
+            name: '銷售技巧',
+            totalScore: 91,
+            items: [
+                { id: '2.1', name: '需求診斷深度', score: 96 },
+                { id: '2.2', name: '七大需求掌握度', score: 92 },
+                { id: '2.3', name: '解決方案設計', score: 95 },
+                { id: '2.4', name: '異議處理能力', score: 93 },
+                { id: '2.5', name: '競爭分析與應對', score: 80 },
+                { id: '2.6', name: '成交促進技巧', score: 100 }
+            ]
+        },
+        comm: {
+            name: '溝通能力',
+            totalScore: 96,
+            items: [
+                { id: '3.1', name: 'SPIN問句質量分析', score: 100 },
+                { id: '3.2', name: '需求確認語言精準度', score: 95 },
+                { id: '3.3', name: '情感共鳴與同理心', score: 95 },
+                { id: '3.4', name: '關鍵資訊獲取效率', score: 93 },
+                { id: '3.5', name: '對話控制與引導', score: 100 },
+                { id: '3.6', name: '說服力語言運用', score: 100 }
+            ]
+        }
+    };
+
+    const highlightData = {
+        flow: {
+            highlights: [
+                {
+                    time: '08:30',
+                    relatedScoreItems: ['1.3'],  // 時間節奏掌控
+                    scoreImpact: -5,
+                    dialogue: [
+                        { speaker: 'Customer', text: '這個終身醫療險看起來不錯，但我需要先跟我太太討論一下...' },
+                        { speaker: 'Agent', text: '當然，這是很重要的決定。' },
+                        { speaker: 'Customer', text: '她平常管家裡的財務，這種長期繳費的事情一定要她同意。' },
+                        { speaker: 'Agent', text: '理解，家人的支持很重要。' },
+                        { speaker: 'Customer', text: '而且每個月要繳2萬多，不是小數目。' },
+                        { speaker: 'Agent', text: '好的，那我下次再來拜訪您。您慢慢考慮，有問題再聯絡我。' }
+                    ],
+                    problem: '未掌握家庭決策流程，錯失推進機會，沒有了解配偶的關注點',
+                    suggestion: '應該詢問：太太最關心什麼保障？何時方便三方會談？需要準備什麼資料給太太參考？'
+                },
+                {
+                    time: '12:45',
+                    relatedScoreItems: ['1.5'],  // SPIN問句運用檢核
+                    scoreImpact: -10,
+                    dialogue: [
+                        { speaker: 'Customer', text: '這個保費真的太貴了，每個月要繳3萬，一年就36萬耶！' },
+                        { speaker: 'Agent', text: '我們的保障很完整，所以保費會高一點。' },
+                        { speaker: 'Customer', text: '可是我一年才賺100萬，這樣佔我收入的三分之一以上了。' },
+                        { speaker: 'Agent', text: '這個是終身保障，繳20年就不用繳了。' },
+                        { speaker: 'Customer', text: '20年就是720萬，太驚人了！' },
+                        { speaker: 'Agent', text: '但是您可以保障一輩子。' },
+                        { speaker: 'Customer', text: '我還是覺得負擔太重...' },
+                        { speaker: 'Agent', text: '保險就是要趁年輕買比較便宜。' }
+                    ],
+                    problem: '只強調產品特色，未使用SPIN問句探究保費異議背後的真實擔憂',
+                    suggestion: '使用SPIN暗示性問題：如果您發生意外無法工作，家庭每月開銷3萬誰來付？'
+                },
+                {
+                    time: '16:20',
+                    relatedScoreItems: ['1.1'],  // 銷售流程完整性
+                    scoreImpact: -7,
+                    dialogue: [
+                        { speaker: 'Customer', text: '如果我現在投保，什麼時候會生效？' },
+                        { speaker: 'Agent', text: '應該很快吧。' },
+                        { speaker: 'Customer', text: '那如果下個月我要開刀，可以理賠嗎？' },
+                        { speaker: 'Agent', text: '這個...可能要看情況。' },
+                        { speaker: 'Customer', text: '什麼情況？我不是有繳保費嗎？' },
+                        { speaker: 'Agent', text: '有些疾病有等待期的規定。' },
+                        { speaker: 'Customer', text: '等待期是多久？' },
+                        { speaker: 'Agent', text: '我回去查一下再告訴您。' }
+                    ],
+                    problem: '銷售流程不完整，對核保和等待期規定不熟悉',
+                    suggestion: '應明確說明：疾病等待期30天、癌症90天、核保需3-5工作天'
+                }
+            ]
+        },
+        skill: {
+            highlights: [
+                {
+                    time: '10:00',
+                    relatedScoreItems: ['2.5'],  // 競爭分析與應對
+                    scoreImpact: -20,
+                    dialogue: [
+                        { speaker: 'Customer', text: '我朋友在XX人壽買的醫療險，保費比你們便宜30%耶！' },
+                        { speaker: 'Agent', text: '嗯...我們公司比較大，理賠比較有保障...' },
+                        { speaker: 'Customer', text: '可是XX人壽也是大公司啊，而且他們還有送健康檢查。' },
+                        { speaker: 'Agent', text: '我們的保單內容比較好...' },
+                        { speaker: 'Customer', text: '哪裡比較好？看起來保障項目都差不多。' },
+                        { speaker: 'Agent', text: '我們的服務比較好。' },
+                        { speaker: 'Customer', text: '怎麼個好法？可以具體說明嗎？' },
+                        { speaker: 'Agent', text: '就是...理賠比較快，服務人員比較專業。' }
+                    ],
+                    problem: '競品應對薄弱，無法具體說明差異化價值',
+                    suggestion: '準備競品比較表：理賠率98% vs 85%、平均3天理賠 vs 14天'
+                },
+                {
+                    time: '15:20',
+                    relatedScoreItems: ['2.4'],  // 異議處理能力
+                    scoreImpact: -7,
+                    dialogue: [
+                        { speaker: 'Customer', text: '我已經有勞保了，公司也有團保，應該夠了吧？' },
+                        { speaker: 'Agent', text: '那還是要買商業保險比較好。' },
+                        { speaker: 'Customer', text: '為什麼？我已經有兩個保險了。' },
+                        { speaker: 'Agent', text: '因為勞保和團保保障不夠。' },
+                        { speaker: 'Customer', text: '怎麼會不夠？勞保不是什麼都有保嗎？' },
+                        { speaker: 'Agent', text: '勞保給付很少的。' },
+                        { speaker: 'Customer', text: '那團保呢？公司說保障很完整。' },
+                        { speaker: 'Agent', text: '離職就沒有了。' }
+                    ],
+                    problem: '異議處理缺乏具體數據，說服力不足',
+                    suggestion: '具體計算：勞保住院一天1000元，但病房差額3000元；團保離職失效'
+                },
+                {
+                    time: '21:00',
+                    relatedScoreItems: ['2.2'],  // 七大需求掌握度
+                    scoreImpact: -8,
+                    dialogue: [
+                        { speaker: 'Customer', text: '我還年輕，應該不會那麼快生病吧？' },
+                        { speaker: 'Agent', text: '對啊，您還年輕。' },
+                        { speaker: 'Customer', text: '那我過幾年再買應該也可以？' },
+                        { speaker: 'Agent', text: '也是可以的。' },
+                        { speaker: 'Customer', text: '反正現在身體健康。' },
+                        { speaker: 'Agent', text: '健康的時候買比較便宜。' }
+                    ],
+                    problem: '未能掌握客戶的風險需求，反而認同其僥倖心理',
+                    suggestion: '分享年輕人罹病案例、說明等待期風險、強調健康時才能投保'
+                }
+            ]
+        },
+        comm: {
+            highlights: [
+                {
+                    time: '03:15',
+                    relatedScoreItems: ['3.4'],  // 關鍵資訊獲取效率
+                    scoreImpact: -7,
+                    dialogue: [
+                        { speaker: 'Customer', text: '我們家有兩個小孩，一個讀國中，一個讀高中。' },
+                        { speaker: 'Agent', text: '好的，那教育金的規劃很重要。' },
+                        { speaker: 'Customer', text: '對啊，現在補習費就很驚人了。' },
+                        { speaker: 'Agent', text: '是啊，教育費用越來越高。' },
+                        { speaker: 'Customer', text: '大的想出國唸書，小的成績也不錯。' },
+                        { speaker: 'Agent', text: '出國唸書要準備很多錢。' },
+                        { speaker: 'Customer', text: '是啊，壓力很大。' },
+                        { speaker: 'Agent', text: '所以保險很重要。' }
+                    ],
+                    problem: '資訊獲取效率低，未深入了解家庭財務狀況',
+                    suggestion: '深入追問：目標學校預算？配偶收入？房貸餘額？每月可支配所得？'
+                },
+                {
+                    time: '07:40',
+                    relatedScoreItems: ['3.2'],  // 需求確認語言精準度
+                    scoreImpact: -5,
+                    dialogue: [
+                        { speaker: 'Customer', text: '重大疾病險的理賠標準是什麼？什麼情況下會賠？' },
+                        { speaker: 'Agent', text: '就是得了重大疾病就會賠。' },
+                        { speaker: 'Customer', text: '哪些算重大疾病？' },
+                        { speaker: 'Agent', text: '就是很嚴重的病。' },
+                        { speaker: 'Customer', text: '可以具體一點嗎？比如糖尿病算嗎？' },
+                        { speaker: 'Agent', text: '糖尿病應該不算，要更嚴重的。' },
+                        { speaker: 'Customer', text: '那到底是哪些？' },
+                        { speaker: 'Agent', text: '癌症之類的吧。' }
+                    ],
+                    problem: '語言不精準，無法清楚說明理賠條件',
+                    suggestion: '明確說明：7項重大疾病包括癌症、急性心肌梗塞、腦中風等'
+                }
+            ]
+        }
+    };
+
+    // 成功案例資料 - 保險業場景（包含優秀對話範例）
+    const casesData = {
+        flow: [
+            {
+                matchReason: '解決「家庭決策」問題',
+                name: '陳建國',
+                initials: '陳國',
+                score: 95,
+                title: '家庭保單決策術',
+                time: '3天前',
+                description: '客戶說要問太太時，成功約到全家說明會。',
+                improvement: '三個關鍵：1.太太最在意什麼？ 2.孩子的保障她怎麼看？ 3.可否安排家庭說明會？',
+                relatedProblem: '08:30 的問題',
+                excellentDialogue: [
+                    { speaker: '優秀業務', text: '我完全理解，這麼重要的決定當然要跟太太商量。請問太太平常最關心家裡哪方面的保障呢？' },
+                    { speaker: '客戶', text: '她很注重孩子的教育和健康。' },
+                    { speaker: '優秀業務', text: '那她一定是位很有遠見的母親。其實我有個建議，不如我準備一份「家庭保障分析報告」，您可以帶回去跟太太一起看。這份報告會清楚列出您們家現有保障和缺口。' },
+                    { speaker: '客戶', text: '這樣不錯，有數據她比較能接受。' },
+                    { speaker: '優秀業務', text: '另外，如果方便的話，我也可以安排一個家庭保障說明會，我會準備一些其他家庭的案例，讓太太了解為什麼這個階段的保障規劃這麼重要。您看下週三晚上7點方便嗎？' }
+                ],
+                solution: '準備「家庭保障地圖」，標示每個成員的保障缺口，讓決策透明化。'
+            },
+            {
+                matchReason: '解決「保費異議」問題',
+                name: '王小明',
+                initials: '王明',
+                score: 98,
+                title: '保費價值轉換法',
+                time: '1週前',
+                description: '用SPIN將保費異議轉化為保障需求討論。',
+                improvement: '暗示問題：若發生意外，房貸誰付？孩子教育金哪裡來？醫療費用缺口多少？',
+                relatedProblem: '12:45 的問題',
+                excellentDialogue: [
+                    { speaker: '優秀業務', text: '3萬元確實是筆支出，我理解您的考量。不過，讓我們換個角度來看，您現在每個月的家庭必要開銷是多少？' },
+                    { speaker: '客戶', text: '房貸3萬、生活費2萬、孩子教育1萬，至少要6萬。' },
+                    { speaker: '優秀業務', text: '那如果今天您因為意外或疾病無法工作，這6萬誰來支付？能撐多久？' },
+                    { speaker: '客戶', text: '這...可能只能靠太太，但她的薪水不夠...' },
+                    { speaker: '優秀業務', text: '所以這3萬不是支出，是在為您每月6萬的家庭責任買個保障。想像一下，萬一發生狀況，保險公司每月給付10萬，是不是反而讓家人更安心？' }
+                ],
+                solution: '準備「家庭收支中斷模擬表」，具體呈現風險發生時的財務缺口。'
+            },
+            {
+                matchReason: '解決「核保流程」問題',
+                name: '林佳蓉',
+                initials: '林蓉',
+                score: 96,
+                title: '核保流程專業說明',
+                time: '5天前',
+                description: '清楚說明核保時程和等待期，消除客戶疑慮。',
+                improvement: '準備核保流程圖、等待期說明表、快速理賠案例',
+                relatedProblem: '16:20 的問題',
+                excellentDialogue: [
+                    { speaker: '優秀業務', text: '關於生效時間，讓我詳細說明：今天送件後，核保需要3-5個工作天。如果需要體檢，會再多2-3天。' },
+                    { speaker: '客戶', text: '那下個月的手術可以理賠嗎？' },
+                    { speaker: '優秀業務', text: '這要看手術原因。如果是意外導致，保單生效當天就有保障。但如果是疾病，有30天等待期；如果是癌症相關，則是90天。您提到的手術是什麼原因呢？' },
+                    { speaker: '客戶', text: '是之前就檢查出來的膽結石。' },
+                    { speaker: '優秀業務', text: '既往症在核保時就要誠實告知，可能會被除外或加費。但誠實告知對您最有利，避免未來理賠爭議。我建議現在就投保，其他身體部位還是有完整保障。' }
+                ],
+                solution: '使用核保案例說明誠實告知的重要性，並強調其他部位的保障價值。'
+            }
+        ],
+        skill: [
+            {
+                matchReason: '解決「競品比較」弱項',
+                name: '李美玲',
+                initials: '李玲',
+                score: 94,
+                title: '同業競爭優勢術',
+                time: '2天前',
+                description: '面對XX人壽低價競爭，成功以服務品質取勝。',
+                improvement: '不談保費談理賠：理賠率98%、平均3天理賠、專屬理賠顧問、免費健檢服務。',
+                relatedProblem: '10:00 的問題',
+                excellentDialogue: [
+                    { speaker: '優秀業務', text: '您朋友買XX人壽，很好啊！他有跟您分享理賠經驗嗎？' },
+                    { speaker: '客戶', text: '還沒有理賠過。' },
+                    { speaker: '優秀業務', text: '那讓我分享一些數據：我們公司理賠率98%，業界最高；平均理賠時效3天，XX人壽要14天。更重要的是，我們有專屬理賠顧問，從申請到撥款全程協助。' },
+                    { speaker: '客戶', text: '但價差30%耶！' },
+                    { speaker: '優秀業務', text: '我算給您看：30%差價每年多1萬。但如果發生200萬的醫療費用，我們賠195萬，他們因為除外條款可能只賠150萬，這45萬的差距，值不值得每年多投資1萬來保障？而且我們沒有第二年度等待期，他們有。' }
+                ],
+                solution: '準備「理賠案例集」、「客戶見證影片」、「同業理賠糾紛新聞」。'
+            },
+            {
+                matchReason: '解決「既有保障」問題',
+                name: '張志豪',
+                initials: '張豪',
+                score: 92,
+                title: '保障缺口分析法',
+                time: '5天前',
+                description: '客戶有勞保團保，仍成功銷售500萬醫療險。',
+                improvement: '缺口分析：勞保病房差額？自費項目？收入中斷補償？看護費用？',
+                relatedProblem: '15:20 的問題',
+                excellentDialogue: [
+                    { speaker: '優秀業務', text: '太好了！您有勞保和團保，讓我們來檢視一下保障是否足夠。請問您知道勞保的住院日額給付是多少嗎？' },
+                    { speaker: '客戶', text: '不太清楚，應該不少吧？' },
+                    { speaker: '優秀業務', text: '勞保住院一天只給付約1000元，但現在單人房一天要3000-5000元。如果需要開刀，達文西手臂等自費項目動輒20-30萬，勞保完全不給付。' },
+                    { speaker: '客戶', text: '團保應該有吧？' },
+                    { speaker: '優秀業務', text: '關鍵問題：如果您離職或退休，團保就沒了。而且團保通常有理賠上限，重大疾病可能不夠。我有個客戶去年離職後一個月就診斷出癌症，還好有商業保險，不然醫療費用會壓垮家庭。' }
+                ],
+                solution: '使用「醫療費用試算表」，實際算出重大手術自費金額。'
+            },
+            {
+                matchReason: '解決「成交猶豫」問題',
+                name: '趙小華',
+                initials: '趙華',
+                score: 96,
+                title: '保險急迫性創造',
+                time: '4天前',
+                description: '客戶想再考慮，當場促成年繳100萬保單。',
+                improvement: '三大急迫性：下個月漲齡多繳5%、體檢正常優勢期、月底前投保送健檢。',
+                relatedProblem: '18:00 的問題',
+                excellentDialogue: [
+                    { speaker: '優秀業務', text: '考慮是應該的。不過有三件事想提醒您：第一，您下個月就40歲了吧？' },
+                    { speaker: '客戶', text: '對，下個月15號生日。' },
+                    { speaker: '優秀業務', text: '40歲是保費級距的分水嶺，保費會增加5-8%。以這個方案來說，每年會多繳1.8萬，20年就是36萬。第二，您上次體檢都正常對吧？' },
+                    { speaker: '客戶', text: '對，公司體檢都正常。' },
+                    { speaker: '優秀業務', text: '這是您的優勢期！一旦有任何紅字，可能加費或拒保。第三，這個月投保有兩個好處：送全身健檢、保費可以抵稅。您看，要不要先用最低保額投保，之後再視情況調整？' }
+                ],
+                solution: '準備費率表對比、核保變嚴案例、等待期風險故事。'
+            }
+        ],
+        comm: [
+            {
+                matchReason: '解決「家庭需求」問題',
+                name: '黃小芳',
+                initials: '黃芳',
+                score: 98,
+                title: '家庭財務需求挖掘',
+                time: '1天前',
+                description: '從孩子教育談到全家保障規劃，簽下家庭保單。',
+                improvement: '教育金五問：目標學校？留學規劃？才藝補習？私校學費？教育通膨？',
+                relatedProblem: '03:15 的問題',
+                excellentDialogue: [
+                    { speaker: '優秀業務', text: '兩個孩子都很優秀！大的想出國，您有概算過需要多少教育金嗎？' },
+                    { speaker: '客戶', text: '可能要幾百萬吧...' },
+                    { speaker: '優秀業務', text: '我幫您算算：美國大學一年學費加生活費約200萬台幣，四年就是800萬。小的如果也出國，總共需要1600萬。這還不包括現在到大學的補習費用。' },
+                    { speaker: '客戶', text: '這麼多！' },
+                    { speaker: '優秀業務', text: '所以我們要確保，萬一您或太太發生狀況，孩子的教育不會中斷。除了教育金，您的房貸還有多少？每月家庭總開銷多少？有準備緊急預備金嗎？' }
+                ],
+                solution: '使用「子女教育金規劃表」，計算到大學畢業總需求。'
+            },
+            {
+                matchReason: '解決「專業說明」問題',
+                name: '吳明德',
+                initials: '吳德',
+                score: 95,
+                title: '理賠條款說明術',
+                time: '6天前',
+                description: '清晰的理賠說明，消除客戶疑慮。',
+                improvement: '準備理賠案例、條款對照表、常見Q&A、理賠流程圖。',
+                relatedProblem: '07:40 的問題',
+                excellentDialogue: [
+                    { speaker: '優秀業務', text: '重大疾病險涵蓋7項：癌症、急性心肌梗塞、腦中風後殘障、末期腎病變、重大器官移植、冠狀動脈繞道手術、癱瘓。每項都有明確定義。' },
+                    { speaker: '客戶', text: '癌症是所有癌症都賠嗎？' },
+                    { speaker: '優秀業務', text: '除了原位癌和第一期以下的某些癌症，其他都賠。而且我們是一次給付型，確診就賠200萬，您可以自由運用，不管是治療、生活費或出國就醫都可以。' },
+                    { speaker: '客戶', text: '那糖尿病呢？' },
+                    { speaker: '優秀業務', text: '單純糖尿病不在重大疾病範圍，但如果惡化到末期腎病變需要洗腎，就符合理賠條件。這就是為什麼我建議您加保「特定傷病險」，涵蓋糖尿病併發症、帕金森氏症等30項疾病。' }
+                ],
+                solution: '用實際理賠案例說明：某客戶確診癌症，3天內理賠200萬。'
+            }
+        ]
+    };
+
+    let currentDimension = 'flow';
+
+    function selectDimension(dimension, element) {
+        currentDimension = dimension;
+
+        // 更新選中狀態
+        document.querySelectorAll('.score-card').forEach(card => {
+            card.classList.remove('active');
+        });
+        element.classList.add('active');
+        
+        // 添加動畫效果到分數值
+        const scoreValue = element.querySelector('.score-card-value');
+        if (scoreValue) {
+            scoreValue.classList.remove('score-animation');
+            void scoreValue.offsetWidth; // 觸發 reflow
+            scoreValue.classList.add('score-animation');
+        }
+
+        // 更新內容
+        updateContent(dimension);
+    }
+
+    function showBreakdownModal(dimension, event) {
+        event.stopPropagation(); // 阻止觸發卡片的 click 事件
+        
+        const breakdown = scoreBreakdowns[dimension];
+        const modal = document.getElementById('breakdown-modal-overlay');
+        const modalTitle = document.getElementById('modal-title');
+        const modalContent = document.getElementById('modal-breakdown-content');
+        
+        // 更新 Modal 標題
+        modalTitle.textContent = breakdown.name + ' - 詳細評分';
+        
+        // 更新 Modal 內容
+        let breakdownHTML = '';
+        breakdown.items.forEach(item => {
+            const scorePercent = item.score;
+            const fillColor = item.score >= 95 ? '#00D563' : item.score >= 85 ? '#FFB800' : '#FF4757';
+            breakdownHTML += `
+                <div class="modal-breakdown-item">
+                    <div class="modal-item-info">
+                        <span class="modal-item-number">${item.id}</span>
+                        <span class="modal-item-name">${item.name}</span>
+                    </div>
+                    <span class="modal-item-score">${item.score}</span>
+                    <div class="modal-item-bar">
+                        <div class="modal-item-fill" style="width: ${scorePercent}%; background: ${fillColor};"></div>
+                    </div>
+                </div>
+            `;
+        });
+        modalContent.innerHTML = breakdownHTML;
+        
+        // 顯示 Modal
+        modal.classList.add('active');
+    }
+    
+    function closeBreakdownModal() {
+        const modal = document.getElementById('breakdown-modal-overlay');
+        modal.classList.remove('active');
+    }
+
+    function updateContent(dimension) {
+        const breakdown = scoreBreakdowns[dimension];
+        const highlights = highlightData[dimension];
+        const cases = casesData[dimension];
+
+        // 更新對話片段 - 淡入淡出效果
+        const highlightsContainer = document.getElementById('highlights-container');
+        highlightsContainer.style.opacity = '0';
+        
+        setTimeout(() => {
+            let highlightsHTML = '';
+            highlights.highlights.forEach(highlight => {
+            // 獲取對應的評分細項名稱
+            let scoreItemTags = '';
+            if (highlight.relatedScoreItems) {
+                highlight.relatedScoreItems.forEach(itemId => {
+                    const item = breakdown.items.find(i => i.id === itemId);
+                    if (item) {
+                        scoreItemTags += `
+                            <span class="score-item-tag">
+                                ${itemId} ${item.name}
+                            </span>
+                        `;
+                    }
+                });
+            }
+
+            let dialogueHTML = '';
+            highlight.dialogue.forEach(turn => {
+                dialogueHTML += `
+                    <div class="speaker-label">${turn.speaker === 'Customer' ? '客戶' : '業務員'}</div>
+                    <div class="dialogue-text">${turn.text}</div>
+                `;
+            });
+
+            highlightsHTML += `
+                <div class="highlight-card low-score">
+                    ${scoreItemTags ? `<div class="score-item-indicator">${scoreItemTags}</div>` : ''}
+                    <div class="highlight-header">
+                        <div class="highlight-tag tag-low">
+                            ⚠️ 影響 ${Math.abs(highlight.scoreImpact)} 分
+                        </div>
+                        <div class="highlight-time">${highlight.time}</div>
+                    </div>
+                    <div class="highlight-content">
+                        ${dialogueHTML}
+                    </div>
+                    <div class="ai-insight">
+                        <strong style="color: #FF4757;">問題：</strong>${highlight.problem}<br>
+                        <strong style="color: #00D563; margin-top: 8px; display: block;">建議：</strong>${highlight.suggestion}
+                    </div>
+                </div>
+            `;
+            });
+            highlightsContainer.innerHTML = highlightsHTML;
+            highlightsContainer.style.opacity = '1';
+        }, 200);
+
+        // 更新成功案例 - 限制為5個最相關的案例，包含優秀對話
+        let casesHTML = '';
+        cases.slice(0, 5).forEach(caseItem => {
+            let excellentDialogueHTML = '';
+            if (caseItem.excellentDialogue) {
+                excellentDialogueHTML = `
+                    <div class="excellent-dialogue">
+                        <div class="dialogue-label">✨ 優秀對話範例</div>
+                        <div class="dialogue-content">
+                `;
+                caseItem.excellentDialogue.forEach(turn => {
+                    excellentDialogueHTML += `
+                        <div class="dialogue-turn">
+                            <span class="dialogue-speaker">${turn.speaker}：</span>
+                            <span class="dialogue-quote">${turn.text}</span>
+                        </div>
+                    `;
+                });
+                excellentDialogueHTML += `
+                        </div>
+                    </div>
+                `;
+            }
+
+            casesHTML += `
+                <div class="case-card targeted">
+                    <div class="case-header">
+                        <div class="case-match-reason">${caseItem.matchReason}</div>
+                        <div class="case-user">
+                            <div class="case-avatar">${caseItem.initials}</div>
+                            <div class="case-user-info">
+                                <div class="case-name">${caseItem.name}</div>
+                                <div class="case-time">${caseItem.time}</div>
+                            </div>
+                            <div class="case-score">${caseItem.score}分</div>
+                        </div>
+                        <div class="case-title-text">${caseItem.title}</div>
+                    </div>
+                    <div class="case-body">
+                        <div class="case-description">${caseItem.description}</div>
+                        ${caseItem.relatedProblem ? `
+                            <div style="padding: 6px 10px; background: rgba(255, 159, 10, 0.1); border-radius: 8px; margin-bottom: 8px;">
+                                <span style="font-size: 11px; color: #ff9f0a;">📍 對應您在 ${caseItem.relatedProblem}</span>
+                            </div>
+                        ` : ''}
+                        ${excellentDialogueHTML}
+                    </div>
+                </div>
+            `;
+        });
+        document.getElementById('cases-container').innerHTML = casesHTML;
+    }
+
+    // Remove toggleBreakdown function as it's no longer needed
+
+    // 初始化
+    window.addEventListener('load', function() {
+        // 設定初始狀態
+        const firstCard = document.querySelector('.score-card.active');
+        if (firstCard) {
+            selectDimension('flow', firstCard);
+        } else {
+            updateContent('flow');
+        }
+    });
+</script>
+</body>
+</html>
