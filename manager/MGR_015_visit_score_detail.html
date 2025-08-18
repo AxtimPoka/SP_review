@@ -15,6 +15,9 @@
                         success: '#00D563',
                         warning: '#FFB800',
                         error: '#FF4757',
+                        danger: '#FF4757',
+                        caution: '#FFB800',
+                        pass: '#00D563',
                         'gray-dark': '#1A1A1A',
                         'gray-medium': '#666666',
                         'gray-light': '#999999',
@@ -38,8 +41,8 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                             </svg>
                         </button>
-                        <h1 class="text-xl font-bold text-gray-dark">王先生 拜訪評分</h1>
-                        <span class="ml-3 px-3 py-1 bg-warning text-white text-lg font-bold rounded-lg">95</span>
+                        <h1 class="text-xl font-bold text-gray-dark">第二次諮詢 拜訪評分</h1>
+                        <span id="totalScoreBadge" class="ml-3 px-3 py-1 text-white text-lg font-bold rounded-lg">95</span>
                     </div>
                     <div class="flex items-center space-x-2">
                         <!-- Notification Icon -->
@@ -71,11 +74,11 @@
                 <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-border">
                     <div class="text-center">
                         <h3 class="text-sm font-medium text-gray-medium mb-2">流程遵守度</h3>
-                        <div class="text-3xl font-bold text-success mb-1">95</div>
+                        <div class="text-3xl font-bold score-text mb-1" data-score="95">95</div>
                         <div class="text-xs text-gray-light">5題 / 100分</div>
                     </div>
                     <div class="mt-3 w-full bg-gray-200 rounded-full h-2">
-                        <div class="bg-success h-2 rounded-full transition-all duration-300" style="width: 95%"></div>
+                        <div class="score-bar h-2 rounded-full transition-all duration-300" data-score="95" style="width: 95%"></div>
                     </div>
                 </div>
 
@@ -83,11 +86,11 @@
                 <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-border">
                     <div class="text-center">
                         <h3 class="text-sm font-medium text-gray-medium mb-2">銷售技巧</h3>
-                        <div class="text-3xl font-bold text-success mb-1">93</div>
+                        <div class="text-3xl font-bold score-text mb-1" data-score="93">93</div>
                         <div class="text-xs text-gray-light">6題 / 100分</div>
                     </div>
                     <div class="mt-3 w-full bg-gray-200 rounded-full h-2">
-                        <div class="bg-success h-2 rounded-full transition-all duration-300" style="width: 93%"></div>
+                        <div class="score-bar h-2 rounded-full transition-all duration-300" data-score="93" style="width: 93%"></div>
                     </div>
                 </div>
 
@@ -95,11 +98,11 @@
                 <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-border">
                     <div class="text-center">
                         <h3 class="text-sm font-medium text-gray-medium mb-2">溝通能力</h3>
-                        <div class="text-3xl font-bold text-success mb-1">97</div>
+                        <div class="text-3xl font-bold score-text mb-1" data-score="97">97</div>
                         <div class="text-xs text-gray-light">6題 / 100分</div>
                     </div>
                     <div class="mt-3 w-full bg-gray-200 rounded-full h-2">
-                        <div class="bg-success h-2 rounded-full transition-all duration-300" style="width: 97%"></div>
+                        <div class="score-bar h-2 rounded-full transition-all duration-300" data-score="97" style="width: 97%"></div>
                     </div>
                 </div>
             </div>
@@ -126,7 +129,7 @@
                                         <span class="text-warning font-medium text-sm mr-3">1.1</span>
                                         <span class="text-gray-dark font-medium">銷售流程完整性</span>
                                     </div>
-                                    <span class="text-gray-dark font-bold text-lg">93</span>
+                                    <span class="font-bold text-lg score-item" data-score="93">93</span>
                                 </div>
                             </div>
                             <div onclick="openDetailModal('1.2', '需求診斷流程', '96', '七大需求診斷全面完整，成功識別客戶急迫性（第二個孩子出生）並量化保障缺口。', '業務員：您提到最近在考慮保險，是什麼原因讓您開始有這個想法呢？<br>客戶：主要是因為去年底我們迎來了第二個小孩，覺得責任更重了...<br>業務員：恭喜您！確實，家庭成員增加後，保障需求也會跟著改變。您有算過如果發生風險，家庭需要多少資金維持生活嗎？<br>客戶：這個...房貸還有800萬，兩個孩子到大學畢業至少要500萬吧。')" 
@@ -136,7 +139,7 @@
                                         <span class="text-warning font-medium text-sm mr-3">1.2</span>
                                         <span class="text-gray-dark font-medium">需求診斷流程</span>
                                     </div>
-                                    <span class="text-gray-dark font-bold text-lg">96</span>
+                                    <span class="font-bold text-lg score-item" data-score="96">96</span>
                                 </div>
                             </div>
                             <div onclick="openDetailModal('1.3', '時間節奏掌控', '95', '通話節奏適中，適時總結要點，引導客戶思考，時間運用效率高。', '業務員：我們剛剛談到您的保障缺口大概是1300萬，讓我幫您整理一下重點...<br>客戶：好的。<br>業務員：以您目前的收入狀況，建議可以這樣規劃保障...')" 
@@ -146,7 +149,7 @@
                                         <span class="text-warning font-medium text-sm mr-3">1.3</span>
                                         <span class="text-gray-dark font-medium">時間節奏掌控</span>
                                     </div>
-                                    <span class="text-gray-dark font-bold text-lg">95</span>
+                                    <span class="font-bold text-lg score-item" data-score="95">95</span>
                                 </div>
                             </div>
                             <div onclick="openDetailModal('1.4', '合規與文件管理', '100', '所有保險條款說明清楚，風險揭露充分，符合法規要求。', '業務員：這邊需要特別說明的是，這個保險有等待期的限制...<br>客戶：什麼是等待期？<br>業務員：就是投保後90天內，如果是疾病導致的理賠，保險公司不會賠付...')" 
@@ -156,21 +159,46 @@
                                         <span class="text-warning font-medium text-sm mr-3">1.4</span>
                                         <span class="text-gray-dark font-medium">合規與文件管理</span>
                                     </div>
-                                    <span class="text-gray-dark font-bold text-lg">100</span>
+                                    <span class="font-bold text-lg score-item" data-score="100">100</span>
                                 </div>
                             </div>
-                            <div onclick="openDetailModal('1.5', 'SPIN問句運用檢核', '90', 'SPIN問句運用良好，但在Pain問句部分可以更深入探討客戶痛點。', '業務員：如果您不幸發生意外，您最擔心的是什麼？<br>客戶：當然是家人的生活保障啊。<br>業務員：您覺得沒有足夠保障會對家人造成什麼影響？<br>客戶：可能就沒辦法維持現在的生活水準了。')" 
+                            <div onclick="openDetailModal('1.5', 'SPIN問句運用檢核', '65', 'SPIN問句運用有明顯不足，特別是Pain和Implication問句幾乎沒有使用，未能有效引導客戶思考。', '業務員：您需要保險嗎？<br>客戶：我要考慮看看。<br>業務員：好的，這是我們的產品資料...<br>客戶：我需要跟家人討論。<br>業務員：沒問題，您慢慢考慮。')" 
                                  class="px-6 py-4 hover:bg-gray-50 cursor-pointer transition-colors">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center">
                                         <span class="text-warning font-medium text-sm mr-3">1.5</span>
                                         <span class="text-gray-dark font-medium">SPIN問句運用檢核</span>
                                     </div>
-                                    <span class="text-gray-dark font-bold text-lg">90</span>
+                                    <span class="font-bold text-lg score-item" data-score="65">65</span>
                                 </div>
                             </div>
                         </div>
+                        <!-- Quick Access for Danger Items -->
+                        <div id="process-danger-alerts" class="p-4 bg-red-50 border-t border-red-200 hidden">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="text-sm font-semibold text-danger flex items-center">
+                                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    需立即改進項目
+                                </h4>
+                            </div>
+                            <div class="space-y-2" id="process-danger-items">
+                                <!-- Danger items will be populated by JavaScript -->
+                            </div>
+                        </div>
                     </div>
+                </div>
+                
+                <!-- Quick Access Button for SPIN問句運用檢核 -->
+                <div class="px-4 pb-4">
+                    <button onclick="openDetailModal('1.5', 'SPIN問句運用檢核', '65', 'SPIN問句運用有明顯不足，特別是Pain和Implication問句幾乎沒有使用，未能有效引導客戶思考。', '業務員：您需要保險嗎？<br>客戶：我要考慮看看。<br>業務員：好的，這是我們的產品資料...<br>客戶：我需要跟家人討論。<br>業務員：沒問題，您慢慢考慮。')" 
+                            class="px-4 py-2 text-sm bg-danger text-white font-medium rounded-full hover:bg-red-600 transition-colors flex items-center justify-center space-x-2">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span>SPIN問句運用檢核 65</span>
+                    </button>
                 </div>
 
                 <!-- Sales Skills Section -->
@@ -193,7 +221,7 @@
                                         <span class="text-warning font-medium text-sm mr-3">2.1</span>
                                         <span class="text-gray-dark font-medium">需求診斷深度</span>
                                     </div>
-                                    <span class="text-gray-dark font-bold text-lg">96</span>
+                                    <span class="font-bold text-lg score-item" data-score="96">96</span>
                                 </div>
                             </div>
                             <div onclick="openDetailModal('2.2', '七大需求掌握度', '92', '對客戶七大需求（生存、醫療、意外、退休、投資、稅務、傳承）掌握度良好。', '業務員：從您的狀況來看，您需要考慮的不只是基本保障，還有醫療、意外、以及未來退休的準備...')" 
@@ -203,7 +231,7 @@
                                         <span class="text-warning font-medium text-sm mr-3">2.2</span>
                                         <span class="text-gray-dark font-medium">七大需求掌握度</span>
                                     </div>
-                                    <span class="text-gray-dark font-bold text-lg">92</span>
+                                    <span class="font-bold text-lg score-item" data-score="92">92</span>
                                 </div>
                             </div>
                             <div onclick="openDetailModal('2.3', '解決方案設計', '95', '根據客戶需求量身訂做保障方案，搭配合理，符合客戶預算。', '業務員：根據您的需求，我建議這樣搭配：定期壽險500萬、醫療險實支實付、意外險200萬...')" 
@@ -213,7 +241,7 @@
                                         <span class="text-warning font-medium text-sm mr-3">2.3</span>
                                         <span class="text-gray-dark font-medium">解決方案設計</span>
                                     </div>
-                                    <span class="text-gray-dark font-bold text-lg">95</span>
+                                    <span class="font-bold text-lg score-item" data-score="95">95</span>
                                 </div>
                             </div>
                             <div onclick="openDetailModal('2.4', '異議處理能力', '93', '面對客戶疑慮能夠耐心解釋，提供合理的解決方案。', '客戶：保費會不會太貴了？<br>業務員：我理解您的考量，我們可以調整一下配置，先把最重要的保障做足...')" 
@@ -223,17 +251,17 @@
                                         <span class="text-warning font-medium text-sm mr-3">2.4</span>
                                         <span class="text-gray-dark font-medium">異議處理能力</span>
                                     </div>
-                                    <span class="text-gray-dark font-bold text-lg">93</span>
+                                    <span class="font-bold text-lg score-item" data-score="93">93</span>
                                 </div>
                             </div>
-                            <div onclick="openDetailModal('2.5', '競爭分析與應對', '80', '對競爭商品了解一般，可以更深入比較優勢差異。', '客戶：我有看到其他家的商品好像比較便宜？<br>業務員：每家公司的商品設計不同，我們的優勢在於理賠服務和保障範圍...')" 
+                            <div onclick="openDetailModal('2.5', '競爭分析與應對', '68', '對競爭商品了解嚴重不足，無法說服客戶選擇我們的產品。', '客戶：我有看到其他家的商品好像比較便宜？<br>業務員：呃...我們的產品也不錯啦...<br>客戶：那具體好在哪裡？<br>業務員：就是...比較有保障...')" 
                                  class="px-6 py-4 border-b border-gray-border hover:bg-gray-50 cursor-pointer transition-colors">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center">
                                         <span class="text-warning font-medium text-sm mr-3">2.5</span>
                                         <span class="text-gray-dark font-medium">競爭分析與應對</span>
                                     </div>
-                                    <span class="text-gray-dark font-bold text-lg">80</span>
+                                    <span class="font-bold text-lg score-item" data-score="68">68</span>
                                 </div>
                             </div>
                             <div onclick="openDetailModal('2.6', '成交促進技巧', '100', '運用urgency和scarcity技巧，成功促成客戶當場簽約。', '業務員：王先生，這個專案優惠只到月底，而且您現在的年紀保費最划算，建議您盡快決定。<br>客戶：好，那我今天就簽約吧！')" 
@@ -243,8 +271,22 @@
                                         <span class="text-warning font-medium text-sm mr-3">2.6</span>
                                         <span class="text-gray-dark font-medium">成交促進技巧</span>
                                     </div>
-                                    <span class="text-gray-dark font-bold text-lg">100</span>
+                                    <span class="font-bold text-lg score-item" data-score="100">100</span>
                                 </div>
+                            </div>
+                        </div>
+                        <!-- Quick Access for Danger Items -->
+                        <div id="sales-danger-alerts" class="p-4 bg-red-50 border-t border-red-200 hidden">
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="text-sm font-semibold text-danger flex items-center">
+                                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    需立即改進項目
+                                </h4>
+                            </div>
+                            <div class="space-y-2" id="sales-danger-items">
+                                <!-- Danger items will be populated by JavaScript -->
                             </div>
                         </div>
                     </div>
@@ -270,7 +312,7 @@
                                         <span class="text-warning font-medium text-sm mr-3">3.1</span>
                                         <span class="text-gray-dark font-medium">SPIN問句質量分析</span>
                                     </div>
-                                    <span class="text-gray-dark font-bold text-lg">100</span>
+                                    <span class="font-bold text-lg score-item" data-score="100">100</span>
                                 </div>
                             </div>
                             <div onclick="openDetailModal('3.2', '需求確認語言精準度', '95', '語言表達清晰，準確復述客戶需求，確保雙方理解一致。', '業務員：讓我確認一下，您的主要考量是孩子的教育金和家庭責任保障，對嗎？<br>客戶：對的，就是這樣。')" 
@@ -280,7 +322,7 @@
                                         <span class="text-warning font-medium text-sm mr-3">3.2</span>
                                         <span class="text-gray-dark font-medium">需求確認語言精準度</span>
                                     </div>
-                                    <span class="text-gray-dark font-bold text-lg">95</span>
+                                    <span class="font-bold text-lg score-item" data-score="95">95</span>
                                 </div>
                             </div>
                             <div onclick="openDetailModal('3.3', '情感共鳴與同理心', '95', '能夠理解客戶情感，適時表達關懷，建立良好關係。', '業務員：我完全理解您的擔心，作為兩個孩子的父親，責任確實很重。<br>客戶：是啊，壓力真的很大。<br>業務員：這也是為什麼我們要提前規劃保障的原因。')" 
@@ -290,7 +332,7 @@
                                         <span class="text-warning font-medium text-sm mr-3">3.3</span>
                                         <span class="text-gray-dark font-medium">情感共鳴與同理心</span>
                                     </div>
-                                    <span class="text-gray-dark font-bold text-lg">95</span>
+                                    <span class="font-bold text-lg score-item" data-score="95">95</span>
                                 </div>
                             </div>
                             <div onclick="openDetailModal('3.4', '關鍵資訊獲取效率', '93', '快速獲取客戶關鍵資訊，為後續方案設計奠定基礎。', '業務員：能否告訴我您的年收入和固定支出？<br>客戶：年收入大概150萬，每月固定支出13萬左右。<br>業務員：了解，那您希望保費控制在什麼範圍內？')" 
@@ -300,7 +342,7 @@
                                         <span class="text-warning font-medium text-sm mr-3">3.4</span>
                                         <span class="text-gray-dark font-medium">關鍵資訊獲取效率</span>
                                     </div>
-                                    <span class="text-gray-dark font-bold text-lg">93</span>
+                                    <span class="font-bold text-lg score-item" data-score="93">93</span>
                                 </div>
                             </div>
                             <div onclick="openDetailModal('3.5', '對話控制與引導', '100', '對話節奏控制良好，能夠引導客戶思考並做出決定。', '業務員：我們剛剛討論了您的需求，現在讓我為您介紹最適合的解決方案...<br>客戶：好的。<br>業務員：首先，我們要解決的是家庭責任保障的問題...')" 
@@ -310,7 +352,7 @@
                                         <span class="text-warning font-medium text-sm mr-3">3.5</span>
                                         <span class="text-gray-dark font-medium">對話控制與引導</span>
                                     </div>
-                                    <span class="text-gray-dark font-bold text-lg">100</span>
+                                    <span class="font-bold text-lg score-item" data-score="100">100</span>
                                 </div>
                             </div>
                             <div onclick="openDetailModal('3.6', '說服力語言運用', '100', '運用邏輯性語言和情感訴求，成功說服客戶接受建議。', '業務員：想像一下，如果您有了充足的保障，是不是就不用再擔心萬一發生什麼事情，家人的生活會受到影響？<br>客戶：確實是這樣，心裡踏實多了。')" 
@@ -320,7 +362,7 @@
                                         <span class="text-warning font-medium text-sm mr-3">3.6</span>
                                         <span class="text-gray-dark font-medium">說服力語言運用</span>
                                     </div>
-                                    <span class="text-gray-dark font-bold text-lg">100</span>
+                                    <span class="font-bold text-lg score-item" data-score="100">100</span>
                                 </div>
                             </div>
                         </div>
@@ -380,7 +422,11 @@
             <div class="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
                 <div class="p-6">
                     <div class="flex items-center justify-between mb-4">
-                        <h2 id="modalTitle" class="text-xl font-bold text-warning"></h2>
+                        <div class=" flex space-x-2">
+
+                            <h2 id="modalTitle" class="text-xl font-bold text-warning"></h2>
+                            <span id="modalScore" class="ml-3 px-3 py-1 bg-gray-200 text-gray-dark text-md font-bold rounded-lg"></span>
+                        </div>
                         <button onclick="closeDetailModal()" class="p-2 text-gray-medium hover:text-gray-dark transition-colors">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -399,10 +445,48 @@
                             <div id="modalTranscript" class="bg-gray-dark text-white p-4 rounded-lg border-l-4 border-warning leading-relaxed"></div>
                         </div>
                         
-                        <div class="flex justify-between items-center pt-4">
-                            <span class="text-gray-medium">得分</span>
-                            <span id="modalScore" class="text-3xl font-bold text-warning"></span>
+                        <!-- AI Analysis Suggestions -->
+                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                            <div class="flex items-start space-x-2 mb-3">
+                                <span class="text-2xl">💡</span>
+                                <h3 class="text-lg font-bold text-primary">AI 分析建議</h3>
+                            </div>
+                            
+                            <div class="space-y-3">
+                                <div>
+                                    <h4 class="font-semibold text-gray-dark mb-1">問題分析</h4>
+                                    <p id="modalProblemAnalysis" class="text-gray-medium text-sm leading-relaxed"></p>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="font-semibold text-gray-dark mb-1">改進建議</h4>
+                                    <p id="modalImprovement" class="text-gray-medium text-sm leading-relaxed"></p>
+                                </div>
+                            </div>
                         </div>
+                        
+                        <!-- Discussion Area -->
+                        <div class="border-t border-gray-border pt-4">
+                            <h3 class="text-lg font-bold text-gray-dark mb-3">💬 討論區</h3>
+                            
+                            <!-- Discussion Messages -->
+                            <div id="discussionMessages" class="space-y-3 max-h-60 overflow-y-auto mb-4">
+                                <!-- Example messages will be added by JavaScript -->
+                            </div>
+                            
+                            <!-- New Message Input -->
+                            <div class="flex space-x-2">
+                                <input type="text" 
+                                       id="newDiscussionMessage" 
+                                       placeholder="輸入您的建議或回饋..." 
+                                       class="flex-1 px-3 py-2 border border-gray-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                                <button onclick="addDiscussionMessage()" 
+                                        class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors">
+                                    發送
+                                </button>
+                            </div>
+                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -410,6 +494,190 @@
     </div>
 
     <script>
+        // Score color configuration
+        function getScoreColor(score) {
+            const numScore = parseInt(score);
+            if (numScore < 70) {
+                return { text: 'text-danger', bg: 'bg-danger' };
+            } else if (numScore <= 90) {
+                return { text: 'text-caution', bg: 'bg-caution' };
+            } else {
+                return { text: 'text-pass', bg: 'bg-pass' };
+            }
+        }
+
+        // Initialize score colors on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Apply colors to main score badge
+            const totalScoreBadge = document.getElementById('totalScoreBadge');
+            const totalScore = parseInt(totalScoreBadge.textContent);
+            const totalColors = getScoreColor(totalScore);
+            totalScoreBadge.className = `ml-3 px-3 py-1 ${totalColors.bg} text-white text-lg font-bold rounded-lg`;
+
+            // Apply colors to score texts
+            document.querySelectorAll('.score-text').forEach(element => {
+                const score = parseInt(element.dataset.score);
+                const colors = getScoreColor(score);
+                element.className = `text-3xl font-bold ${colors.text} mb-1`;
+            });
+
+            // Apply colors to score bars
+            document.querySelectorAll('.score-bar').forEach(element => {
+                const score = parseInt(element.dataset.score);
+                const colors = getScoreColor(score);
+                element.className = `${colors.bg} h-2 rounded-full transition-all duration-300`;
+            });
+
+            // Apply colors to individual score items
+            document.querySelectorAll('.score-item').forEach(element => {
+                const score = parseInt(element.dataset.score);
+                const colors = getScoreColor(score);
+                element.className = `font-bold text-lg ${colors.text}`;
+            });
+
+            // Process danger alerts for each section
+            processDangerAlerts('process-section', 'process-danger-alerts', 'process-danger-items');
+            processDangerAlerts('sales-section', 'sales-danger-alerts', 'sales-danger-items');
+        });
+
+        // Process danger alerts for a section
+        function processDangerAlerts(sectionId, alertsId, itemsId) {
+            const section = document.getElementById(sectionId);
+            const alertsDiv = document.getElementById(alertsId);
+            const itemsContainer = document.getElementById(itemsId);
+            
+            if (!section || !alertsDiv || !itemsContainer) return;
+            
+            // Find all danger items (score < 70) in this section
+            const dangerItems = [];
+            section.querySelectorAll('.score-item').forEach(element => {
+                const score = parseInt(element.dataset.score);
+                if (score < 70) {
+                    const itemDiv = element.closest('div[onclick]');
+                    if (itemDiv) {
+                        const onclick = itemDiv.getAttribute('onclick');
+                        // Extract details from onclick
+                        const match = onclick.match(/openDetailModal\('([^']+)',\s*'([^']+)',\s*'([^']+)'/);
+                        if (match) {
+                            dangerItems.push({
+                                id: match[1],
+                                title: match[2],
+                                score: match[3],
+                                onclick: onclick
+                            });
+                        }
+                    }
+                }
+            });
+            
+            // If there are danger items, show the alerts section
+            if (dangerItems.length > 0) {
+                alertsDiv.classList.remove('hidden');
+                itemsContainer.innerHTML = '';
+                
+                dangerItems.forEach(item => {
+                    const button = document.createElement('button');
+                    button.className = 'w-full text-left p-3 bg-white rounded-lg border-2 border-danger hover:bg-red-50 transition-all hover:shadow-md flex items-center justify-between group';
+                    button.setAttribute('onclick', item.onclick);
+                    button.innerHTML = `
+                        <div class="flex items-center">
+                            <div class="bg-danger text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 flex-shrink-0">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <span class="text-gray-dark font-semibold block">${item.title}</span>
+                                <span class="text-xs text-gray-medium">點擊查看詳細分析與改進建議</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="px-3 py-1 bg-danger text-white font-bold text-lg rounded-lg">${item.score}</span>
+                            <svg class="w-5 h-5 text-danger group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </div>
+                    `;
+                    itemsContainer.appendChild(button);
+                });
+            }
+        }
+
+        // Mock data for AI analysis (different for each scoring item)
+        const aiAnalysisData = {
+            '1.1': {
+                problem: '銷售流程執行順序有改進空間，需求診斷前應先建立更好的信任關係。',
+                improvement: '建議先透過輕鬆話題建立融洽氛圍，再循序漸進導入保險話題。可以詢問客戶近況、家庭變化等，自然帶出保障需求。'
+            },
+            '1.2': {
+                problem: '七大需求診斷完整但深度不足，特別是稅務規劃和傳承需求的探討較為表面。',
+                improvement: '可以深入詢問客戶的資產配置、節稅需求、財富傳承計畫等。例如：「您有考慮過如何有效傳承財富給下一代嗎？」'
+            },
+            '1.3': {
+                problem: '時間分配可再優化，前段暖場時間稍長，核心商品介紹時間不足。',
+                improvement: '建議控制開場在5分鐘內，將更多時間用於需求診斷和商品說明，確保客戶充分理解產品價值。'
+            },
+            '1.4': {
+                problem: '合規說明完整，表現優異無明顯問題。',
+                improvement: '保持目前的高標準，持續關注法規更新，確保所有說明都符合最新要求。'
+            },
+            '1.5': {
+                problem: '未掌握家庭決策流程，錯失推進機會，沒有了解配偶的關注點',
+                improvement: '應該詢問：太太最關心什麼保障？何時方便三方會談？需要準備什麼資料給太太參考？'
+            },
+            '2.1': {
+                problem: '需求挖掘深度良好，但對客戶潛在需求的識別可以更敏銳。',
+                improvement: '注意客戶的非語言訊號，當提到某些話題時的情緒變化，可能暗示更深層的需求。'
+            },
+            '2.2': {
+                problem: '對退休規劃和投資需求的探討不夠充分。',
+                improvement: '應詢問客戶的退休計畫、理想退休生活、投資偏好等，提供更全面的財務規劃建議。'
+            },
+            '2.3': {
+                problem: '解決方案設計合理，但可以提供更多元的選擇。',
+                improvement: '建議準備2-3個不同層級的方案供客戶選擇，讓客戶感受到更多主導權。'
+            },
+            '2.4': {
+                problem: '異議處理技巧良好，但回應速度可以更快。',
+                improvement: '預先準備常見異議的標準回應，並練習快速轉換異議為銷售機會的技巧。'
+            },
+            '2.5': {
+                problem: '對競爭產品缺乏基本認識，無法回應客戶的比較問題，顯得專業度不足，嚴重影響客戶信心。',
+                improvement: '立即建立競品分析檔案，熟悉市場主要產品特色與價格。準備標準話術：「讓我為您詳細比較，我們的優勢在於...」並列舉3-5個具體差異點。'
+            },
+            '2.6': {
+                problem: '成交技巧運用得當，成功促成簽約。',
+                improvement: '繼續保持，可以嘗試更多元的成交技巧，如假設成交法、選擇成交法等。'
+            },
+            '3.1': {
+                problem: 'SPIN問句運用熟練，表現優異。',
+                improvement: '可以嘗試將SPIN與故事銷售結合，透過成功案例強化問句效果。'
+            },
+            '3.2': {
+                problem: '需求確認清晰，但可以更頻繁地進行確認。',
+                improvement: '每個重要環節都進行小結確認，確保與客戶認知一致，避免誤解。'
+            },
+            '3.3': {
+                problem: '同理心表達自然，但可以更深入連結客戶情感。',
+                improvement: '分享類似客戶的真實故事，讓客戶感受到您真正理解他們的處境和擔憂。'
+            },
+            '3.4': {
+                problem: '資訊收集效率良好，但部分重要資訊獲取時機較晚。',
+                improvement: '建議在開場階段就收集關鍵決策資訊，如預算範圍、決策流程、其他決策者等。'
+            },
+            '3.5': {
+                problem: '對話控制流暢自然，節奏掌握得當。',
+                improvement: '保持目前水準，可以嘗試更多開放式問題，讓客戶更多表達。'
+            },
+            '3.6': {
+                problem: '說服力強，成功打動客戶。',
+                improvement: '繼續保持，可以加入更多數據支撐，提升說服的理性層面。'
+            }
+        };
+
+        // Discussion messages data
+        const discussionData = {};
+
         // Toggle accordion sections
         function toggleSection(sectionId) {
             const section = document.getElementById(sectionId);
@@ -424,22 +692,129 @@
             }
         }
 
-        // Open detail modal
+        // Open detail modal with AI analysis
         function openDetailModal(id, title, score, summary, transcript) {
             const modal = document.getElementById('detailModal');
             const modalTitle = document.getElementById('modalTitle');
             const modalSummary = document.getElementById('modalSummary');
             const modalTranscript = document.getElementById('modalTranscript');
             const modalScore = document.getElementById('modalScore');
+            const modalProblemAnalysis = document.getElementById('modalProblemAnalysis');
+            const modalImprovement = document.getElementById('modalImprovement');
             
             modalTitle.textContent = title;
             modalSummary.textContent = summary;
             modalTranscript.innerHTML = transcript;
             modalScore.textContent = score;
             
+            // Apply score color
+            const colors = getScoreColor(score);
+            modalScore.className = `text-xl font-bold ${colors.text}`;
+            
+            // Set AI analysis
+            const analysis = aiAnalysisData[id] || { 
+                problem: '正在分析中...', 
+                improvement: '正在生成建議...' 
+            };
+            modalProblemAnalysis.textContent = analysis.problem;
+            modalImprovement.textContent = analysis.improvement;
+            
+            // Load discussion messages for this item
+            loadDiscussionMessages(id);
+            
+            // Store current item ID for discussion
+            modal.dataset.currentItemId = id;
+            
             modal.classList.remove('hidden');
             document.body.style.overflow = 'hidden';
         }
+
+        // Load discussion messages
+        function loadDiscussionMessages(itemId) {
+            const messagesContainer = document.getElementById('discussionMessages');
+            messagesContainer.innerHTML = '';
+            
+            // Initialize discussion data if not exists
+            if (!discussionData[itemId]) {
+                discussionData[itemId] = [
+                    {
+                        author: '主管 陳經理',
+                        time: '10分鐘前',
+                        message: '這個部分處理得不錯，但建議下次可以更深入探討客戶的家庭責任。',
+                        isManager: true
+                    },
+                    {
+                        author: '銷售員 李小華',
+                        time: '5分鐘前',
+                        message: '謝謝經理的建議，我會在下次拜訪時特別注意這點。',
+                        isManager: false
+                    }
+                ];
+            }
+            
+            // Display messages
+            discussionData[itemId].forEach(msg => {
+                addMessageToDisplay(msg);
+            });
+        }
+
+        // Add message to display
+        function addMessageToDisplay(msg) {
+            const messagesContainer = document.getElementById('discussionMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `p-3 rounded-lg ${msg.isManager ? 'bg-blue-50' : 'bg-gray-50'}`;
+            messageDiv.innerHTML = `
+                <div class="flex justify-between items-start mb-1">
+                    <span class="font-semibold text-sm ${msg.isManager ? 'text-primary' : 'text-gray-dark'}">${msg.author}</span>
+                    <span class="text-xs text-gray-light">${msg.time}</span>
+                </div>
+                <p class="text-sm text-gray-medium">${msg.message}</p>
+            `;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Add new discussion message
+        function addDiscussionMessage() {
+            const input = document.getElementById('newDiscussionMessage');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            const modal = document.getElementById('detailModal');
+            const itemId = modal.dataset.currentItemId;
+            
+            const newMsg = {
+                author: '主管 陳經理',
+                time: '剛剛',
+                message: message,
+                isManager: true
+            };
+            
+            // Add to data
+            if (!discussionData[itemId]) {
+                discussionData[itemId] = [];
+            }
+            discussionData[itemId].push(newMsg);
+            
+            // Add to display
+            addMessageToDisplay(newMsg);
+            
+            // Clear input
+            input.value = '';
+        }
+
+        // Enter key to send message
+        document.addEventListener('DOMContentLoaded', function() {
+            const input = document.getElementById('newDiscussionMessage');
+            if (input) {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        addDiscussionMessage();
+                    }
+                });
+            }
+        });
 
         // Close detail modal
         function closeDetailModal() {

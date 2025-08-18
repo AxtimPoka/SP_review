@@ -64,7 +64,7 @@
             <button onclick="history.back()" class="text-text-secondary">
                 <i class="fas fa-arrow-left text-lg"></i>
             </button>
-            <h1 class="text-lg font-semibold text-text-primary">錄音功能</h1>
+            <h1 class="text-lg font-semibold text-text-primary">錄音管理</h1>
             <div class="flex items-center space-x-4">
                 <div class="relative cursor-pointer" onclick="location.href='../common/COMMON_008_notification_center.html'">
                     <i class="fas fa-bell text-text-secondary text-lg"></i>
@@ -79,57 +79,29 @@
 
     <!-- Main Content -->
     <main class="px-4 py-6 pb-24">
-        <!-- Recording Section -->
-        <section class="text-center mb-8">
-            <div class="bg-white rounded-2xl p-8 shadow-lg">
-                <!-- Recording Button -->
-                <div class="mb-6">
-                    <button id="recordButton" class="recording-button w-32 h-32 bg-primary rounded-full flex items-center justify-center shadow-lg" onclick="toggleRecording()">
-                        <i id="recordIcon" class="fas fa-microphone text-white text-4xl"></i>
-                    </button>
-                </div>
-                
-                <!-- Status Text -->
-                <p id="statusText" class="text-lg font-medium text-text-primary mb-2">準備錄音</p>
-                <p class="text-sm text-text-tertiary mb-4">點擊按鈕開始錄音</p>
-                
-                <!-- Audio Waveform (hidden initially) -->
-                <div id="waveform" class="hidden mb-4">
-                    <div class="flex justify-center items-end">
-                        <div class="wave-bar"></div>
-                        <div class="wave-bar"></div>
-                        <div class="wave-bar"></div>
-                        <div class="wave-bar"></div>
-                        <div class="wave-bar"></div>
-                        <div class="wave-bar"></div>
-                        <div class="wave-bar"></div>
-                        <div class="wave-bar"></div>
-                        <div class="wave-bar"></div>
-                        <div class="wave-bar"></div>
-                    </div>
-                </div>
-                
-                <!-- Recording Timer -->
-                <div id="timer" class="hidden text-2xl font-mono text-text-primary">00:00</div>
-                
-                <!-- Tips -->
-                <div class="bg-blue-50 rounded-lg p-3 mt-4">
-                    <div class="flex items-center text-primary">
-                        <i class="fas fa-lightbulb mr-2"></i>
-                        <span class="text-sm font-medium">提示: 確保環境安靜，距離麥克風適當距離</span>
-                    </div>
-                </div>
-            </div>
-        </section>
 
         <!-- Quick Filters -->
         <section class="mb-6">
-            <div class="flex space-x-2 overflow-x-auto">
-                <button class="bg-primary text-white px-4 py-2 rounded-full text-sm whitespace-nowrap" onclick="filterRecordings('all')">全部</button>
-                <button class="bg-gray-200 text-text-secondary px-4 py-2 rounded-full text-sm whitespace-nowrap" onclick="filterRecordings('today')">今天</button>
-                <button class="bg-gray-200 text-text-secondary px-4 py-2 rounded-full text-sm whitespace-nowrap" onclick="filterRecordings('week')">本週</button>
-                <button class="bg-gray-200 text-text-secondary px-4 py-2 rounded-full text-sm whitespace-nowrap" onclick="filterRecordings('analyzing')">分析中</button>
-                <button class="bg-gray-200 text-text-secondary px-4 py-2 rounded-full text-sm whitespace-nowrap" onclick="filterRecordings('uncategorized')">未分類</button>
+            <div class="space-y-3">
+                <!-- 時間篩選 -->
+                <div class="flex items-center space-x-2">
+                    <!-- <span class="text-sm text-text-secondary mr-2">時間：</span> -->
+                    <div class="flex space-x-2 overflow-x-auto">
+                        <button class="time-filter bg-gray-200 text-text-secondary px-4 py-2 rounded-full text-sm whitespace-nowrap" data-filter="all" onclick="filterByTime('all')">全部</button>
+                        <button class="time-filter bg-primary text-white px-4 py-2 rounded-full text-sm whitespace-nowrap" data-filter="today" onclick="filterByTime('today')">今天</button>
+                        <button class="time-filter bg-gray-200 text-text-secondary px-4 py-2 rounded-full text-sm whitespace-nowrap" data-filter="week" onclick="filterByTime('week')">本週</button>
+                    </div>
+                </div>
+                <!-- 狀態篩選 -->
+                <div class="flex items-center space-x-2">
+                    <!-- <span class="text-sm text-text-secondary mr-2">狀態：</span> -->
+                    <div class="flex space-x-2 overflow-x-auto">
+                        <button class="status-filter bg-primary text-white px-4 py-2 rounded-full text-sm whitespace-nowrap" data-filter="all" onclick="filterByStatus('all')">全部</button>
+                        <button class="status-filter bg-gray-200 text-text-secondary px-4 py-2 rounded-full text-sm whitespace-nowrap" data-filter="analyzed" onclick="filterByStatus('analyzed')">已分析</button>
+                        <button class="status-filter bg-gray-200 text-text-secondary px-4 py-2 rounded-full text-sm whitespace-nowrap" data-filter="processing" onclick="filterByStatus('processing')">處理中</button>
+                        <button class="status-filter bg-gray-200 text-text-secondary px-4 py-2 rounded-full text-sm whitespace-nowrap" data-filter="failed" onclick="filterByStatus('failed')">處理失敗</button>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -138,13 +110,13 @@
             <h2 class="text-lg font-semibold text-text-primary mb-4">錄音歷史</h2>
             
             <!-- Recording List -->
-            <div class="space-y-3">
-                <!-- Recording Item 1 -->
-                <div class="bg-white rounded-lg p-4 shadow-sm">
+            <div class="space-y-3" id="recordingsList">
+                <!-- Recording Item 1 - 處理中 -->
+                <div class="recording-item bg-white rounded-lg p-4 shadow-sm" data-time="today" data-status="processing">
                     <div class="flex items-center justify-between mb-2">
                         <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 bg-error/10 rounded-full flex items-center justify-center">
-                                <i class="fas fa-circle text-error text-xs"></i>
+                            <div class="w-8 h-8 bg-warning/10 rounded-full flex items-center justify-center">
+                                <i class="fas fa-spinner fa-spin text-warning text-xs"></i>
                             </div>
                             <div>
                                 <h3 class="font-medium text-text-primary">張先生_壽險_0814</h3>
@@ -152,21 +124,24 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <span class="text-xs bg-warning/10 text-warning px-2 py-1 rounded-full">AI分析中</span>
+                            <span class="text-xs bg-warning/10 text-warning px-2 py-1 rounded-full">處理中</span>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-2 text-xs text-text-tertiary">
-                        <i class="fas fa-folder"></i>
-                        <span>張先生 / 壽險規劃</span>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2 text-xs text-text-tertiary">
+                            <i class="fas fa-folder"></i>
+                            <span>張先生 / 壽險規劃</span>
+                        </div>
+                        <p class="text-xs text-text-secondary">正在進行AI分析...</p>
                     </div>
                 </div>
 
-                <!-- Recording Item 2 -->
-                <div class="bg-white rounded-lg p-4 shadow-sm">
+                <!-- Recording Item 2 - 已分析已分類 -->
+                <div class="recording-item bg-white rounded-lg p-4 shadow-sm" data-time="yesterday" data-status="analyzed">
                     <div class="flex items-center justify-between mb-2">
                         <div class="flex items-center space-x-3">
                             <div class="w-8 h-8 bg-success/10 rounded-full flex items-center justify-center">
-                                <i class="fas fa-check text-success text-xs"></i>
+                                <i class="fas fa-check-double text-success text-xs"></i>
                             </div>
                             <div>
                                 <h3 class="font-medium text-text-primary">李太太_醫療險_0813</h3>
@@ -174,7 +149,7 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <span class="text-xs bg-success/10 text-success px-2 py-1 rounded-full">已完成</span>
+                            <span class="text-xs bg-success/10 text-success px-2 py-1 rounded-full">已分析</span>
                             <p class="text-xs text-text-tertiary mt-1">評分: 8.5</p>
                         </div>
                     </div>
@@ -183,27 +158,83 @@
                             <i class="fas fa-folder"></i>
                             <span>李太太 / 醫療險</span>
                         </div>
-                        <button class="text-primary text-xs" onclick="location.href='SALES_011_ai_analysis.html?recording=李太太_醫療險_0813'">查看分析</button>
+                        <button class="bg-primary text-white px-3 py-1 rounded text-xs" onclick="location.href='SALES_011_ai_analysis.html?recording=李太太_醫療險_0813'">查看分析</button>
                     </div>
                 </div>
 
-                <!-- Recording Item 3 - Uncategorized -->
-                <div class="bg-white rounded-lg p-4 shadow-sm border-l-4 border-warning">
+                <!-- Recording Item 3 - 已分析未分類 -->
+                <div class="recording-item bg-white rounded-lg p-4 shadow-sm border-l-4 border-warning" data-time="week" data-status="analyzed">
                     <div class="flex items-center justify-between mb-2">
                         <div class="flex items-center space-x-3">
                             <div class="w-8 h-8 bg-warning/10 rounded-full flex items-center justify-center">
-                                <i class="fas fa-exclamation text-warning text-xs"></i>
+                                <i class="fas fa-check text-warning text-xs"></i>
                             </div>
                             <div>
                                 <h3 class="font-medium text-text-primary">未分類錄音_0812</h3>
                                 <p class="text-xs text-text-tertiary">15:20 | 2天前 16:45</p>
                             </div>
                         </div>
+                        <div class="text-right">
+                            <span class="text-xs bg-success/10 text-success px-2 py-1 rounded-full">已分析</span>
+                            <p class="text-xs text-warning mt-1">未分類</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2 text-xs text-text-tertiary">
+                            <i class="fas fa-question-circle"></i>
+                            <span>需要歸檔至客戶CASE</span>
+                        </div>
                         <button class="bg-warning text-white px-3 py-1 rounded text-xs" onclick="location.href='SALES_004_recording_process.html?recording=未分類錄音_0812'">立即分類</button>
                     </div>
-                    <div class="flex items-center space-x-2 text-xs text-text-tertiary">
-                        <i class="fas fa-question-circle"></i>
-                        <span>需要歸檔至客戶CASE</span>
+                </div>
+
+                <!-- Recording Item 4 - 處理失敗 -->
+                <div class="recording-item bg-white rounded-lg p-4 shadow-sm border-l-4 border-error" data-time="week" data-status="failed">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-error/10 rounded-full flex items-center justify-center">
+                                <i class="fas fa-times text-error text-xs"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-text-primary">王先生_車險_0811</h3>
+                                <p class="text-xs text-text-tertiary">18:45 | 3天前 09:20</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs bg-error/10 text-error px-2 py-1 rounded-full">處理失敗</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2 text-xs text-text-tertiary">
+                            <i class="fas fa-exclamation-triangle text-error"></i>
+                            <span>上傳失敗，請重試</span>
+                        </div>
+                        <button class="bg-error text-white px-3 py-1 rounded text-xs" onclick="retryUpload('王先生_車險_0811')">重新上傳</button>
+                    </div>
+                </div>
+
+                <!-- Recording Item 5 - 今天處理中 -->
+                <div class="recording-item bg-white rounded-lg p-4 shadow-sm" data-time="today" data-status="processing">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 bg-warning/10 rounded-full flex items-center justify-center">
+                                <i class="fas fa-spinner fa-spin text-warning text-xs"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-text-primary">陳小姐_投資型保單_0814</h3>
+                                <p class="text-xs text-text-tertiary">35:20 | 今天 10:45</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs bg-warning/10 text-warning px-2 py-1 rounded-full">處理中</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2 text-xs text-text-tertiary">
+                            <i class="fas fa-folder"></i>
+                            <span>陳小姐 / 投資型保單</span>
+                        </div>
+                        <p class="text-xs text-text-secondary">AI分析進度 65%</p>
                     </div>
                 </div>
             </div>
@@ -215,25 +246,25 @@
         </section>
     </main>
 
-    <!-- Bottom Tab Bar -->
+      <!-- Bottom Tab Bar -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
-        <div class="grid grid-cols-5 py-2">
-            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='SALES_001_home.html'">
+        <div class="grid grid-cols-3 py-2">
+            <button class="flex flex-col items-center py-2 text-primary">
                 <i class="fas fa-home text-lg mb-1"></i>
                 <span class="text-xs">首頁</span>
             </button>
-            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='SALES_010_success_cases.html'">
+            <!-- <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='SALES_010_success_cases.html'">
                 <i class="fas fa-trophy text-lg mb-1"></i>
                 <span class="text-xs">案例</span>
-            </button>
-            <button class="flex flex-col items-center py-2 text-primary">
+            </button> -->
+            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='SALES_003_recording_progress.html'">
                 <i class="fas fa-microphone text-lg mb-1"></i>
                 <span class="text-xs">錄音</span>
             </button>
-            <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='SALES_017_ask_ai.html'">
+            <!-- <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='SALES_017_ask_ai.html'">
                 <i class="fas fa-robot text-lg mb-1"></i>
                 <span class="text-xs">Ask AI</span>
-            </button>
+            </button> -->
             <button class="flex flex-col items-center py-2 text-text-tertiary" onclick="location.href='../common/COMMON_008_notification_center.html'">
                 <i class="fas fa-bell text-lg mb-1"></i>
                 <span class="text-xs">通知</span>
@@ -314,15 +345,137 @@
             document.getElementById('timer').textContent = `${minutes}:${seconds}`;
         }
 
-        function filterRecordings(filter) {
-            // Update filter buttons
-            document.querySelectorAll('section:nth-child(2) button').forEach(btn => {
-                btn.className = 'bg-gray-200 text-text-secondary px-4 py-2 rounded-full text-sm whitespace-nowrap';
-            });
-            event.target.className = 'bg-primary text-white px-4 py-2 rounded-full text-sm whitespace-nowrap';
+        // 當前篩選狀態
+        let currentTimeFilter = 'today'; // 預設為今天
+        let currentStatusFilter = 'all'; // 預設顯示全部狀態
+
+        // 時間篩選
+        function filterByTime(filter) {
+            currentTimeFilter = filter;
             
-            // Filter logic would go here
-            console.log('Filtering by:', filter);
+            // 更新按鈕樣式
+            document.querySelectorAll('.time-filter').forEach(btn => {
+                if (btn.dataset.filter === filter) {
+                    btn.className = 'time-filter bg-primary text-white px-4 py-2 rounded-full text-sm whitespace-nowrap';
+                } else {
+                    btn.className = 'time-filter bg-gray-200 text-text-secondary px-4 py-2 rounded-full text-sm whitespace-nowrap';
+                }
+            });
+            
+            applyFilters();
+        }
+
+        // 狀態篩選
+        function filterByStatus(filter) {
+            currentStatusFilter = filter;
+            
+            // 更新按鈕樣式
+            document.querySelectorAll('.status-filter').forEach(btn => {
+                if (btn.dataset.filter === currentStatusFilter) {
+                    btn.className = 'status-filter bg-primary text-white px-4 py-2 rounded-full text-sm whitespace-nowrap';
+                } else {
+                    btn.className = 'status-filter bg-gray-200 text-text-secondary px-4 py-2 rounded-full text-sm whitespace-nowrap';
+                }
+            });
+            
+            applyFilters();
+        }
+
+        // 套用篩選
+        function applyFilters() {
+            const items = document.querySelectorAll('.recording-item');
+            let visibleCount = 0;
+            
+            items.forEach(item => {
+                let shouldShow = true;
+                
+                // 檢查時間篩選
+                if (currentTimeFilter !== 'all') {
+                    const itemTime = item.dataset.time;
+                    if (currentTimeFilter === 'today' && itemTime !== 'today') {
+                        shouldShow = false;
+                    } else if (currentTimeFilter === 'week' && !['today', 'yesterday', 'week'].includes(itemTime)) {
+                        shouldShow = false;
+                    }
+                }
+                
+                // 檢查狀態篩選
+                if (currentStatusFilter !== 'all' && shouldShow) {
+                    const itemStatus = item.dataset.status;
+                    if (itemStatus !== currentStatusFilter) {
+                        shouldShow = false;
+                    }
+                }
+                
+                // 顯示或隱藏項目
+                if (shouldShow) {
+                    item.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+            
+            // 如果沒有符合的項目，顯示提示
+            const noResultsMsg = document.getElementById('noResultsMessage');
+            if (visibleCount === 0) {
+                if (!noResultsMsg) {
+                    const msg = document.createElement('div');
+                    msg.id = 'noResultsMessage';
+                    msg.className = 'text-center py-8 text-text-tertiary';
+                    msg.innerHTML = `
+                        <i class="fas fa-inbox text-4xl mb-3"></i>
+                        <p>沒有符合篩選條件的錄音</p>
+                    `;
+                    document.getElementById('recordingsList').appendChild(msg);
+                }
+            } else if (noResultsMsg) {
+                noResultsMsg.remove();
+            }
+        }
+
+        // 重新上傳功能
+        function retryUpload(recordingName) {
+            // 顯示上傳中狀態
+            const button = event.target;
+            button.textContent = '上傳中...';
+            button.disabled = true;
+            
+            // 模擬上傳過程
+            setTimeout(() => {
+                // 找到對應的錄音項目
+                const item = button.closest('.recording-item');
+                
+                // 更新為處理中狀態
+                item.dataset.status = 'processing';
+                
+                // 更新UI
+                const statusIcon = item.querySelector('.w-8.h-8 i');
+                statusIcon.className = 'fas fa-spinner fa-spin text-warning text-xs';
+                statusIcon.parentElement.className = 'w-8 h-8 bg-warning/10 rounded-full flex items-center justify-center';
+                
+                const statusBadge = item.querySelector('.bg-error\\/10');
+                if (statusBadge) {
+                    statusBadge.className = 'text-xs bg-warning/10 text-warning px-2 py-1 rounded-full';
+                    statusBadge.textContent = '處理中';
+                }
+                
+                // 更新底部文字
+                const bottomText = item.querySelector('.flex.items-center.justify-between');
+                bottomText.innerHTML = `
+                    <div class="flex items-center space-x-2 text-xs text-text-tertiary">
+                        <i class="fas fa-folder"></i>
+                        <span>${recordingName.replace(/_/g, ' / ')}</span>
+                    </div>
+                    <p class="text-xs text-text-secondary">重新上傳中...</p>
+                `;
+                
+                // 移除紅色邊框
+                item.classList.remove('border-l-4', 'border-error');
+                
+                // 重新套用篩選
+                applyFilters();
+            }, 1000);
         }
 
         function loadMoreRecordings() {
@@ -332,6 +485,8 @@
 
         // Initialize modals and check permissions
         window.onload = function() {
+            // 預設套用今天的篩選
+            filterByTime('today');
             // Load modal components
             fetch('../includes/modals-all.html')
                 .then(response => response.text())
