@@ -50,31 +50,31 @@
     <!-- Tab Navigation -->
     <div class="bg-white border-b border-gray-200">
       <div class="flex">
-        <button
-          class="tab-button flex-1 py-3 text-center border-b-2 border-primary text-primary font-medium"
+        <!-- <button
+          class="tab-button flex-1 py-3 text-center border-b-2 border-transparent text-text-tertiary"
           onclick="showTab('analysis')"
         >
           分析
-        </button>
+        </button> -->
         <button
-          class="tab-button flex-1 py-3 text-center border-b-2 border-transparent text-text-tertiary"
+          class="tab-button flex-1 py-3 text-center border-b-2 border-primary text-primary font-medium"
           onclick="showTab('recordings')"
         >
-          錄音
+          錄音列表
         </button>
-        <button
+        <!-- <button
           class="tab-button flex-1 py-3 text-center border-b-2 border-transparent text-text-tertiary"
           onclick="showTab('askai')"
         >
           Ask AI
-        </button>
+        </button> -->
       </div>
     </div>
 
     <!-- Main Content -->
     <main class="px-4 py-6 pb-24">
       <!-- Analysis Tab -->
-      <div id="analysisTab" class="tab-content">
+      <div id="analysisTab" class="tab-content hidden">
         <!-- Score Cards -->
         <div class="score-cards-container flex gap-3 mb-4">
           <div
@@ -212,7 +212,7 @@
       </div>
 
       <!-- Recordings Tab -->
-      <div id="recordingsTab" class="tab-content hidden">
+      <div id="recordingsTab" class="tab-content">
         <div class="space-y-4">
           <div class="bg-white rounded-lg p-4">
             <div class="flex items-center justify-between mb-2">
@@ -1657,7 +1657,7 @@
 
       // Initialize content on page load
       document.addEventListener("DOMContentLoaded", function () {
-        updateContent("flow");
+        // updateContent("flow"); // 註解掉，因為預設顯示錄音列表
         
         // Enter key to send message in discussion
         const input = document.getElementById('newDiscussionMessage');
