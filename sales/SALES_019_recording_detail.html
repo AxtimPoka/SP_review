@@ -35,7 +35,7 @@
         <button onclick="history.back()" class="text-text-secondary">
           <i class="fas fa-arrow-left text-lg"></i>
         </button>
-        <h1 class="text-lg font-semibold text-text-primary">壽險規劃CASE</h1>
+        <h1 class="text-lg font-semibold text-text-primary">初次諮詢 錄音</h1>
         <div class="flex items-center space-x-3">
           <button onclick="markComplete()" class="text-success">
             <i class="fas fa-check text-lg"></i>
@@ -60,13 +60,7 @@
           class="tab-button flex-1 py-3 text-center border-b-2 border-transparent text-text-tertiary"
           onclick="showTab('recordings')"
         >
-          錄音
-        </button>
-        <button
-          class="tab-button flex-1 py-3 text-center border-b-2 border-transparent text-text-tertiary"
-          onclick="showTab('askai')"
-        >
-          Ask AI
+          逐字稿
         </button>
       </div>
     </div>
@@ -214,30 +208,97 @@
       <!-- Recordings Tab -->
       <div id="recordingsTab" class="tab-content hidden">
         <div class="space-y-4">
+          <!-- Segment List -->
           <div class="bg-white rounded-lg p-4">
-            <div class="flex items-center justify-between mb-2">
-              <h4 class="font-medium text-text-primary">初次諮詢</h4>
-              <span
-                class="text-xs bg-success/10 text-success px-2 py-1 rounded-full"
-                >已分析</span
-              >
+            <div class="space-y-3">
+              <div class="segment-item flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-all" onclick="seekToTime('00:04:04')">
+                <div class="flex-1">
+                  <p class="text-sm text-text-primary">一段中文對話</p>
+                </div>
+                <div class="text-xs text-text-tertiary font-mono">00:04:04</div>
+              </div>
+              
+              <div class="segment-item flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-all" onclick="seekToTime('00:04:19')">
+                <div class="flex-1">
+                  <p class="text-sm text-text-primary">一段中文對話</p>
+                </div>
+                <div class="text-xs text-text-tertiary font-mono">00:04:19</div>
+              </div>
+              
+              <div class="segment-item flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-all" onclick="seekToTime('00:04:26')">
+                <div class="flex-1">
+                  <p class="text-sm text-text-primary">一段中文對話</p>
+                </div>
+                <div class="text-xs text-text-tertiary font-mono">00:04:26</div>
+              </div>
+              
+              <div class="segment-item flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-all" onclick="seekToTime('00:04:30')">
+                <div class="flex-1">
+                  <p class="text-sm text-text-primary">一段中文對話</p>
+                </div>
+                <div class="text-xs text-text-tertiary font-mono">00:04:30</div>
+              </div>
+              
+              <div class="segment-item flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-all" onclick="seekToTime('00:04:34')">
+                <div class="flex-1">
+                  <p class="text-sm text-text-primary">一段中文對話</p>
+                </div>
+                <div class="text-xs text-text-tertiary font-mono">00:04:34</div>
+              </div>
+              
+              <div class="segment-item flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-all" onclick="seekToTime('00:04:36')">
+                <div class="flex-1">
+                  <p class="text-sm text-text-primary">一段中文對話</p>
+                </div>
+                <div class="text-xs text-text-tertiary font-mono">00:04:36</div>
+              </div>
+              
+              <div class="segment-item flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-all" onclick="seekToTime('00:04:41')">
+                <div class="flex-1">
+                  <p class="text-sm text-text-primary">一段中文對話</p>
+                </div>
+                <div class="text-xs text-text-tertiary font-mono">00:04:41</div>
+              </div>
+              
+              <div class="segment-item flex items-center gap-4 p-3 rounded-lg hover:bg-gray-50 cursor-pointer transition-all" onclick="seekToTime('00:04:45')">
+                <div class="flex-1">
+                  <p class="text-sm text-text-primary">一段中文對話</p>
+                </div>
+                <div class="text-xs text-text-tertiary font-mono">00:04:45</div>
+              </div>
             </div>
-            <p class="text-sm text-text-tertiary mb-2">
-              2024/08/12 14:30 | 28:35
-            </p>
-            <!-- 逐字稿摘要 -->
-            <!-- <div class="bg-gray-50 p-3 rounded-lg mb-3">
-              <p class="text-sm text-text-secondary line-clamp-3">
-                "...客戶表示最近有考慮給孩子規劃教育金，但對於保險商品不太了解。我向客戶解釋了儲蓄型保單的優勢及如何配合其家庭規劃需求..."
-              </p>
-            </div> -->
-            <!-- 單次分析按鈕 -->
-            <button
-              class="w-full mt-3 border border-primary text-primary py-2 rounded-lg text-sm"
-              onclick="location.href='SALES_019_recording_detail.html'"
-            >
-              查看單次分析
+          </div>
+        </div>
+        
+        <!-- Audio Player -->
+        <div class="fixed bottom-20 left-0 right-0 bg-white border-t border-gray-200 m-4 p-4 shadow-lg rounded-lg">
+          <!-- Progress Bar -->
+          <div class="mb-4">
+            <div class="relative h-1 bg-gray-200 rounded-full cursor-pointer" onclick="handleProgressClick(event)">
+              <div id="progressFill" class="absolute left-0 top-0 h-full bg-primary rounded-full transition-all duration-100" style="width: 0%"></div>
+              <div id="progressDot" class="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-error rounded-full border-2 border-white shadow-md transition-all duration-100" style="left: 0%"></div>
+            </div>
+            <div class="flex justify-between mt-2 text-xs text-text-tertiary font-mono">
+              <span id="currentTimeDisplay">00:00:00</span>
+              <span id="totalTimeDisplay">00:30:02</span>
+            </div>
+          </div>
+          
+          <!-- Controls -->
+          <div class="flex justify-center items-center gap-6">
+            
+            <button class="p-2 text-text-primary hover:text-primary transition-colors" onclick="skipBackward()">
+              <i class="fas fa-backward text-xl"></i>
             </button>
+            
+            <button id="playBtn" class="w-14 h-14 bg-primary rounded-full flex items-center justify-center text-white shadow-lg hover:bg-primary/90 transition-all" onclick="togglePlayPause()">
+              <i id="playIcon" class="fas fa-play text-xl"></i>
+            </button>
+            
+            <button class="p-2 text-text-primary hover:text-primary transition-colors" onclick="skipForward()">
+              <i class="fas fa-forward text-xl"></i>
+            </button>
+             
           </div>
         </div>
       </div>
@@ -1653,6 +1714,139 @@
         
         // Clear input
         input.value = '';
+      }
+
+      // Audio Player Variables and Functions
+      let isPlaying = false;
+      let currentTime = 0;
+      let duration = 1802; // 30:02 in seconds
+      let progressInterval;
+
+      function togglePlayPause() {
+        const playIcon = document.getElementById('playIcon');
+        isPlaying = !isPlaying;
+        
+        if (isPlaying) {
+          playIcon.className = 'fas fa-pause text-xl';
+          startProgress();
+        } else {
+          playIcon.className = 'fas fa-play text-xl';
+          stopProgress();
+        }
+      }
+
+      function startProgress() {
+        progressInterval = setInterval(() => {
+          if (currentTime < duration) {
+            currentTime += 0.1;
+            updateProgress();
+          } else {
+            stopProgress();
+            isPlaying = false;
+            document.getElementById('playIcon').className = 'fas fa-play text-xl';
+          }
+        }, 100);
+      }
+
+      function stopProgress() {
+        clearInterval(progressInterval);
+      }
+
+      function updateProgress() {
+        const percentage = (currentTime / duration) * 100;
+        document.getElementById('progressFill').style.width = percentage + '%';
+        document.getElementById('progressDot').style.left = percentage + '%';
+        
+        // Update time display
+        const currentTimeStr = formatTime(currentTime);
+        document.getElementById('currentTimeDisplay').textContent = currentTimeStr;
+      }
+
+      function formatTime(seconds) {
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = Math.floor(seconds % 60);
+        return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      }
+
+      function seekToTime(timeStr) {
+        const [m, s] = timeStr.split(':').slice(1).map(Number);
+        currentTime = m * 60 + s;
+        updateProgress();
+        
+        // Auto-play when seeking
+        if (!isPlaying) {
+          togglePlayPause();
+        }
+      }
+
+      function handleProgressClick(event) {
+        const progressBar = event.currentTarget;
+        const rect = progressBar.getBoundingClientRect();
+        const percentage = (event.clientX - rect.left) / rect.width;
+        currentTime = duration * percentage;
+        updateProgress();
+      }
+
+      function skipBackward() {
+        currentTime = Math.max(0, currentTime - 15);
+        updateProgress();
+      }
+
+      function skipForward() {
+        currentTime = Math.min(duration, currentTime + 15);
+        updateProgress();
+      }
+
+      function toggleMenu() {
+        // Show playback speed options
+        showActionSheet({
+          title: "播放選項",
+          actions: [
+            {
+              text: "0.5x 速度",
+              handler: () => {
+                console.log("Set speed to 0.5x");
+              }
+            },
+            {
+              text: "1.0x 速度（正常）",
+              handler: () => {
+                console.log("Set speed to 1.0x");
+              }
+            },
+            {
+              text: "1.5x 速度",
+              handler: () => {
+                console.log("Set speed to 1.5x");
+              }
+            },
+            {
+              text: "2.0x 速度",
+              handler: () => {
+                console.log("Set speed to 2.0x");
+              }
+            }
+          ]
+        });
+      }
+
+      function toggleTranscript() {
+        // Toggle between recordings tab and analysis tab
+        const recordingsTab = document.getElementById('recordingsTab');
+        const analysisTab = document.getElementById('analysisTab');
+        
+        if (!recordingsTab.classList.contains('hidden')) {
+          // Switch to analysis tab
+          showTab('analysis');
+          // Update tab buttons
+          document.querySelectorAll('.tab-button').forEach((btn) => {
+            btn.classList.remove('border-primary', 'text-primary');
+            btn.classList.add('border-transparent', 'text-text-tertiary');
+          });
+          document.querySelectorAll('.tab-button')[0].classList.remove('border-transparent', 'text-text-tertiary');
+          document.querySelectorAll('.tab-button')[0].classList.add('border-primary', 'text-primary');
+        }
       }
 
       // Initialize content on page load
