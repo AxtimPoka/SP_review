@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>銷售評分系統自定義設計</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+            color: #2c3e50;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Header Section */
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            border-radius: 16px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+        
+        /* Dimension Tabs */
+        .dimension-tabs {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .dimension-tab {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 200px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .dimension-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .dimension-tab:hover:not(.active):not(.add-dimension) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+        }
+        
+        .dimension-tab .score-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .dimension-tab.active .score-badge {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .dimension-name-input {
+            background: transparent;
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+            color: inherit;
+            outline: none;
+            width: 200px;
+            padding: 4px;
+        }
+        
+        .dimension-tab.active .dimension-name-input {
+            color: white;
+        }
+        
+        .dimension-tab .dimension-name-input::placeholder {
+            color: #a0aec0;
+            font-style: italic;
+        }
+        
+        .dimension-tab.active .dimension-name-input::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .dimension-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn-delete-dimension {
+            background: rgba(255, 71, 87, 0.1);
+            color: #ff4757;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .dimension-tab.active .btn-delete-dimension {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .btn-delete-dimension:hover {
+            background: #ff4757;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .add-dimension {
+            border: 2px dashed #667eea;
+            background: transparent;
+            min-width: 150px;
+            flex: none;
+        }
+        
+        .add-dimension:hover {
+            background: rgba(102, 126, 234, 0.05);
+            transform: translateY(-2px);
+        }
+        
+        /* Question Section */
+        .question-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f2f5;
+        }
+        
+        .question-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .question-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-delete {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-delete:hover {
+            background: #ff3838;
+            transform: translateY(-1px);
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #495057;
+            font-size: 15px;
+        }
+        
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .form-input:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        /* Question Type Selector */
+        .question-type-selector {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .type-btn {
+            padding: 10px 20px;
+            border: 2px solid #e1e8ed;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .type-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .type-btn:hover:not(.active) {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+        
+        /* Scoring Standards */
+        .scoring-standard {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .scoring-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e1e8ed;
+        }
+        
+        .scoring-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+        
+        .scoring-item label {
+            flex: 1;
+            cursor: pointer;
+            font-size: 15px;
+            color: #495057;
+        }
+        
+        .scoring-item .score-input {
+            width: 80px;
+            padding: 6px 10px;
+            border: 2px solid #e1e8ed;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        /* Progress Bar */
+        .progress-container {
+            margin: 30px 0;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #6c757d;
+        }
+        
+        /* Add Question Button */
+        .add-question-btn {
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .add-question-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .add-question-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+        
+        /* Summary Section */
+        .summary-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-top: 30px;
+        }
+        
+        .summary-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .summary-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .summary-card h3 {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .summary-card .value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .summary-card .value span {
+            font-size: 16px;
+            color: #6c757d;
+            font-weight: 400;
+        }
+        
+        /* Actions Section */
+        .actions-section {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-secondary:hover {
+            background: #f8f9ff;
+            transform: translateY(-2px);
+        }
+        
+        /* Empty State Styles */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+        
+        .empty-state svg {
+            margin: 0 auto 30px;
+            opacity: 0.3;
+        }
+        
+        .empty-state h2 {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .empty-state p {
+            color: #6c757d;
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+        
+        .example-box {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: left;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .example-box h3 {
+            font-size: 18px;
+            color: #495057;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .example-item {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .example-item strong {
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .example-item ul {
+            margin-left: 20px;
+            color: #6c757d;
+            line-height: 1.8;
+        }
+        
+        .example-item li {
+            margin-bottom: 5px;
+        }
+        
+        .placeholder-text {
+            color: #a0aec0;
+            font-style: italic;
+        }
+        
+        /* Question Template */
+        .question-template {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>銷售評分系統自定義設計</h1>
+            <p>為您的行業打造專屬的銷售評分標準，每個維度滿分100分</p>
+        </div>
+        
+        <!-- Dimension Tabs -->
+        <div class="dimension-tabs" id="dimensionTabs">
+            <!-- Dimensions will be dynamically added here -->
+            <button class="dimension-tab add-dimension" onclick="addNewDimension()">
+                <span style="color: #667eea;">+ 新增維度 <span id="dimensionCount">(0/3)</span></span>
+            </button>
+        </div>
+        
+        <!-- Question Section for 維度一 -->
+        <div id="dimension1" class="dimension-content">
+            <!-- Empty State -->
+            <div class="empty-state">
+                <svg width="120" height="120" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 11H15M9 15H15M12 2L2 7V22L12 17L22 22V7L12 2Z" stroke="#cbd5e0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h2>開始建立您的評分系統</h2>
+                <p>點擊下方按鈕新增第一個評分題目</p>
+                <div class="example-box">
+                    <h3>💡 範例參考</h3>
+                    <div class="example-item">
+                        <strong>保險業範例：</strong>
+                        <ul>
+                            <li>維度1：需求探詢能力（了解客戶家庭狀況、財務規劃）</li>
+                            <li>維度2：產品說明能力（保障內容、理賠範圍說明）</li>
+                            <li>維度3：異議處理能力（處理客戶疑慮、競品比較）</li>
+                        </ul>
+                    </div>
+                    <div class="example-item">
+                        <strong>房地產業範例：</strong>
+                        <ul>
+                            <li>維度1：物件介紹完整度（區位、生活機能、建材說明）</li>
+                            <li>維度2：議價談判技巧（價格協商、付款條件）</li>
+                            <li>維度3：後續服務追蹤（貸款協助、交屋流程）</li>
+                        </ul>
+                    </div>
+                    <div class="example-item">
+                        <strong>汽車業範例：</strong>
+                        <ul>
+                            <li>維度1：產品知識展現（車款特色、性能規格）</li>
+                            <li>維度2：試乘體驗安排（路線規劃、功能示範）</li>
+                            <li>維度3：購車方案說明（貸款、保險、保固）</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Add Question Button -->
+            <button class="add-question-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                新增第一個題目
+            </button>
+        </div>
+        
+        <!-- Summary Section -->
+        <div class="summary-section">
+            <h2 class="summary-title">評分系統總覽</h2>
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <h3>總維度數</h3>
+                    <div class="value">0 <span>個維度</span></div>
+                </div>
+                <div class="summary-card">
+                    <h3>總題目數</h3>
+                    <div class="value">0 <span>道題目</span></div>
+                </div>
+                <div class="summary-card">
+                    <h3>總配分</h3>
+                    <div class="value">0 <span>分</span></div>
+                </div>
+                <div class="summary-card">
+                    <h3>完成度</h3>
+                    <div class="value">0 <span>%</span></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="actions-section">
+            <button class="btn btn-secondary">預覽評分卡</button>
+            <button class="btn btn-primary">儲存並發布</button>
+        </div>
+    </div>
+    
+    <script>
+        let questionCount = 0;
+        let currentDimension = 1;
+        let dimensionCount = 0;
+        let dimensions = {};
+        
+        // Initialize with first dimension
+        function initializeDimensions() {
+            addNewDimension();
+        }
+        
+        // Add new dimension
+        function addNewDimension() {
+            if (dimensionCount >= 3) {
+                alert('最多只能新增3個維度');
+                return;
+            }
+            
+            dimensionCount++;
+            const dimensionId = `dim_${Date.now()}`;
+            dimensions[dimensionId] = {
+                name: '',
+                questions: []
+            };
+            
+            const dimensionHTML = `
+                <div class="dimension-tab ${dimensionCount === 1 ? 'active' : ''}" data-dimension="${dimensionId}" id="${dimensionId}">
+                    <input type="text" class="dimension-name-input" placeholder="請輸入維度名稱" onblur="updateDimensionName('${dimensionId}', this.value)" onclick="event.stopPropagation()">
+                    <div class="dimension-actions">
+                        <span class="score-badge">100分</span>
+                        <button class="btn-delete-dimension" title="刪除維度">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            const addButton = document.querySelector('.add-dimension');
+            addButton.insertAdjacentHTML('beforebegin', dimensionHTML);
+            
+            // Add click event to new dimension tab
+            const newTab = document.getElementById(dimensionId);
+            newTab.addEventListener('click', function(e) {
+                // Don't switch tab if clicking on input or delete button
+                if (e.target.classList.contains('dimension-name-input') || 
+                    e.target.closest('.btn-delete-dimension')) {
+                    return;
+                }
+                switchDimension(dimensionId);
+            });
+            
+            // Add delete button event listener
+            const deleteBtn = newTab.querySelector('.btn-delete-dimension');
+            deleteBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                deleteDimension(dimensionId);
+            });
+            
+            if (dimensionCount === 1) {
+                currentDimension = dimensionId;
+                showDimensionContent(dimensionId);
+            }
+            
+            updateDimensionCounter();
+            updateSummary();
+        }
+        
+        // Delete dimension
+        function deleteDimension(dimensionId) {
+            if (dimensionCount <= 1) {
+                alert('至少需要保留一個維度');
+                return;
+            }
+            
+            if (confirm('確定要刪除這個維度嗎？相關的題目也會一併刪除。')) {
+                const tab = document.getElementById(dimensionId);
+                
+                // Remove all questions from this dimension
+                if (dimensions[dimensionId] && dimensions[dimensionId].questions) {
+                    dimensions[dimensionId].questions.forEach(questionId => {
+                        const questionElement = document.querySelector(`[data-question-id="${questionId}"]`);
+                        if (questionElement) {
+                            questionElement.remove();
+                            questionCount--;
+                        }
+                    });
+                }
+                
+                tab.remove();
+                delete dimensions[dimensionId];
+                dimensionCount--;
+                
+                // If deleted dimension was active, activate first available dimension
+                if (currentDimension === dimensionId) {
+                    const firstTab = document.querySelector('.dimension-tab:not(.add-dimension)');
+                    if (firstTab) {
+                        const newDimensionId = firstTab.dataset.dimension;
+                        switchDimension(newDimensionId);
+                    } else {
+                        // No dimensions left, show empty state
+                        const emptyState = document.querySelector('.empty-state');
+                        if (emptyState) {
+                            emptyState.style.display = 'block';
+                        }
+                    }
+                }
+                
+                // Show empty state if no questions left
+                if (questionCount === 0) {
+                    const emptyState = document.querySelector('.empty-state');
+                    if (emptyState) {
+                        emptyState.style.display = 'block';
+                    }
+                    
+                    // Update button text
+                    const addButton = document.querySelector('.add-question-btn');
+                    if (addButton) {
+                        addButton.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                            新增第一個題目
+                        `;
+                    }
+                }
+                
+                updateDimensionCounter();
+                updateSummary();
+            }
+        }
+        
+        // Update dimension counter
+        function updateDimensionCounter() {
+            const counterElement = document.getElementById('dimensionCount');
+            if (counterElement) {
+                counterElement.textContent = `(${dimensionCount}/3)`;
+            }
+            
+            // Disable add button if at limit
+            const addButton = document.querySelector('.add-dimension');
+            if (dimensionCount >= 3) {
+                addButton.style.opacity = '0.5';
+                addButton.style.cursor = 'not-allowed';
+                addButton.querySelector('span').innerHTML = `+ 新增維度 <span id="dimensionCount">(${dimensionCount}/3) 已達上限</span>`;
+            } else {
+                addButton.style.opacity = '1';
+                addButton.style.cursor = 'pointer';
+                addButton.querySelector('span').innerHTML = `+ 新增維度 <span id="dimensionCount">(${dimensionCount}/3)</span>`;
+            }
+        }
+        
+        // Update dimension name
+        function updateDimensionName(dimensionId, name) {
+            dimensions[dimensionId].name = name;
+            updateSummary();
+        }
+        
+        // Switch dimension
+        function switchDimension(dimensionId) {
+            document.querySelectorAll('.dimension-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            const tab = document.getElementById(dimensionId);
+            if (tab) {
+                tab.classList.add('active');
+                currentDimension = dimensionId;
+                showDimensionContent(dimensionId);
+            }
+        }
+        
+        // Show dimension content
+        function showDimensionContent(dimensionId) {
+            // Here you would load the questions for this dimension
+            console.log('Showing content for dimension:', dimensionId);
+        }
+        
+        // Add question function
+        function addNewQuestion() {
+            questionCount++;
+            const emptyState = document.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.style.display = 'none';
+            }
+            
+            const questionHTML = `
+                <div class="question-section" data-question-id="${questionCount}">
+                    <div class="question-header">
+                        <div class="question-title">題目 ${questionCount}</div>
+                        <div class="question-actions">
+                            <button class="btn-delete" onclick="deleteQuestion(${questionCount})">刪除題目</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">題目名稱</label>
+                        <input type="text" class="form-input" placeholder="請輸入題目名稱，例如：客戶需求探詢能力">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">題型選擇</label>
+                        <div class="question-type-selector">
+                            <button class="type-btn active">範圍題</button>
+                            <button class="type-btn">是/否題</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">理論依據（選填）</label>
+                        <textarea class="form-textarea" placeholder="說明此評分項目的理論基礎或參考標準"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">評分標準</label>
+                        <div class="scoring-standard">
+                            <div class="scoring-item">
+                                <label style="flex: none; width: 150px;">80～100%：</label>
+                                <input type="text" class="form-input" placeholder="描述達到80分的標準">
+                            </div>
+                            <div class="scoring-item">
+                                <label style="flex: none; width: 150px;">60~80%：</label>
+                                <input type="text" class="form-input" placeholder="描述達到60分的標準">
+                            </div>
+                            <div class="scoring-item">
+                                <label style="flex: none; width: 150px;">40~60%：</label>
+                                <input type="text" class="form-input" placeholder="描述達到40分的標準">
+                            </div>
+                            <div class="scoring-item">
+                                <label style="flex: none; width: 150px;">20~40%：</label>
+                                <input type="text" class="form-input" placeholder="描述達到20分的標準">
+                            </div>
+                            <div class="scoring-item">
+                                <label style="flex: none; width: 150px;">0~20%：</label>
+                                <input type="text" class="form-input" placeholder="描述得0分的情況">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-text">
+                            <span>配分：待設定</span>
+                            <span>剩餘：100分</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const addButton = document.querySelector('.add-question-btn');
+            addButton.insertAdjacentHTML('beforebegin', questionHTML);
+            
+            // Update button text
+            if (questionCount === 1) {
+                addButton.innerHTML = `
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    新增下一個題目
+                `;
+            }
+            
+            // Reattach event listeners to new type buttons
+            const newQuestion = document.querySelector(`[data-question-id="${questionCount}"]`);
+            newQuestion.querySelectorAll('.type-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const parent = this.closest('.question-type-selector');
+                    parent.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    updateQuestionType(newQuestion, this.textContent);
+                });
+            });
+            
+            // Store question in current dimension
+            if (dimensions[currentDimension]) {
+                dimensions[currentDimension].questions.push(questionCount);
+            }
+            
+            updateSummary();
+            updateProgress();
+        }
+        
+        // Delete question
+        function deleteQuestion(id) {
+            if (confirm('確定要刪除這個題目嗎？')) {
+                const question = document.querySelector(`[data-question-id="${id}"]`);
+                question.remove();
+                questionCount--;
+                
+                // Show empty state if no questions
+                if (questionCount === 0) {
+                    const emptyState = document.querySelector('.empty-state');
+                    if (emptyState) {
+                        emptyState.style.display = 'block';
+                    }
+                    
+                    // Update button text
+                    const addButton = document.querySelector('.add-question-btn');
+                    addButton.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        新增第一個題目
+                    `;
+                }
+                
+                updateSummary();
+                updateProgress();
+            }
+        }
+        
+        // Update question type content
+        function updateQuestionType(questionElement, type) {
+            const scoringStandard = questionElement.querySelector('.scoring-standard');
+            
+            if (type === '是/否題') {
+                scoringStandard.innerHTML = `
+                    <div class="scoring-item">
+                        <label style="flex: 1;">問題1：</label>
+                        <input type="text" class="form-input" placeholder="請輸入是/否問題" style="flex: 2;">
+                        <select class="form-input" style="width: 150px; margin-left: 10px;">
+                            <option>是（配分）</option>
+                            <option>否（0分）</option>
+                        </select>
+                    </div>
+                    <button class="btn-add-option" style="margin-top: 10px;">+ 新增問題</button>
+                `;
+            } else {
+                // 範圍題 (預設)
+                scoringStandard.innerHTML = `
+                    <div class="scoring-item">
+                        <label style="flex: none; width: 150px;">滿分（100%）：</label>
+                        <input type="text" class="form-input" placeholder="描述達到滿分的標準">
+                    </div>
+                    <div class="scoring-item">
+                        <label style="flex: none; width: 150px;">80%：</label>
+                        <input type="text" class="form-input" placeholder="描述達到80分的標準">
+                    </div>
+                    <div class="scoring-item">
+                        <label style="flex: none; width: 150px;">60%：</label>
+                        <input type="text" class="form-input" placeholder="描述達到60分的標準">
+                    </div>
+                    <div class="scoring-item">
+                        <label style="flex: none; width: 150px;">40%：</label>
+                        <input type="text" class="form-input" placeholder="描述達到40分的標準">
+                    </div>
+                    <div class="scoring-item">
+                        <label style="flex: none; width: 150px;">20%：</label>
+                        <input type="text" class="form-input" placeholder="描述達到20分的標準">
+                    </div>
+                    <div class="scoring-item">
+                        <label style="flex: none; width: 150px;">0分：</label>
+                        <input type="text" class="form-input" placeholder="描述得0分的情況">
+                    </div>
+                `;
+            }
+        }
+        
+        // Update progress
+        function updateProgress() {
+            const questions = document.querySelectorAll('.question-section');
+            const totalQuestions = questions.length;
+            if (totalQuestions === 0) return;
+            
+            const scorePerQuestion = 100 / totalQuestions;
+            
+            questions.forEach((question, index) => {
+                const progressFill = question.querySelector('.progress-fill');
+                const progressText = question.querySelector('.progress-text');
+                
+                if (progressFill) {
+                    const percentage = ((index + 1) / totalQuestions) * 100;
+                    progressFill.style.width = `${percentage}%`;
+                }
+                
+                if (progressText) {
+                    const allocated = scorePerQuestion.toFixed(1);
+                    const remaining = (100 - (scorePerQuestion * (index + 1))).toFixed(1);
+                    progressText.innerHTML = `
+                        <span>配分：${allocated}分</span>
+                        <span>剩餘：${remaining}分</span>
+                    `;
+                }
+            });
+        }
+        
+        // Update summary
+        function updateSummary() {
+            const totalQuestions = document.querySelectorAll('.question-section').length;
+            const totalScore = dimensionCount * 100;
+            const completion = totalQuestions > 0 ? Math.min(100, (totalQuestions / (dimensionCount * 3)) * 100) : 0;
+            
+            document.querySelector('.summary-grid').innerHTML = `
+                <div class="summary-card">
+                    <h3>總維度數</h3>
+                    <div class="value">${dimensionCount} <span>個維度</span></div>
+                </div>
+                <div class="summary-card">
+                    <h3>總題目數</h3>
+                    <div class="value">${totalQuestions} <span>道題目</span></div>
+                </div>
+                <div class="summary-card">
+                    <h3>總配分</h3>
+                    <div class="value">${totalScore} <span>分</span></div>
+                </div>
+                <div class="summary-card">
+                    <h3>完成度</h3>
+                    <div class="value">${completion.toFixed(0)} <span>%</span></div>
+                </div>
+            `;
+        }
+        
+        // Add question button event
+        document.querySelector('.add-question-btn').addEventListener('click', addNewQuestion);
+        
+        // Save and publish
+        document.querySelector('.btn-primary').addEventListener('click', function() {
+            if (questionCount === 0) {
+                alert('請至少新增一個評分題目');
+                return;
+            }
+            alert('評分系統已儲存並發布！');
+        });
+        
+        // Preview
+        document.querySelector('.btn-secondary').addEventListener('click', function() {
+            if (questionCount === 0) {
+                alert('請先新增評分題目');
+                return;
+            }
+            alert('預覽功能將在新視窗中開啟');
+        });
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDimensions();
+        });
+        
+        initializeDimensions();
+    </script>
+</body>
+</html>
+
