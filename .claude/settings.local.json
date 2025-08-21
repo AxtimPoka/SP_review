@@ -1,5 +1,9 @@
 {
   "permissions": {
+    "allow": [
+      "Bash(cp:*)",
+      "Bash(open /Users/xiaoyongling/Desktop/SP_review/manager/MGR_018_preloaded.html)"
+    ],
     "defaultMode": "acceptEdits"
   }
 }

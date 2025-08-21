@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>標準管理</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .main-container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            max-width: 1200px;
+            width: 100%;
+            padding: 40px;
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        /* 目前使用狀態區域 */
+        .current-status-section {
+            background: #F8F9FF;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .status-title {
+            color: #4a5568;
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-icon {
+            font-size: 24px;
+        }
+
+        .transfer-btn {
+            background: #5B6EFF;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .transfer-btn:hover {
+            background: #4A5BF5;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(91, 110, 255, 0.3);
+        }
+
+        .description {
+            color: #718096;
+            font-size: 15px;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .current-template-box {
+            background: white;
+            border: 2px solid #E0E7FF;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .template-label {
+            color: #4a5568;
+            font-size: 16px;
+        }
+
+        .template-badge {
+            background: white;
+            color: #2d3748;
+            padding: 6px 16px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            border: 1px solid #E2E8F0;
+        }
+
+        .teams-title {
+            color: #4a5568;
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .teams-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+        }
+
+        .team-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #E2E8F0;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .team-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .team-name {
+            color: #2d3748;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .team-score {
+            font-size: 28px;
+            font-weight: bold;
+            transition: all 0.5s ease;
+        }
+
+        .score-high {
+            color: #48bb78;
+        }
+
+        .score-medium {
+            color: #f6ad55;
+        }
+
+        .score-low {
+            color: #fc8181;
+        }
+
+        /* 轉移模式 */
+        .transfer-mode .current-status-section {
+            background: #FFF5F5;
+            border: 2px solid #FFD5D5;
+        }
+
+        .transfer-controls {
+            display: none;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #E2E8F0;
+        }
+
+        .transfer-mode .transfer-controls {
+            display: block;
+        }
+
+        .template-select-container {
+            margin-bottom: 20px;
+        }
+
+        .select-label {
+            color: #4a5568;
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .template-select {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 16px;
+            border: 2px solid #E2E8F0;
+            border-radius: 8px;
+            font-size: 15px;
+            color: #4a5568;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .template-select:hover {
+            border-color: #CBD5E0;
+        }
+
+        .template-select:focus {
+            outline: none;
+            border-color: #5B6EFF;
+            box-shadow: 0 0 0 3px rgba(91, 110, 255, 0.1);
+        }
+
+        .transfer-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        /* 模板列表區域 */
+        .templates-section {
+            margin-bottom: 40px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .section-title-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filter-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .filter-select {
+            padding: 8px 12px;
+            border: 2px solid #E2E8F0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #4a5568;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .filter-select:hover {
+            border-color: #CBD5E0;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #5B6EFF;
+            box-shadow: 0 0 0 3px rgba(91, 110, 255, 0.1);
+        }
+
+        .filter-label {
+            color: #718096;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .section-title {
+            color: #2d3748;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        /* 篩選器樣式 */
+        .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #4a5568;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-select:hover {
+            border-color: #cbd5e0;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #5B6EFF;
+            box-shadow: 0 0 0 3px rgba(91, 110, 255, 0.1);
+        }
+
+        /* 搜尋輸入框樣式 */
+        .search-input {
+            padding: 8px 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #4a5568;
+            background: white;
+            transition: all 0.3s ease;
+            width: 200px;
+        }
+
+        .search-input::placeholder {
+            color: #a0aec0;
+        }
+
+        .search-input:hover {
+            border-color: #cbd5e0;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #5B6EFF;
+            box-shadow: 0 0 0 3px rgba(91, 110, 255, 0.1);
+        }
+
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .template-card {
+            background: white;
+            border: 2px solid #E2E8F0;
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            min-height: 280px;
+        }
+
+        .template-card:hover {
+            border-color: #5B6EFF;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(91, 110, 255, 0.15);
+        }
+
+        .template-card.active {
+            border-color: #5B6EFF;
+            background: #F8F9FF;
+        }
+
+        .template-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .badge-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .template-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .custom-badge {
+            background: #FFE4E4;
+            color: #E53E3E;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-published {
+            background: #E4FFE4;
+            color: #38A169;
+        }
+
+        .status-draft {
+            background: #FFF5CC;
+            color: #D69E2E;
+        }
+
+        .template-subtitle {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .template-items {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .template-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: auto;
+            padding-top: 16px;
+            border-top: 1px solid #E2E8F0;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .action-btn-edit {
+            background: #EDF2F7;
+            color: #4A5568;
+        }
+
+        .action-btn-edit:hover {
+            background: #E2E8F0;
+        }
+
+        .action-btn-delete {
+            background: #FED7D7;
+            color: #E53E3E;
+        }
+
+        .action-btn-delete:hover {
+            background: #FEB2B2;
+        }
+
+        .action-btn-publish {
+            background: #C6F6D5;
+            color: #38A169;
+        }
+
+        .action-btn-publish:hover {
+            background: #9AE6B4;
+        }
+
+        .template-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #4a5568;
+            font-size: 14px;
+        }
+
+        .add-template-card {
+            border: 2px dashed #CBD5E0;
+            background: #F7FAFC;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .add-template-card:hover {
+            border-color: #5B6EFF;
+            background: white;
+        }
+
+        .add-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #5B6EFF;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 16px;
+            transition: transform 0.3s ease;
+        }
+
+        .add-template-card:hover .add-icon {
+            transform: rotate(90deg);
+        }
+
+        /* 按鈕樣式 */
+        .btn {
+            padding: 12px 32px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            outline: none;
+        }
+
+        .btn-primary {
+            background: #5B6EFF;
+            color: white;
+        }
+
+        .btn-primary:disabled {
+            background: #CBD5E0;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .btn-primary:not(:disabled):hover {
+            background: #4A5BF5;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(91, 110, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #4a5568;
+            border: 2px solid #E2E8F0;
+        }
+
+        .btn-secondary:hover {
+            background: #F7FAFC;
+            border-color: #CBD5E0;
+        }
+
+        /* 通知訊息 */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #48bb78;
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(72, 187, 120, 0.3);
+            display: none;
+            animation: slideInRight 0.5s ease;
+            z-index: 1000;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .notification.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 25px;
+            }
+
+            .templates-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .teams-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container" id="mainContainer">
+        <div class="header">
+            <h1>標準管理</h1>
+        </div>
+
+        <!-- 目前團隊使用狀態 -->
+        <div class="current-status-section">
+            <div class="status-header">
+                <div class="status-title">
+                    <span class="status-icon">📋</span>
+                    <span id="statusTitle">目前團隊使用狀態</span>
+                </div>
+                <button class="transfer-btn" id="transferBtn" onclick="toggleTransferMode()">
+                    <span>🔄</span>
+                    <span>轉移標準</span>
+                </button>
+            </div>
+
+            <p class="description">
+                所有團隊目前使用統一標準。點擊下方標準列表可切換全公司使用的標準。
+            </p>
+
+            <div class="current-template-box">
+                <span class="template-label">目前使用：</span>
+                <span class="template-badge" id="currentTemplate">SPIN預設標準</span>
+            </div>
+
+
+
+            <!-- 轉移控制區域 -->
+            <div class="transfer-controls">
+                <div class="template-select-container">
+                    <label class="select-label">請選擇要轉移到的新標準：</label>
+                    <select id="templateSelect" class="template-select" onchange="handleTemplateSelectChange()">
+                        <option value="">-- 請選擇標準 --</option>
+                        <option value="spin-default">SPIN預設標準</option>
+                        <option value="north-custom">北區（自訂）</option>
+                        <option value="east-custom">東區（自訂）</option>
+                        <option value="marketing-custom">行銷（自訂）</option>
+                    </select>
+                </div>
+                <div class="transfer-actions">
+                    <button class="btn btn-secondary" onclick="cancelTransferMode()">取消</button>
+                    <button class="btn btn-primary" id="confirmTransferBtn" disabled onclick="confirmTransfer()">確認轉移</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 模板列表 -->
+        <div class="templates-section" id="templatesSection">
+            <div class="section-header">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 24px;">📊</span>
+                    <h2 class="section-title">標準列表</h2>
+                </div>
+                <div class="filter-controls" style="display: flex; gap: 10px;">
+                    <input type="text" id="searchInput" class="search-input" placeholder="搜尋標準名稱..." oninput="filterTemplates()">
+                    <select id="statusFilter" class="filter-select" onchange="filterTemplates()">
+                        <option value="all">所有狀態</option>
+                        <option value="published">已發佈</option>
+                        <option value="draft">草稿</option>
+                    </select>
+                    <select id="typeFilter" class="filter-select" onchange="filterTemplates()">
+                        <option value="all">所有類型</option>
+                        <option value="default">預設</option>
+                        <option value="custom">自訂</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="templates-grid">
+                <div class="template-card add-template-card" onclick="showAddTemplateMessage()">
+                    <div class="add-icon">+</div>
+                    <div class="template-name">新增標準</div>
+                </div>
+                
+                <div class="template-card" data-template="spin-default" data-status="published" data-type="default" onclick="quickSwitchTemplate('SPIN預設標準', this)">
+                    <div class="template-header">
+                        <div class="template-name">SPIN預設標準</div>
+                        <div class="badge-container">
+                            <span class="status-badge status-published">已發佈</span>
+                        </div>
+                    </div>
+                    <div class="template-subtitle">標準化銷售流程標準</div>
+                    <div class="template-items">
+                        <div class="template-item">
+                            <span>📊</span>
+                            <span>流程遵守度</span>
+                        </div>
+                        <div class="template-item">
+                            <span>💡</span>
+                            <span>銷售技巧</span>
+                        </div>
+                        <div class="template-item">
+                            <span>💬</span>
+                            <span>溝通能力</span>
+                        </div>
+                    </div>
+                    <div class="template-actions" onclick="event.stopPropagation()">
+                        <button class="action-btn action-btn-edit" onclick="editTemplate('SPIN預設標準')">編輯</button>
+                        <button class="action-btn action-btn-delete" onclick="deleteTemplate('SPIN預設標準')">刪除</button>
+                    </div>
+                </div>
+
+                <div class="template-card" data-template="north-custom" data-status="published" data-type="custom" onclick="quickSwitchTemplate('北區（自訂）', this)">
+                    <div class="template-header">
+                        <div class="template-name">北區（自訂）</div>
+                        <div class="badge-container">
+                            <span class="custom-badge">自訂</span>
+                            <span class="status-badge status-published">已發佈</span>
+                        </div>
+                    </div>
+                    <div class="template-subtitle">北區專屬數據配置</div>
+                    <div class="template-items">
+                        <div class="template-item">
+                            <span>🔄</span>
+                            <span>提高續約</span>
+                        </div>
+                        <div class="template-item">
+                            <span>😊</span>
+                            <span>客戶滿意度</span>
+                        </div>
+                    </div>
+                    <div class="template-actions" onclick="event.stopPropagation()">
+                        <button class="action-btn action-btn-edit" onclick="editTemplate('北區（自訂）')">編輯</button>
+                        <button class="action-btn action-btn-delete" onclick="deleteTemplate('北區（自訂）')">刪除</button>
+                    </div>
+                </div>
+
+                <div class="template-card" data-template="east-custom" data-status="published" data-type="custom" onclick="quickSwitchTemplate('東區（自訂）', this)">
+                    <div class="template-header">
+                        <div class="template-name">東區（自訂）</div>
+                        <div class="badge-container">
+                            <span class="custom-badge">自訂</span>
+                            <span class="status-badge status-published">已發佈</span>
+                        </div>
+                    </div>
+                    <div class="template-subtitle">東區專屬數據配置</div>
+                    <div class="template-items">
+                        <div class="template-item">
+                            <span>📈</span>
+                            <span>業績成長率</span>
+                        </div>
+                        <div class="template-item">
+                            <span>🎯</span>
+                            <span>目標達成率</span>
+                        </div>
+                        <div class="template-item">
+                            <span>⏱️</span>
+                            <span>回應時效</span>
+                        </div>
+                    </div>
+                    <div class="template-actions" onclick="event.stopPropagation()">
+                        <button class="action-btn action-btn-edit" onclick="editTemplate('東區（自訂）')">編輯</button>
+                        <button class="action-btn action-btn-delete" onclick="deleteTemplate('東區（自訂）')">刪除</button>
+                    </div>
+                </div>
+
+                <div class="template-card" data-template="marketing-custom" data-status="draft" data-type="custom" onclick="quickSwitchTemplate('行銷（自訂）', this)">
+                    <div class="template-header">
+                        <div class="template-name">行銷（自訂）</div>
+                        <div class="badge-container">
+                            <span class="custom-badge">自訂</span>
+                            <span class="status-badge status-draft">草稿</span>
+                        </div>
+                    </div>
+                    <div class="template-subtitle">行銷部專屬配置</div>
+                    <div class="template-items">
+                        <div class="template-item">
+                            <span>📊</span>
+                            <span>轉換率</span>
+                        </div>
+                        <div class="template-item">
+                            <span>👥</span>
+                            <span>觸及人數</span>
+                        </div>
+                    </div>
+                    <div class="template-actions" onclick="event.stopPropagation()">
+                        <button class="action-btn action-btn-edit" onclick="editTemplate('行銷（自訂）')">編輯</button>
+                        <button class="action-btn action-btn-delete" onclick="deleteTemplate('行銷（自訂）')">刪除</button>
+                        <button class="action-btn action-btn-publish" onclick="publishTemplate('行銷（自訂）')">發布</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        let transferMode = false;
+
+
+        // 切換轉移模式
+        function toggleTransferMode() {
+            transferMode = true;
+            const container = document.getElementById('mainContainer');
+            container.classList.add('transfer-mode');
+            
+            // 更新標題
+            document.getElementById('statusTitle').textContent = '轉移標準';
+            
+            // 隱藏轉移按鈕
+            document.getElementById('transferBtn').style.display = 'none';
+            
+            // 隱藏模板列表
+            document.getElementById('templatesSection').style.display = 'block';
+            
+            // 重置選擇
+            document.getElementById('templateSelect').value = '';
+            document.getElementById('confirmTransferBtn').disabled = true;
+        }
+
+        // 取消轉移模式
+        function cancelTransferMode() {
+            transferMode = false;
+            const container = document.getElementById('mainContainer');
+            container.classList.remove('transfer-mode');
+            
+            // 恢復標題
+            document.getElementById('statusTitle').textContent = '目前團隊使用狀態';
+            
+            // 顯示轉移按鈕
+            document.getElementById('transferBtn').style.display = 'flex';
+            
+            // 顯示模板列表
+            document.getElementById('templatesSection').style.display = 'block';
+            
+            // 重置選擇
+            document.getElementById('templateSelect').value = '';
+            document.getElementById('confirmTransferBtn').disabled = true;
+        }
+
+        // 處理模板選擇變更
+        function handleTemplateSelectChange() {
+            const select = document.getElementById('templateSelect');
+            const confirmBtn = document.getElementById('confirmTransferBtn');
+            confirmBtn.disabled = !select.value;
+        }
+
+        // 確認轉移
+        function confirmTransfer() {
+            const select = document.getElementById('templateSelect');
+            if (!select.value) {
+                alert('請選擇要轉移的標準');
+                return;
+            }
+            
+            const selectedText = select.options[select.selectedIndex].text;
+            
+            // 更新當前標準顯示
+            document.getElementById('currentTemplate').textContent = selectedText;
+            
+            // 顯示成功通知
+            showNotification(`成功將所有團隊轉移到「${selectedText}」！`);
+            
+            // 立即退出轉移模式，回到主畫面
+            transferMode = false;
+            const container = document.getElementById('mainContainer');
+            container.classList.remove('transfer-mode');
+            
+            // 恢復標題為"目前團隊使用狀態"
+            document.getElementById('statusTitle').textContent = '目前團隊使用狀態';
+            
+            // 重置選擇
+            document.getElementById('templateSelect').value = '';
+            document.getElementById('confirmTransferBtn').disabled = true;
+        }
+
+        // 快速切換標準（點擊標準卡片）
+        function quickSwitchTemplate(templateName, element) {
+            if (transferMode) return;
+            
+            if (confirm(`確定要將「${templateName}」套用到所有團隊嗎？`)) {
+                // 更新當前標準顯示
+                document.getElementById('currentTemplate').textContent = templateName;
+                
+                // 視覺反饋
+                document.querySelectorAll('.template-card').forEach(card => {
+                    card.classList.remove('active');
+                });
+                element.classList.add('active');
+                
+                // 顯示成功通知
+                showNotification(`成功將「${templateName}」套用到全公司！`);
+                
+                // 移除active狀態
+                setTimeout(() => {
+                    element.classList.remove('active');
+                }, 2000);
+            }
+        }
+
+        // 顯示通知
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // 新增標準提示
+        function showAddTemplateMessage() {
+            window.location.href = 'MGR_018_standards_default.html';
+        }
+
+        // 編輯標準
+        function editTemplate(templateName) {
+            window.location.href = 'MGR_018_standards_default.html';
+        }
+
+        // 刪除標準
+        function deleteTemplate(templateName) {
+            if (confirm(`確定要刪除「${templateName}」嗎？`)) {
+                showNotification(`已刪除「${templateName}」`);
+            }
+        }
+
+        // 發布標準
+        function publishTemplate(templateName) {
+            if (confirm(`確定要發布「${templateName}」嗎？`)) {
+                showNotification(`「${templateName}」已發布`);
+                // 這裡可以更新UI，將草稿標籤改為已發佈標籤
+            }
+        }
+
+        // 篩選標準
+        function filterTemplates() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const typeFilter = document.getElementById('typeFilter').value;
+            const templateCards = document.querySelectorAll('.template-card:not(.add-template-card)');
+            
+            templateCards.forEach(card => {
+                const cardName = card.querySelector('.template-name').textContent.toLowerCase();
+                const cardStatus = card.getAttribute('data-status');
+                const cardType = card.getAttribute('data-type');
+                
+                let showCard = true;
+                
+                // 搜尋篩選
+                if (searchTerm && !cardName.includes(searchTerm)) {
+                    showCard = false;
+                }
+                
+                // 狀態篩選
+                if (statusFilter !== 'all' && cardStatus !== statusFilter) {
+                    showCard = false;
+                }
+                
+                // 類型篩選
+                if (typeFilter !== 'all' && cardType !== typeFilter) {
+                    showCard = false;
+                }
+                
+                // 顯示或隱藏卡片
+                if (showCard) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // ESC 鍵取消轉移模式
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && transferMode) {
+                cancelTransferMode();
+            }
+        });
+    </script>
+</body>
+</html>
