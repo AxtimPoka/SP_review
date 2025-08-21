@@ -15,7 +15,6 @@
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
           "Helvetica Neue", Arial, sans-serif;
         background: #f5f7fa;
-        padding: 20px;
         color: #2c3e50;
       }
 
@@ -57,12 +56,10 @@
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         z-index: 100;
-        padding: 20px 0;
+        padding: 20px;
         margin-top: -20px;
         margin-left: -20px;
         margin-right: -20px;
-        padding-left: 20px;
-        padding-right: 20px;
       }
 
       .dimension-tab {
@@ -75,9 +72,11 @@
         flex: 1;
         min-width: 200px;
         position: relative;
-        display: flex;
+        display: grid;
+        grid-template-columns: 5fr 3fr 3fr 1fr;
+        justify-content: center;
         align-items: center;
-        justify-content: space-between;
+        gap: 10px;
       }
 
       .dimension-tab.active {
@@ -117,6 +116,11 @@
       .dimension-tab.active .dimension-name-display {
         color: white;
       }
+
+      .dimension-tab.active .question-count-badge {
+        color: white;
+      }
+
 
       .dimension-actions {
         display: flex;
@@ -171,13 +175,93 @@
         border-radius: 12px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         margin-bottom: 20px;
+        position: relative;
+      }
+
+      /* 預設題目樣式 */
+      .question-section.is-default {
+        background: rgba(102, 126, 234, 0.03);
+        border: 1px solid rgba(102, 126, 234, 0.1);
+      }
+
+      /* 部分編輯題目樣式 */
+      .question-section.is-partial {
+        background: rgba(255, 184, 0, 0.03);
+        border: 1px solid rgba(255, 184, 0, 0.15);
+      }
+
+      /* 已自訂題目樣式 */
+      .question-section.is-custom {
+        background: white;
+        border: 1px solid rgba(40, 167, 69, 0.2);
+      }
+
+      /* 編輯狀態標籤 */
+      .edit-status-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .edit-status-badge.default {
+        background: rgba(102, 126, 234, 0.1);
+        color: #667eea;
+      }
+
+      .edit-status-badge.partial {
+        background: rgba(255, 184, 0, 0.15);
+        color: #ff9500;
+      }
+
+      .edit-status-badge.custom {
+        background: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+      }
+
+      /* 首次編輯提示 */
+      .edit-tooltip {
+        position: absolute;
+        background: #333;
+        color: white;
+        padding: 8px 12px;
+        border-radius: 6px;
+        font-size: 13px;
+        z-index: 1000;
+        white-space: nowrap;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        transform: translateY(-5px);
+        transition: all 0.3s ease;
+        pointer-events: none;
+      }
+
+      .edit-tooltip.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .edit-tooltip::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 5px solid transparent;
+        border-top-color: #333;
       }
 
       .question-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
+        margin: 20px 0;
         padding-bottom: 15px;
         border-bottom: 2px solid #f0f2f5;
       }
@@ -525,7 +609,7 @@
       }
 
       .question-count-badge {
-        background: rgba(102, 126, 234, 0.2);
+        background: rgba(102, 126, 234);
         padding: 4px 10px;
         border-radius: 12px;
         font-size: 12px;
@@ -538,7 +622,9 @@
       <!-- Header -->
       <div class="header">
         <h1>SPIN預設標準</h1>
-        <p>為您的行業打造專屬的銷售評分標準，每個維度滿分100分，維度及題目順序不影響評分</p>
+        <p>
+          為您的行業打造專屬的銷售評分標準，每個維度滿分100分，維度及題目順序不影響評分
+        </p>
       </div>
 
       <!-- Dimension Tabs -->
@@ -711,16 +797,20 @@
         <div class="form-progress-container">
           <div class="progress-info">
             <span class="progress-label">建立進度</span>
-            <span class="progress-percentage" id="formProgressPercentage">0%</span>
+            <span class="progress-percentage" id="formProgressPercentage"
+              >0%</span
+            >
           </div>
           <div class="progress-bar-wrapper">
             <div class="progress-bar-fill" id="formProgressBar"></div>
           </div>
-          <div class="progress-details" id="progressDetails">
-            <span>0/3 維度完成</span>
+          <div class="progress-text">
+            <div class="progress-details" id="progressDetails">
+              <span>0/3 維度完成</span>
+            </div>
           </div>
         </div>
-        
+
         <div class="action-buttons-group">
           <button class="btn btn-primary" onclick="saveAndPublish()">
             發布標準
@@ -736,6 +826,9 @@
       let currentDimension = null;
       let dimensionCount = 0;
       let dimensions = {};
+      let questionEditStatus = {}; // 追蹤每個題目的編輯狀態
+      let questionOriginalData = {}; // 儲存原始資料
+      let tooltipsShown = {}; // 追蹤已顯示的提示
 
       // Predefined dimensions and questions data
       const defaultDimensionsData = [
@@ -1313,18 +1406,16 @@
                         <span class="dimension-name-display" style="font-size: 16px; font-weight: 500;">${
                           dimData.name || "未命名維度"
                         }</span>
-                        <div class="dimension-actions">
-                            <span class="question-count-badge" style="background: rgba(102, 126, 234, 0.2); padding: 4px 10px; border-radius: 12px; font-size: 12px; margin-right: 8px;">${
-                              dimData.questions.length
-                            }題</span>
-                            <span class="score-badge">100分</span>
-                            <button class="btn-delete-dimension" title="刪除維度" onclick="deleteDimension('${dimensionId}')">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                                </svg>
-                            </button>
-                        </div>
+                        <span class="question-count-badge" style="background: rgba(102, 126, 234, 0.2); padding: 4px 10px; border-radius: 12px; font-size: 12px; text-align: center;">${
+                          dimData.questions.length
+                        }題</span>
+                        <span class="score-badge" style="text-align: center;">100分</span>
+                        <button class="btn-delete-dimension" title="刪除維度" onclick="deleteDimension('${dimensionId}')" style="justify-self: center;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
                     </div>
                 `;
 
@@ -1356,6 +1447,11 @@
             // Update UI after adding all questions
             updateUIForDimension(dimensionId);
             updateSummary();
+
+            // 初始化編輯狀態
+            dim.questions.forEach((qId) => {
+              updateQuestionEditStatus(qId);
+            });
           }, 100 * (index + 1));
         });
 
@@ -1375,8 +1471,15 @@
         const questionId = `${dimensionId}_q${dim.questionCount}`;
         dim.questions.push(questionId);
 
+        // 儲存原始資料
+        questionOriginalData[questionId] = JSON.parse(
+          JSON.stringify(questionData)
+        );
+        questionEditStatus[questionId] = "default";
+
         let questionHTML = `
-                <div class="question-section" data-question-id="${questionId}" data-dimension="${dimensionId}" style="display: none;">
+                <div class="question-section is-default" data-question-id="${questionId}" data-dimension="${dimensionId}" style="display: none;">
+                    <span class="edit-status-badge default">📋 預設範例</span>
                     <div class="question-header">
                         <div class="question-title">題目 ${
                           dim.questionCount
@@ -1503,16 +1606,14 @@
         const dimensionHTML = `
                 <div class="dimension-tab" data-dimension="${dimensionId}" id="${dimensionId}">
                     <span class="dimension-name-display" style="font-size: 16px; font-weight: 500;">未命名維度</span>
-                    <div class="dimension-actions">
-                        <span class="question-count-badge" style="background: rgba(102, 126, 234, 0.2); padding: 4px 10px; border-radius: 12px; font-size: 12px; margin-right: 8px;">0題</span>
-                        <span class="score-badge">100分</span>
-                        <button class="btn-delete-dimension" title="刪除維度" onclick="deleteDimension('${dimensionId}')">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
-                        </button>
-                    </div>
+                    <span class="question-count-badge" style="background: rgba(102, 126, 234, 0.2); padding: 4px 10px; border-radius: 12px; font-size: 12px; text-align: center;">0題</span>
+                    <span class="score-badge" style="text-align: center;">100分</span>
+                    <button class="btn-delete-dimension" title="刪除維度" onclick="deleteDimension('${dimensionId}')" style="justify-self: center;">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
                 </div>
             `;
 
@@ -1604,12 +1705,12 @@
       // Update dimension name from input
       function updateDimensionNameFromInput() {
         if (!currentDimension || !dimensions[currentDimension]) return;
-        
+
         const nameInput = document.getElementById("dimensionNameInput");
         if (nameInput) {
           const newName = nameInput.value;
           dimensions[currentDimension].name = newName;
-          
+
           // Update the display in the tab
           const tab = document.getElementById(currentDimension);
           if (tab) {
@@ -1618,7 +1719,7 @@
               nameDisplay.textContent = newName || "未命名維度";
             }
           }
-          
+
           updateSummary();
         }
       }
@@ -1682,7 +1783,7 @@
         const nameSection = document.getElementById("dimensionNameSection");
         if (nameSection) {
           nameSection.style.display = "block";
-          
+
           // Load dimension name
           const nameInput = document.getElementById("dimensionNameInput");
           if (nameInput && dimensions[dimensionId]) {
@@ -1752,23 +1853,23 @@
         }
 
         // Update dimension tab badge
-        const tab = document.getElementById(dimensionId);
-        if (tab) {
-          const badge = tab.querySelector(".question-count-badge");
-          if (badge) {
-            badge.textContent = `${dim.questionCount}題`;
-            if (dim.questionCount === 0) {
-              badge.style.background = "rgba(255, 71, 87, 0.2)";
-              badge.style.color = "#ff4757";
-            } else if (dim.questionCount >= 10) {
-              badge.style.background = "rgba(255, 184, 0, 0.2)";
-              badge.style.color = "#ffb800";
-            } else {
-              badge.style.background = "rgba(102, 126, 234, 0.2)";
-              badge.style.color = "#667eea";
-            }
-          }
-        }
+        // const tab = document.getElementById(dimensionId);
+        // if (tab) {
+        //   const badge = tab.querySelector(".question-count-badge");
+        //   if (badge) {
+        //     badge.textContent = `${dim.questionCount}題`;
+        //     if (dim.questionCount === 0) {
+        //       badge.style.background = "rgba(255, 71, 87, 0.2)";
+        //       badge.style.color = "#ff4757";
+        //     } else if (dim.questionCount >= 10) {
+        //       badge.style.background = "rgba(255, 184, 0, 0.2)";
+        //       badge.style.color = "#ffb800";
+        //     } else {
+        //       badge.style.background = "rgba(102, 126, 234, 0.2)";
+        //       badge.style.color = "#FFFFFF";
+        //     }
+        //   }
+        // }
       }
 
       // Add new question
@@ -2003,7 +2104,7 @@
 
         button.insertAdjacentHTML("beforebegin", newQuestionHTML);
         updateYesNoScoring(button.closest(".question-section"));
-        
+
         // Hide or disable add button if reaching limit
         if (existingQuestions + 1 >= 10) {
           button.style.display = "none";
@@ -2014,17 +2115,19 @@
       function removeYesNoQuestion(button) {
         const scoringItem = button.parentElement;
         const questionSection = button.closest(".question-section");
-        const scoringStandard = questionSection.querySelector(".scoring-standard");
+        const scoringStandard =
+          questionSection.querySelector(".scoring-standard");
         scoringItem.remove();
 
         // Renumber questions
-        const remainingQuestions = scoringStandard.querySelectorAll(".scoring-item");
+        const remainingQuestions =
+          scoringStandard.querySelectorAll(".scoring-item");
         remainingQuestions.forEach((item, index) => {
-            const label = item.querySelector("label");
-            if (label) {
-              label.textContent = `問題${index + 1}：`;
-            }
-          });
+          const label = item.querySelector("label");
+          if (label) {
+            label.textContent = `問題${index + 1}：`;
+          }
+        });
 
         // Show add button if it was hidden
         const addButton = scoringStandard.querySelector(".btn-add-option");
@@ -2144,16 +2247,16 @@
 
         Object.values(dimensions).forEach((dim) => {
           totalQuestions += dim.questionCount;
-          
+
           // 檢查各項是否完成
           const hasName = dim.name && dim.name.trim() !== "";
           const hasContext = dim.context && dim.context.trim() !== "";
           const hasQuestions = dim.questionCount > 0;
-          
+
           if (hasName) dimensionsWithName++;
           if (hasContext) dimensionsWithContext++;
           if (hasQuestions) dimensionsWithQuestions++;
-          
+
           // 維度完成需要有名稱、前情提要和至少一個題目
           if (hasName && hasContext && hasQuestions) {
             completedDimensions++;
@@ -2168,80 +2271,96 @@
 
         // 更新原有的總覽（如果存在）
         if (document.getElementById("totalDimensions")) {
-          document.getElementById("totalDimensions").textContent = dimensionCount;
-          document.getElementById("totalQuestions").textContent = totalQuestions;
+          document.getElementById("totalDimensions").textContent =
+            dimensionCount;
+          document.getElementById("totalQuestions").textContent =
+            totalQuestions;
           document.getElementById("totalScore").textContent = totalScore;
           document.getElementById("completeness").textContent = completeness;
         }
 
         // 更新表單進度條
-        updateFormProgress(completedDimensions, dimensionsWithName, dimensionsWithContext, dimensionsWithQuestions);
+        updateFormProgress(
+          completedDimensions,
+          dimensionsWithName,
+          dimensionsWithContext,
+          dimensionsWithQuestions
+        );
       }
 
       // 更新表單進度條
-      function updateFormProgress(completedDimensions, withName, withContext, withQuestions) {
+      function updateFormProgress(
+        completedDimensions,
+        withName,
+        withContext,
+        withQuestions
+      ) {
         // 計算進度百分比（基於不同權重）
         // 維度名稱：25%，前情提要：25%，題目存在：25%，題目內容完整：25%
         let progressScore = 0;
-        
+
         // 維度名稱完成度 (25%)
         if (dimensionCount > 0) {
           progressScore += (withName / dimensionCount) * 25;
         }
-        
+
         // 前情提要完成度 (25%)
         if (dimensionCount > 0) {
           progressScore += (withContext / dimensionCount) * 25;
         }
-        
+
         // 題目存在完成度 (25%)
         if (dimensionCount > 0) {
           progressScore += (withQuestions / dimensionCount) * 25;
         }
-        
+
         // 題目內容完整度 (25%)
         let dimensionsWithCompleteInputs = 0;
         Object.entries(dimensions).forEach(([dimId, dim]) => {
           if (dim.questions && dim.questions.length > 0) {
             let allInputsFilled = true;
-            
-            dim.questions.forEach(questionId => {
-              const questionElement = document.querySelector(`[data-question-id="${questionId}"]`);
+
+            dim.questions.forEach((questionId) => {
+              const questionElement = document.querySelector(
+                `[data-question-id="${questionId}"]`
+              );
               if (questionElement) {
                 // 檢查所有輸入欄位
-                const inputs = questionElement.querySelectorAll('input[type="text"], textarea');
-                inputs.forEach(input => {
-                  if (!input.value || input.value.trim() === '') {
+                const inputs = questionElement.querySelectorAll(
+                  'input[type="text"], textarea'
+                );
+                inputs.forEach((input) => {
+                  if (!input.value || input.value.trim() === "") {
                     allInputsFilled = false;
                   }
                 });
               }
             });
-            
+
             if (allInputsFilled && dim.questions.length > 0) {
               dimensionsWithCompleteInputs++;
             }
           }
         });
-        
+
         if (dimensionCount > 0) {
           progressScore += (dimensionsWithCompleteInputs / dimensionCount) * 25;
         }
-        
+
         const progressPercentage = Math.round(progressScore);
-        
+
         // 更新進度條
         const progressBar = document.getElementById("formProgressBar");
         const progressText = document.getElementById("formProgressPercentage");
         const progressDetails = document.getElementById("progressDetails");
-        
+
         if (progressBar) {
           progressBar.style.width = progressPercentage + "%";
         }
-        
+
         if (progressText) {
           progressText.textContent = progressPercentage + "%";
-          
+
           // 根據進度改變顏色
           if (progressPercentage >= 80) {
             progressText.style.color = "#28a745";
@@ -2253,10 +2372,10 @@
             progressText.style.color = "#dc3545";
           }
         }
-        
+
         if (progressDetails) {
           let detailText = `${completedDimensions}/${dimensionCount} 維度完成`;
-          
+
           // 提供更詳細的提示
           if (completedDimensions < dimensionCount) {
             const missingItems = [];
@@ -2264,20 +2383,28 @@
               missingItems.push(`${dimensionCount - withName} 個維度缺少名稱`);
             }
             if (withContext < dimensionCount) {
-              missingItems.push(`${dimensionCount - withContext} 個維度缺少前情提要`);
+              missingItems.push(
+                `${dimensionCount - withContext} 個維度缺少前情提要`
+              );
             }
             if (withQuestions < dimensionCount) {
-              missingItems.push(`${dimensionCount - withQuestions} 個維度缺少題目`);
+              missingItems.push(
+                `${dimensionCount - withQuestions} 個維度缺少題目`
+              );
             }
             if (dimensionsWithCompleteInputs < dimensionCount) {
-              missingItems.push(`${dimensionCount - dimensionsWithCompleteInputs} 個維度有空白欄位`);
+              missingItems.push(
+                `${
+                  dimensionCount - dimensionsWithCompleteInputs
+                } 個維度有空白欄位`
+              );
             }
-            
+
             if (missingItems.length > 0) {
               detailText += ` | 待完成: ${missingItems[0]}`;
             }
           }
-          
+
           progressDetails.innerHTML = `<span>${detailText}</span>`;
         }
       }
@@ -2318,11 +2445,157 @@
         alert("評分標準已儲存！");
       }
 
+      // 檢查題目編輯狀態
+      function checkQuestionEditStatus(questionId) {
+        const questionElement = document.querySelector(
+          `[data-question-id="${questionId}"]`
+        );
+        if (!questionElement) return "default";
+
+        const originalData = questionOriginalData[questionId];
+        if (!originalData) return "custom"; // 新建的題目直接標記為自訂
+
+        let hasChanges = false;
+        let hasEmptyFields = false;
+
+        // 檢查所有輸入欄位
+        const inputs = questionElement.querySelectorAll(
+          'input[type="text"], textarea'
+        );
+        inputs.forEach((input) => {
+          if (!input.value || input.value.trim() === "") {
+            hasEmptyFields = true;
+          }
+          // 這裡可以比對原始值，但因為結構複雜，暫時簡化為只要有值就算有修改
+          if (input.value && input.value.trim() !== "") {
+            // 檢查是否與預設值不同
+            hasChanges = true;
+          }
+        });
+
+        if (hasEmptyFields) return "partial";
+        if (hasChanges) return "custom";
+        return "default";
+      }
+
+      // 更新題目編輯狀態顯示
+      function updateQuestionEditStatus(questionId) {
+        const status = checkQuestionEditStatus(questionId);
+        const questionElement = document.querySelector(
+          `[data-question-id="${questionId}"]`
+        );
+        if (!questionElement) return;
+
+        // 移除所有狀態類別
+        questionElement.classList.remove(
+          "is-default",
+          "is-partial",
+          "is-custom"
+        );
+
+        // 更新狀態標籤
+        let badge = questionElement.querySelector(".edit-status-badge");
+        if (!badge) {
+          badge = document.createElement("span");
+          badge.className = "edit-status-badge";
+          questionElement.insertBefore(badge, questionElement.firstChild);
+        }
+
+        // 根據狀態更新樣式和文字
+        switch (status) {
+          case "default":
+            questionElement.classList.add("is-default");
+            badge.className = "edit-status-badge default";
+            badge.innerHTML = "📋 預設範例";
+            break;
+          case "partial":
+            questionElement.classList.add("is-partial");
+            badge.className = "edit-status-badge partial";
+            badge.innerHTML = "⚡ 編輯中";
+            break;
+          case "custom":
+            questionElement.classList.add("is-custom");
+            badge.className = "edit-status-badge custom";
+            badge.innerHTML = "✓ 已自訂";
+            break;
+        }
+
+        questionEditStatus[questionId] = status;
+      }
+
+
+
+      // 高亮顯示預設題目
+      function highlightDefaultQuestions() {
+        // 滾動到第一個預設題目
+        const firstDefault = document.querySelector(
+          ".question-section.is-default"
+        );
+        if (firstDefault) {
+          firstDefault.scrollIntoView({ behavior: "smooth", block: "center" });
+
+          // 添加閃爍效果
+          document
+            .querySelectorAll(".question-section.is-default")
+            .forEach((element) => {
+              element.style.transition = "background-color 0.3s";
+              element.style.backgroundColor = "rgba(102, 126, 234, 0.1)";
+              setTimeout(() => {
+                element.style.backgroundColor = "";
+              }, 1500);
+            });
+        }
+      }
+
+      // 顯示編輯提示
+      function showEditTooltip(element) {
+        const questionElement = element.closest(".question-section");
+        if (!questionElement) return;
+
+        const questionId = questionElement.dataset.questionId;
+
+        // 檢查是否已顯示過提示
+        if (tooltipsShown[questionId]) return;
+
+        // 只對預設題目顯示提示
+        if (questionEditStatus[questionId] !== "default") return;
+
+        // 創建提示元素
+        const tooltip = document.createElement("div");
+        tooltip.className = "edit-tooltip";
+        tooltip.textContent = "💡 這是預設範例，請依照您的需求修改內容";
+
+        // 定位提示
+        document.body.appendChild(tooltip);
+        const rect = element.getBoundingClientRect();
+        tooltip.style.left =
+          rect.left + rect.width / 2 - tooltip.offsetWidth / 2 + "px";
+        tooltip.style.top = rect.top - tooltip.offsetHeight - 10 + "px";
+
+        // 顯示提示
+        setTimeout(() => tooltip.classList.add("show"), 10);
+
+        // 3秒後隱藏
+        setTimeout(() => {
+          tooltip.classList.remove("show");
+          setTimeout(() => tooltip.remove(), 300);
+        }, 3000);
+
+        tooltipsShown[questionId] = true;
+      }
+
       // 添加全局輸入監聽器以更新進度
       function addGlobalInputListeners() {
         // 監聽所有輸入變更
-        document.addEventListener('input', function(e) {
+        document.addEventListener("input", function (e) {
           if (e.target.matches('input[type="text"], textarea')) {
+            // 檢查是否在題目區域內
+            const questionElement = e.target.closest(".question-section");
+            if (questionElement) {
+              const questionId = questionElement.dataset.questionId;
+              updateQuestionEditStatus(questionId);
+            }
+
             // 延遲執行以避免頻繁更新
             clearTimeout(window.updateProgressTimeout);
             window.updateProgressTimeout = setTimeout(() => {
@@ -2330,17 +2603,37 @@
             }, 500);
           }
         });
-        
+
         // 監聽選擇框變更
-        document.addEventListener('change', function(e) {
-          if (e.target.matches('select')) {
+        document.addEventListener("change", function (e) {
+          if (e.target.matches("select")) {
+            const questionElement = e.target.closest(".question-section");
+            if (questionElement) {
+              const questionId = questionElement.dataset.questionId;
+              updateQuestionEditStatus(questionId);
+            }
             updateSummary();
           }
         });
+
+        // 監聽焦點事件以顯示提示
+        document.addEventListener(
+          "focus",
+          function (e) {
+            if (
+              e.target.matches(
+                '.question-section input[type="text"], .question-section textarea'
+              )
+            ) {
+              showEditTooltip(e.target);
+            }
+          },
+          true
+        );
       }
 
       // Initialize on page load
-      window.addEventListener("DOMContentLoaded", function() {
+      window.addEventListener("DOMContentLoaded", function () {
         initializeDimensions();
         addGlobalInputListeners();
       });
