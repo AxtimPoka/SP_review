@@ -808,6 +808,13 @@
             <div class="progress-details" id="progressDetails">
               <span>0/3 維度完成</span>
             </div>
+            <div
+              class="edit-stats-summary"
+              id="editStatsSummary"
+              style="font-size: 11px; margin-top: 4px; color: #6c757d"
+            >
+              <span id="totalEditStats">載入中...</span>
+            </div>
           </div>
         </div>
 
@@ -1459,6 +1466,7 @@
         setTimeout(() => {
           showDimensionContent(currentDimension);
           updateDimensionCounter();
+          updateDimensionEditStats();
         }, 500);
       }
 
@@ -2521,9 +2529,71 @@
         }
 
         questionEditStatus[questionId] = status;
+        updateDimensionEditStats();
       }
 
 
+
+      // 更新維度編輯統計
+      function updateDimensionEditStats() {
+        let totalCustom = 0;
+        let totalPartial = 0;
+        let totalDefault = 0;
+
+        Object.keys(dimensions).forEach((dimId) => {
+          const dim = dimensions[dimId];
+          dim.questions.forEach((qId) => {
+            const status = questionEditStatus[qId] || "default";
+            switch (status) {
+              case "custom":
+                totalCustom++;
+                break;
+              case "partial":
+                totalPartial++;
+                break;
+              case "default":
+                totalDefault++;
+                break;
+            }
+          });
+        });
+
+        // 更新底部進度條的編輯統計
+        updateFormProgressWithEditStats(
+          totalCustom,
+          totalPartial,
+          totalDefault
+        );
+      }
+
+      // 更新底部進度條的編輯統計
+      function updateFormProgressWithEditStats(
+        customCount = 0,
+        partialCount = 0,
+        defaultCount = 0
+      ) {
+        const totalQuestions = customCount + partialCount + defaultCount;
+        const editStatsElement = document.getElementById("totalEditStats");
+
+        if (editStatsElement && totalQuestions > 0) {
+          const statsText = [];
+          statsText.push(`${totalQuestions} 題`);
+          if (customCount > 0)
+            statsText.push(
+              `<span style="color: #28a745;">${customCount} 已自訂</span>`
+            );
+          if (partialCount > 0)
+            statsText.push(
+              `<span style="color: #ff9500;">${partialCount} 編輯中</span>`
+            );
+          if (defaultCount > 0)
+            statsText.push(
+              `<span style="color: #667eea;">${defaultCount} 使用預設</span>`
+            );
+
+          editStatsElement.innerHTML = statsText.join(" | ");
+        }
+      }
 
       // 高亮顯示預設題目
       function highlightDefaultQuestions() {
